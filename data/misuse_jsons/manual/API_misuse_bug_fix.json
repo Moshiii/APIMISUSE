@@ -1,0 +1,922 @@
+[
+    {
+        "bug": "if version.parse(torch.__version__) > version.parse(\"1.6.0\"):",
+        "fix": "if is_torch_greater_than_1_6:"
+    },
+    {
+        "bug": "x = torch.empty(1000).log_normal_(0, 1)",
+        "fix": "x = torch.randn(1000).exp()"
+    },
+    {
+        "bug": "opt.half = True  # FP16 for fastest results",
+        "fix": "opt.half = torch.cuda.is_available() and opt.device != 'cpu'  # FP16 for fastest results"
+    },
+    {
+        "bug": "one = torch.tensor(1.).to(center.device)",
+        "fix": "one = torch.tensor(1., device=center.device, dtype=center.dtype)"
+    },
+    {
+        "bug": "input, input_lengths, mel_spec)",
+        "fix": "input, input_lengths, mel_spec, speaker_ids)"
+    },
+    {
+        "bug": "if args.n_gpu > 1:",
+        "fix": "if args.n_gpu > 1 and not isinstance(model, torch.nn.DataParallel):"
+    },
+    {
+        "bug": "img = torch.rand(2, 3, 4, 5)",
+        "fix": "img = torch.rand(2, 3, 4, 5).to(device)"
+    },
+    {
+        "bug": "samples = self.sampler.sample(self, x, conditioning, unconditional_conditioning, image_conditioning=self.create_dummy_mask(x))",
+        "fix": "samples = self.sampler.sample(self, x, conditioning, unconditional_conditioning, image_conditioning=self.create_dummy_mask(x, first_phase=True))"
+    },
+    {
+        "bug": "if isinstance(x, torch.autograd.variable.Variable):",
+        "fix": "if isinstance(x, torch.autograd.Variable):"
+    },
+    {
+        "bug": "self.assertEqual(loss.shape, [loss_size])",
+        "fix": "self.assertEqual(loss.shape.as_list(), expected_loss_size)"
+    },
+    {
+        "bug": "known_covariance_linear_model(torch.tensor([1., -1.]), torch.tensor(10.), torch.tensor(1.)),",
+        "fix": "known_covariance_linear_model(torch.tensor([1., -1.]), torch.tensor([10., 10.]), torch.tensor(1.)),"
+    },
+    {
+        "bug": "dim_t = temperature ** (2 * (dim_t // 2) / num_pos_feats)",
+        "fix": "dim_t = temperature ** (2 * torch.div(dim_t, 2) / num_pos_feats)"
+    },
+    {
+        "bug": "attention_probs = nn.Softmax(dim=-1)(attention_scores)",
+        "fix": "attention_probs = nn.functional.softmax(attention_scores, dim=-1)"
+    },
+    {
+        "bug": "device = torch.cuda.current_device() if config.bigscience_bloom else 'cpu'",
+        "fix": "device = torch.cuda.current_device()  #if config.bigscience_bloom else 'cpu'"
+    },
+    {
+        "bug": "shared_preference = Variable(torch.Tensor([args.preference]))",
+        "fix": "shared_preference = torch.tensor([args.preference])"
+    },
+    {
+        "bug": "torch.nn.Embedding(idim, attention_dim),",
+        "fix": "torch.nn.Embedding(idim, attention_dim, padding_idx=padding_idx),"
+    },
+    {
+        "bug": "is_torch_1_8_plus and torch.is_complex(input)",
+        "fix": "is_torch_1_9_plus and torch.is_complex(input)"
+    },
+    {
+        "bug": "if not torch.is_tensor(quaternion):",
+        "fix": "if not isinstance(quaternion, torch.Tensor):"
+    },
+    {
+        "bug": "tensor = tensor * mask[..., tf.newaxis]",
+        "fix": "tensor = tensor * tf.expand_dims(mask, axis=-1)"
+    },
+    {
+        "bug": "collections = set(tf.GraphKeys.GLOBAL_VARIABLES)",
+        "fix": "collections = {tf.GraphKeys.GLOBAL_VARIABLES}"
+    },
+    {
+        "bug": "if len(torch.cuda.default_generators) > 0:",
+        "fix": "if hasattr(torch.cuda, \"default_generators\") and len(torch.cuda.default_generators) > 0:"
+    },
+    {
+        "bug": "rmat: torch.Tensor = K.angle_axis_to_rotation_matrix(angle_axis_rad)  # Bx3x3",
+        "fix": "rmat: torch.Tensor = K.angle_axis_to_rotation_matrix(angle_axis_rad) * scales.view(-1, 1, 1)  # Bx3x3"
+    },
+    {
+        "bug": "q_values = torch.gather(q_values, -1, actions.unsqueeze(-1)).squeeze()",
+        "fix": "q_values = torch.gather(q_values, -1, actions.unsqueeze(-1)).squeeze(-1)"
+    },
+    {
+        "bug": "self.delta_f += y * x",
+        "fix": "self.delta_f += tf.cast(y, tf.float32) * x"
+    },
+    {
+        "bug": "return torch.mul(diff, x2, out=out)",
+        "fix": "return torch.mul(diff, x2, out=out).to(x1.dtype)"
+    },
+    {
+        "bug": "self._action_mask = tf.placeholder(tf.float32, [1, None, self.n_actions],",
+        "fix": "self._action_mask = tf.placeholder(tf.float32, [None, None, self.n_actions],"
+    },
+    {
+        "bug": "return skflow.models.logistic_regression(encoding[-1], y)",
+        "fix": "return skflow.models.logistic_regression(encoding, y)"
+    },
+    {
+        "bug": "if torch.distributed.is_initialized() and self.local_rank == -1:",
+        "fix": "if torch.distributed.is_available() and torch.distributed.is_initialized() and self.local_rank == -1:"
+    },
+    {
+        "bug": "torch.cuda.synchronize()",
+        "fix": "get_accelerator().synchronize()"
+    },
+    {
+        "bug": "return linspace_method(start, stop, num, device=device)",
+        "fix": "return linspace_method(start, stop, num, dtype=torch.float64, device=device)"
+    },
+    {
+        "bug": "attention_mask = (1.0 - attention_mask) * -10000.0",
+        "fix": "attention_mask = (1.0 - attention_mask) * torch.finfo(self.dtype).min"
+    },
+    {
+        "bug": "_ = model(x)",
+        "fix": "_ = model(*xs)"
+    },
+    {
+        "bug": "output = [torch.zeros(0, 6)] * prediction.shape[0]",
+        "fix": "output = [torch.zeros((0, 6), device=prediction.device)] * prediction.shape[0]"
+    },
+    {
+        "bug": "dalphas.append(torch.autograd.grad(loss, [c.alpha for c in self.nas_modules]))",
+        "fix": "dalphas.append(torch.autograd.grad(loss, [c.alpha for _, c in self.nas_modules]))"
+    },
+    {
+        "bug": "return tf.subtract(x1, x2)",
+        "fix": "return tf.experimental.numpy.subtract(x1, x2)"
+    },
+    {
+        "bug": "return torch.onnx.symbolic_opset12.dropout(g, input, dropout_p, train)",
+        "fix": "return symbolic_opset12.dropout(g, input, dropout_p, train)"
+    },
+    {
+        "bug": "if version.parse(pa.__version__) < version.parse(\"3.0.0\"):",
+        "fix": "if datasets.config.PYARROW_VERSION.major < 3:"
+    },
+    {
+        "bug": "(batch_size,), fill_value=self.model._start_index",
+        "fix": "(batch_size,), fill_value=self.model._start_index, dtype=torch.long"
+    },
+    {
+        "bug": "if self.device != torch.device(\"meta\") or not hasattr(self.unet, \"_hf_hook\"):",
+        "fix": "if not hasattr(self.unet, \"_hf_hook\"):"
+    },
+    {
+        "bug": "params_hk = self._native_module.init(ivy.functional.core.random.RNG, *a, **kw)",
+        "fix": "params_hk = self._native_module.init(ivy.random.RNG, *a, **kw)"
+    },
+    {
+        "bug": "nn.Parameter(torch.Tensor(d_proj, d_emb_i))",
+        "fix": "nn.Parameter(torch.FloatTensor(d_proj, d_emb_i))"
+    },
+    {
+        "bug": "theta_1[key] = 0",
+        "fix": "theta_1[key] = torch.zeros_like(theta_1[key])"
+    },
+    {
+        "bug": "if len(labels) == 0: return torch.tensor(0., requires_grad=True), 1",
+        "fix": "if len(labels) == 0: return torch.tensor(0., requires_grad=True, device=flair.device), 1"
+    },
+    {
+        "bug": "device=torch.cuda.current_device()))",
+        "fix": "device=get_accelerator().current_device_name()))"
+    },
+    {
+        "bug": "split_list = self.reshaper.split_tensor(x)",
+        "fix": "split_list = tf.split(x, len(self.input_lens), axis=1)"
+    },
+    {
+        "bug": "half = device.type != 'cpu'  # half precision only supported on CUDA",
+        "fix": "half = device.type != 'cpu' and torch.cuda.device_count() == 1  # half precision only supported on single-GPU"
+    },
+    {
+        "bug": "self.load_state_dict(load_state_dict_from_url(",
+        "fix": "self.load_state_dict(torch.hub.load_state_dict_from_url("
+    },
+    {
+        "bug": "mask = torch.zeros(bs, maxlen).byte()",
+        "fix": "mask = torch.zeros(bs, maxlen, dtype=torch.uint8)"
+    },
+    {
+        "bug": "input, mel_spec)",
+        "fix": "input, input_lengths, mel_spec)"
+    },
+    {
+        "bug": "device = model_output.device if torch.is_tensor(model_output) else torch.device(\"cpu\")",
+        "fix": "device = model_output.device"
+    },
+    {
+        "bug": "device=device,",
+        "fix": "device=torch.device(device),"
+    },
+    {
+        "bug": "sess.run(tf.initialize_all_variables())",
+        "fix": "sess.run(tf.global_variables_initializer())"
+    },
+    {
+        "bug": "device_count = torch.cuda.device_count()",
+        "fix": "device_count = get_accelerator().device_count()"
+    },
+    {
+        "bug": "self.n = self.n + n",
+        "fix": "self.n = type_as(self.n, n) + n"
+    },
+    {
+        "bug": "seq_logprobs = torch.nn.functional.log_softmax(seq_logits, dim=-1).view(",
+        "fix": "seq_logprobs = nn.functional.log_softmax(seq_logits, dim=-1).view("
+    },
+    {
+        "bug": "inputs = Variable(torch.randn([3, 5, 9]))",
+        "fix": "inputs = torch.randn([3, 5, 9])"
+    },
+    {
+        "bug": "if hasattr(torch.linalg, \"qr\"):",
+        "fix": "if hasattr(torch, \"linalg\") and hasattr(torch.linalg, \"qr\"):"
+    },
+    {
+        "bug": "self.initial_state()",
+        "fix": "self.state = self.get_initial_state(batch_size=obs.shape[0])"
+    },
+    {
+        "bug": "z = mu_y + torch.randn_like(mu_y, device=mu_y.device) / temperature",
+        "fix": "z = mu_y + torch.randn(mu_y.shape, device=mu_y.device, generator=generator) / temperature"
+    },
+    {
+        "bug": "grad_norm = torch.norm(param.grad.data, p=2, dtype=torch.float32)",
+        "fix": "grad_norm = torch.norm(param.grad.data.float(), p=2)"
+    },
+    {
+        "bug": "loss = (L.mm(verts_packed) - verts_packed) * norm_w",
+        "fix": "loss = (L.mm(verts_packed) - L_sum * verts_packed) * norm_w"
+    },
+    {
+        "bug": "n = DenseLayer(n, n_units=1, act=tf.identity, name='V')",
+        "fix": "n = DenseLayer(n, n_units=1, act=None, name='V')"
+    },
+    {
+        "bug": "model = nebullvm.operations.inference_learners.utils.load_model(",
+        "fix": "model = tf.keras.models.load_model("
+    },
+    {
+        "bug": "return tf.ones_like(x, name=name)",
+        "fix": "return tf.ones_like(x, dtype=dtype, name=name)"
+    },
+    {
+        "bug": "input_tensor = torch.autograd.Variable(torch.rand(4, 5, 3))",
+        "fix": "input_tensor = torch.rand(4, 5, 3)"
+    },
+    {
+        "bug": "inputs_embeds = self.w(input_ids)",
+        "fix": "inputs_embeds = self.w(input_ids, mode='embedding')"
+    },
+    {
+        "bug": "net.load_state_dict(torch.load(save_path))",
+        "fix": "net.module.load_state_dict(torch.load(save_path))"
+    },
+    {
+        "bug": "if isinstance(model, Module):",
+        "fix": "if isinstance(model, torch.nn.Module):"
+    },
+    {
+        "bug": "torch.nn.init.xavier_uniform(self._weight_matrix)",
+        "fix": "torch.nn.init.xavier_uniform_(self._weight_matrix)"
+    },
+    {
+        "bug": "emb_i = F.linear(emb_i, self.emb_projs[i])",
+        "fix": "emb_i = nn.functional.linear(emb_i, self.emb_projs[i])"
+    },
+    {
+        "bug": "return tf.keras.activations.relu(Y + X)",
+        "fix": "return tf.keras.activations.relu(Y)"
+    },
+    {
+        "bug": "self.act = gelu",
+        "fix": "self.act = get_tf_activation(\"gelu\")"
+    },
+    {
+        "bug": "scale_fct = torch.stack([img_w, img_h, img_w, img_h], dim=1)",
+        "fix": "scale_fct = torch.stack([img_w, img_h, img_w, img_h], dim=1).to(boxes.device)"
+    },
+    {
+        "bug": "probs = torch.dstack(1 - probs, probs)",
+        "fix": "probs = torch.stack([1 - probs, probs], dim=-1)"
+    },
+    {
+        "bug": "batch_shape = self.__infer_channel_exclusive_batch_shape__(input)",
+        "fix": "batch_shape = self.__infer_channel_exclusive_batch_shape__(input, self._temporal_channel)"
+    },
+    {
+        "bug": "aggregation_op_only_probs = torch.nn.functional.softmax(",
+        "fix": "aggregation_op_only_probs = nn.functional.softmax("
+    },
+    {
+        "bug": "cupy = f\"cupy-cuda{torch.version.cuda.replace('.','')[:3]}\"",
+        "fix": "cupy = f\"cupy-cuda{''.join(map(str,installed_cuda_version()))}\""
+    },
+    {
+        "bug": "mask : `torch.Tensor`, optional (default = None).",
+        "fix": "mask : `torch.BoolTensor`, optional (default = None)."
+    },
+    {
+        "bug": "\"        one_minus_gate = ng_ones(gate.size()).type_as(gate) - gate\\n\",",
+        "fix": "\"        one_minus_gate = torch.ones(gate.size()).type_as(gate) - gate\\n\","
+    },
+    {
+        "bug": "sq = torch.sqrt(trace + 1.0 + m00 - m11 - m22) * 2.  # sq = 4 * qw.",
+        "fix": "sq = torch.sqrt(1.0 + m00 - m11 - m22 + eps) * 2.  # sq = 4 * qw."
+    },
+    {
+        "bug": "wd_cost = tf.mul(wd_w, regularize_cost('.*/W', tf.nn.l2_loss), name='wd_cost')",
+        "fix": "wd_cost = tf.multiply(wd_w, regularize_cost('.*/W', tf.nn.l2_loss), name='wd_cost')"
+    },
+    {
+        "bug": "vis.draw_projections(embeds.detach().cpu().numpy(), utterances_per_speaker, step)",
+        "fix": "vis.draw_projections(embeds.detach().numpy(), utterances_per_speaker, step)"
+    },
+    {
+        "bug": "noise = torch.randn(x.shape, layout=x.layout, generator=generator).to(x.device)",
+        "fix": "noise = randn_tensor(x.shape, layout=x.layout, generator=generator, device=x.device, dtype=x.dtype)"
+    },
+    {
+        "bug": "M.add(KL.Dropout(0.5))",
+        "fix": "M.add(KL.Dropout(rate=0.5))"
+    },
+    {
+        "bug": "out = torch.zeros((num_nodes), dtype=dtype, device=device)",
+        "fix": "out = torch.zeros((num_nodes), dtype=dtype, device=index.device)"
+    },
+    {
+        "bug": "if LooseVersion(torch.__version__) < LooseVersion(\"1.7.0\"):",
+        "fix": "if LooseVersion(torch.__version__) > LooseVersion(\"1.0.1\"):"
+    },
+    {
+        "bug": "src = torch.tensor([[[-1.0, -1.0], [-1.0, 1.0], [1.0, -1.0], [1.0, 1.0], [0.0, 0.0]]]).expand(B, 5, 2)  # Bx5x2",
+        "fix": "src = tensor([[[-1.0, -1.0], [-1.0, 1.0], [1.0, -1.0], [1.0, 1.0], [0.0, 0.0]]]).expand(B, 5, 2)  # Bx5x2"
+    },
+    {
+        "bug": "pts_dst = dgm.transform_points(dgm.inverse(dst_homo_src), pts_src)",
+        "fix": "pts_dst = dgm.transform_points(torch.inverse(dst_homo_src), pts_src)"
+    },
+    {
+        "bug": "gate = torch.nn.functional.sigmoid(gate)",
+        "fix": "gate = torch.sigmoid(gate)"
+    },
+    {
+        "bug": "if not isinstance(check_argu[idx], tf_ops._TensorLike) or not tf_ops.is_dense_tensor_like(",
+        "fix": "if not isinstance(check_argu[idx], [tf.Tensor, tf.SparseTensor, tf.Variable]) or not tf_ops.is_dense_tensor_like("
+    },
+    {
+        "bug": "for file_idx, file in enumerate(files):",
+        "fix": "for file_idx, file in enumerate(itertools.chain.from_iterable(files)):"
+    },
+    {
+        "bug": "if t < self.num_layers - 1:",
+        "fix": "if self.act is not None and t < self.num_layers - 1:"
+    },
+    {
+        "bug": "expected_slice = torch.tensor([9.0078, 10.1113, 14.4787])",
+        "fix": "expected_slice = torch.tensor([9.0078, 10.1113, 14.4787], device=torch_device)"
+    },
+    {
+        "bug": "x = ComplexTensor(real, imag) if is_torch_1_9_plus else torch.complex(real, imag)",
+        "fix": "x = torch.complex(real, imag) if is_torch_1_9_plus else ComplexTensor(real, imag)"
+    },
+    {
+        "bug": "level_id_invert_perm = tf.invert_permutation(level_id_perm)",
+        "fix": "level_id_invert_perm = tf.math.invert_permutation(level_id_perm)"
+    },
+    {
+        "bug": "t = tf.get_variable('temp', [1],",
+        "fix": "t = tf.get_variable('invtemp', [],"
+    },
+    {
+        "bug": "shape = (tf.shape(x)[0], ) + shape[1:]",
+        "fix": "shape = (tf.shape(x)[0], ) + tuple(shape[1:])"
+    },
+    {
+        "bug": "if x.dtype == torch.long:",
+        "fix": "if x is None:"
+    },
+    {
+        "bug": "out = self.lin(x)",
+        "fix": "out = torch.matmul(x, self.weight)"
+    },
+    {
+        "bug": "acc = tf.to_float(tf.nn.in_top_k(logits, label, 1))",
+        "fix": "acc = tf.cast(tf.nn.in_top_k(logits, label, 1), tf.float32)"
+    },
+    {
+        "bug": "tf.keras.mixed_precision.experimental.set_policy(\"float32\")",
+        "fix": "tf.keras.mixed_precision.set_global_policy(\"float32\")"
+    },
+    {
+        "bug": "tf.fill(shape_list(labels), -100),",
+        "fix": "tf.cast(tf.fill(shape_list(labels), -100), labels.dtype),"
+    },
+    {
+        "bug": "args.n_gpu = torch.cuda.device_count()",
+        "fix": "args.n_gpu = 0 if args.no_cuda else torch.cuda.device_count()"
+    },
+    {
+        "bug": "for i, file in enumerate(files):",
+        "fix": "for i, file in enumerate(itertools.chain.from_iterable(files)):"
+    },
+    {
+        "bug": "return torch.mean(1. - dice_score)",
+        "fix": "return torch.mean(torch.tensor(1.) - dice_score)"
+    },
+    {
+        "bug": "torch.distributed.init_process_group(backend=\"nccl\")",
+        "fix": "torch.distributed.init_process_group(backend=\"nccl\", timeout=self.ddp_timeout_delta)"
+    },
+    {
+        "bug": "net = tl.layers.DenseLayer(net, vocab_size, W_init=init, b_init=init, act=tf.identity, name='output')",
+        "fix": "net = tl.layers.DenseLayer(net, vocab_size, W_init=init, b_init=init, act=None, name='output')"
+    },
+    {
+        "bug": "float_terminals = tf.to_float(batch['terminals'])",
+        "fix": "float_terminals = batch['terminals'].astype(float)"
+    },
+    {
+        "bug": "return emb",
+        "fix": "return emb.to(torch.get_default_dtype())"
+    },
+    {
+        "bug": "self.permutation = torch.randperm(input_dim)",
+        "fix": "self.permutation = torch.randperm(input_dim, device='cpu').to(torch.Tensor().device)"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")"
+    },
+    {
+        "bug": "proposals = torch.randn(1000, 4).cuda()",
+        "fix": "proposals = torch.randn(1000, 4).to(device=img.device)"
+    },
+    {
+        "bug": "boolean_mask = torch.zeros(ps.size()).scatter_(-1, x.data.long(), 1)",
+        "fix": "boolean_mask = torch_zeros_like(ps.data).scatter_(-1, x.data.long(), 1)"
+    },
+    {
+        "bug": "outputs = model(**inputs, noise=torch.from_numpy(noise))",
+        "fix": "outputs = model(**inputs, noise=torch.from_numpy(noise).to(device=torch_device))"
+    },
+    {
+        "bug": "rev_vocab = [line.strip() for line in rev_vocab]",
+        "fix": "rev_vocab = [tf.compat.as_bytes(line.strip()) for line in rev_vocab]"
+    },
+    {
+        "bug": "x = tf.reshape(x, [-1, prod(shape(x)[1:])])",
+        "fix": "x = tf.reshape(x, tf.pack([-1, prod(shape(x)[1:])]))"
+    },
+    {
+        "bug": "model = DistributedDataParallel(model, device_ids=[local_rank]).to(device)",
+        "fix": "model = DistributedDataParallel(model, device_ids=[local_rank] if torch.cuda.is_available() else None).to(device)"
+    },
+    {
+        "bug": "dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg.TRAIN.IMS_PER_BATCH,",
+        "fix": "dataloader = torch.utils.data.DataLoader(dataset, batch_size=8,"
+    },
+    {
+        "bug": "return fn",
+        "fix": "return tf.autograph.experimental.do_not_convert(fn) if _HAS_AUTOGRAPH else fn"
+    },
+    {
+        "bug": "net = DenseLayer(net, n_units=10, act=tf.identity, W_init=W_init2, name='output')",
+        "fix": "net = DenseLayer(net, n_units=10, act=None, W_init=W_init2, name='output')"
+    },
+    {
+        "bug": "self.up = nn.ConvTranspose2d(in_ch, out_ch, 2, stride=2)",
+        "fix": "self.up = nn.ConvTranspose2d(in_ch//2, in_ch//2, 2, stride=2)"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:"
+    },
+    {
+        "bug": "if torch.isnan(current):",
+        "fix": "if isinstance(current, torch.Tensor) and torch.isnan(current):"
+    },
+    {
+        "bug": "return tuple(tf.convert_to_tensor(array) for array in out_arrays)",
+        "fix": "return tuple(tf.convert_to_tensor(array[0]) for array in out_arrays)"
+    },
+    {
+        "bug": "self.layernorm = nn.LayerNorm(embed_dim)",
+        "fix": "self.layernorm = nn.LayerNorm(embed_dim, eps=config.layer_norm_eps)"
+    },
+    {
+        "bug": "pred_dict[\"labels.target_len\"] = tf.constant([2]),",
+        "fix": "pred_dict[\"labels.target_len\"] = tf.constant(2),"
+    },
+    {
+        "bug": "done = torch.zeros(shape, dtype=self.loc.dtype, device=self.loc.device).byte()",
+        "fix": "done = torch.zeros(shape, dtype=self.loc.dtype, device=self.loc.device).bool()"
+    },
+    {
+        "bug": "output = tf.reshape(tf.concat(1, outputs), [-1, param.rnn_size])  # (Bxseqlen) x rnnsize",
+        "fix": "output = tf.reshape(tf.concat_v2(outputs, 1), [-1, param.rnn_size])  # (Bxseqlen) x rnnsize"
+    },
+    {
+        "bug": "return int(x.shape.get_shape()[0])",
+        "fix": "return x._dims"
+    },
+    {
+        "bug": "if isinstance(m, (torch.nn.Embedding, torch.nn.LayerNorm)):",
+        "fix": "if isinstance(m, (torch.nn.Embedding, torch.nn.LayerNorm, torch.nn.GroupNorm)):"
+    },
+    {
+        "bug": "outputs, last_state = tf.nn.rnn(cell, input_list, initial, scope='rnnlm')",
+        "fix": "outputs, last_state = tf.contrib.rnn.static_rnn(cell, input_list, initial, scope='rnnlm')"
+    },
+    {
+        "bug": "attention.data.masked_fill_(torch.bitwise_not(mask), self._mask_value)",
+        "fix": "attention.data.masked_fill_(~mask, self._mask_value)"
+    },
+    {
+        "bug": "elif self.monitor_op(current - self.min_delta, self.best_score):",
+        "fix": "elif self.monitor_op(current - self.min_delta, self.best_score.to(trainer.lightning_module.device)):"
+    },
+    {
+        "bug": "lstm = rnn.BasicLSTMCell(cell_size, state_is_tuple=True)",
+        "fix": "lstm = tf.nn.rnn_cell.LSTMCell(cell_size, state_is_tuple=True)"
+    },
+    {
+        "bug": "hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)",
+        "fix": "hidden_states = nn.functional.dropout(hidden_states, p=float(self.dropout), training=self.training)"
+    },
+    {
+        "bug": "Lffinv_pack = pack.triangular_solve(Lff, upper=False)[0]",
+        "fix": "Lffinv_pack = torch.linalg.solve_triangular(Lff, pack, upper=False)"
+    },
+    {
+        "bug": "wd_cost = tf.mul(1e-4, regularize_cost('.*/W', tf.nn.l2_loss), name='l2_regularize_loss')",
+        "fix": "wd_cost = regularize_cost('.*/W', l2_regularizer(1e-4), name='l2_regularize_loss')"
+    },
+    {
+        "bug": "g = tf.contrib.nccl.all_sum(g)",
+        "fix": "g = nccl_ops.all_sum(g)"
+    },
+    {
+        "bug": "self.vlabeldist = to_device(hs_pad, torch.from_numpy(self.labeldist))",
+        "fix": "self.vlabeldist = to_device(hs_pad[0], torch.from_numpy(self.labeldist))"
+    },
+    {
+        "bug": "nn.init.zeros_(self.decoder.weight)",
+        "fix": "nn.init.zeros_(self.decoder.bias)"
+    },
+    {
+        "bug": "[crypten.nn.Linear(l_in, l_h), crypten.nn.ReLU(), crypten.nn.Linear(l_h, l_out)]",
+        "fix": "crypten.nn.Linear(l_in, l_h), crypten.nn.ReLU(), crypten.nn.Linear(l_h, l_out)"
+    },
+    {
+        "bug": "mask = torch.ones_like(token_ids)",
+        "fix": "mask = torch.ones_like(token_ids).bool()"
+    },
+    {
+        "bug": "sd_vae_approx_model.load_state_dict(torch.load(os.path.join(paths.models_path, \"VAE-approx\", \"model.pt\")))",
+        "fix": "sd_vae_approx_model.load_state_dict(torch.load(os.path.join(paths.models_path, \"VAE-approx\", \"model.pt\"), map_location='cpu' if devices.device.type != 'cuda' else None))"
+    },
+    {
+        "bug": "torch.distributed.all_reduce(tensor=tensor, op=op)",
+        "fix": "pass"
+    },
+    {
+        "bug": "if torch.isinf(hidden_states).any() or torch.isnan(hidden_states).any():",
+        "fix": "if hidden_states.dtype == torch.float16 and (torch.isinf(hidden_states).any() or torch.isnan(hidden_states).any()):"
+    },
+    {
+        "bug": "log_probs = -torch.nn.functional.log_softmax(logits, dim=-1)",
+        "fix": "log_probs = -nn.functional.log_softmax(logits, dim=-1)"
+    },
+    {
+        "bug": "location_embeddings = torch.nn.Linear(4, embedding_size)",
+        "fix": "location_embeddings = torch.nn.Linear(4, embedding_size, bias=False)"
+    },
+    {
+        "bug": ".tf.nn.dropout(0.5 if is_training else 1.0)",
+        "fix": ".Dropout(rate=0.5 if is_training else 0.0)"
+    },
+    {
+        "bug": "valid_tokens_mask = torch.ones(tensor.size(), dtype=torch.uint8)",
+        "fix": "valid_tokens_mask = torch.ones(tensor.size(), dtype=torch.bool)"
+    },
+    {
+        "bug": "x_concat = torch.cat(x, self.src_attn(x, memory, memory, memory_mask))",
+        "fix": "x_concat = torch.cat((x, self.src_attn(x, memory, memory, memory_mask)), dim=-1)"
+    },
+    {
+        "bug": "return torch.Size([self.max_sequence_length, self.transformer.module.config.hidden_size])",
+        "fix": "return torch.Size([self.max_sequence_length - 2, self.transformer.module.config.hidden_size])"
+    },
+    {
+        "bug": "if tf.math.reduce_any(labels == -1).numpy() is True:",
+        "fix": "if tf.math.reduce_any(labels == -1):"
+    },
+    {
+        "bug": "torch.nn.Linear(odim * (((idim - 1) // 2 - 1) // 3), odim),",
+        "fix": "torch.nn.Linear(odim * (((idim - 1) // 2 - 2) // 3), odim),"
+    },
+    {
+        "bug": ".tf.nn.dropout(keep_prob) \\",
+        "fix": ".Dropout(rate=drop_rate) \\"
+    },
+    {
+        "bug": "tf.keras.backend.set_value(model.optimizer.lr, lr * hvd.size())",
+        "fix": "opt.lr.assign(lr * hvd.size())"
+    },
+    {
+        "bug": "zs = torch.zeros(batch_shape + [1, 1], device=vector.device)",
+        "fix": "zs = torch.zeros(batch_shape + [1, 1], device=vector.device, dtype=vector.dtype)"
+    },
+    {
+        "bug": "return np.finfo(torch.empty(torch.Size(), dtype=tensor.dtype).numpy().dtype)",
+        "fix": "return np.finfo(torch.empty(torch.Size(), dtype=tensor.dtype, device=\"cpu\").numpy().dtype)"
+    },
+    {
+        "bug": "\"var_gnorm\": tf.global_norm(policy.model.trainable_variables()),",
+        "fix": "\"var_gnorm\": tf.linalg.global_norm(policy.model.trainable_variables()),"
+    },
+    {
+        "bug": "w = nn.Softmax(dim=-1)(w)",
+        "fix": "w = nn.functional.softmax(w, dim=-1)"
+    },
+    {
+        "bug": "F.linear(x_int, weight=self.weight_integer, bias=self.bias_integer) * bias_scaling_factor,",
+        "fix": "nn.functional.linear(x_int, weight=self.weight_integer, bias=self.bias_integer) * bias_scaling_factor,"
+    },
+    {
+        "bug": "ess = torch.exp(-logsumexp(2*log_w_norm, 0))",
+        "fix": "ess = torch.exp(-torch.logsumexp(2*log_w_norm, 0))"
+    },
+    {
+        "bug": "tensor_in = linear.linear(tensor_in, n_units, True)",
+        "fix": "tensor_in = linear(tensor_in, n_units, True)"
+    },
+    {
+        "bug": "device=torch.cuda.current_device())",
+        "fix": "device=get_accelerator().current_device_name())"
+    },
+    {
+        "bug": "return tf.concat(1, [next_input, attention_context])",
+        "fix": "return tf.concat_v2([next_input, attention_context], 1)"
+    },
+    {
+        "bug": "causal_mask = self.bias[:, :, key_length - query_length : key_length, :key_length].to(torch.bool)",
+        "fix": "causal_mask = self.bias[:, :, key_length - query_length : key_length, :key_length]"
+    },
+    {
+        "bug": "W, _ = torch.qr(torch.randn(channels, channels))",
+        "fix": "W, _ = torch.linalg.qr(torch.randn(channels, channels))"
+    },
+    {
+        "bug": "n = tl.layers.SpatialTransformer2dAffineLayer(nin, theta_layer=nt, out_size=[40, 40], name='spatial')",
+        "fix": "n = tl.layers.SpatialTransformer2dAffineLayer(nin, theta_layer=nt, out_size=(40, 40), name='spatial')"
+    },
+    {
+        "bug": "score += p2c_att / scale",
+        "fix": "score += p2c_att / torch.tensor(scale, dtype=p2c_att.dtype)"
+    },
+    {
+        "bug": "self.lambdalayer = tl.layers.ElementwiseLambda(customize_func, fn_weights=[], fn_args={'foo': 1024})",
+        "fix": "self.lambdalayer = tl.layers.ElementwiseLambda(customize_func, fn_args={'foo': 1024})"
+    },
+    {
+        "bug": "text=torch.randint(0, vocab_size + 1, [2, 4], dtype=torch.long),",
+        "fix": "text=torch.randint(2, 4, [2, 4], dtype=torch.long),"
+    },
+    {
+        "bug": "if isinstance(input.data, torch.cuda.FloatTensor) and self.ngpu > 1:",
+        "fix": "if isinstance(input.data, torch.cuda.FloatTensor) and self.ngpu > =1:"
+    },
+    {
+        "bug": "pix_to_face_padded = -torch.ones_like(pix_to_face_frontface)",
+        "fix": "pix_to_face_padded = -(torch.ones_like(pix_to_face_frontface))"
+    },
+    {
+        "bug": "if version.parse(tf.keras.__version__) < version.parse(\"2.11\"):",
+        "fix": "if version.parse(tf.keras.__version__.replace(\"-tf\", \"+tf\")) < version.parse(\"2.11\"):"
+    },
+    {
+        "bug": "model.to(\"cuda:0\")",
+        "fix": "model.to(\"cuda\")"
+    },
+    {
+        "bug": "return torch.stack(torch.meshgrid([ys, xs])).view(1, 2, -1)",
+        "fix": "return torch.stack(torch.meshgrid([ys, xs])).view(1, 2, -1)[:, (1, 0), :]"
+    },
+    {
+        "bug": "net.load_state_dict(torch.load(model_weight_path, map_location=device))",
+        "fix": "net.load_state_dict(torch.load(model_weight_path, map_location='cpu'))"
+    },
+    {
+        "bug": "Lf = torch.cholesky(torch.flip(P, (-2, -1)))",
+        "fix": "Lf = torch.linalg.cholesky(torch.flip(P, (-2, -1)))"
+    },
+    {
+        "bug": "return [tf.identity(input=estimated_diff) for estimated_diff in estimated_diffs]",
+        "fix": "return [estimated_diff + 0.0 for estimated_diff in estimated_diffs]"
+    },
+    {
+        "bug": "return ret",
+        "fix": "return tf.cast(ret, dtype=tf.int64)"
+    },
+    {
+        "bug": "if isinstance(x, (torch.Tensor, tf.Tensor, jnp.numpy.DeviceArray, numpy.ndarray)):",
+        "fix": "if isinstance(x, (torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray)):"
+    },
+    {
+        "bug": "share.random_(-field, field)",
+        "fix": "share.random_(int(-field/2), int(field/2)-1)"
+    },
+    {
+        "bug": "return torch_multinomial(input.cpu(), num_samples, replacement).cuda()",
+        "fix": "return torch.multinomial(input.cpu(), num_samples, replacement).cuda(input.get_device())"
+    },
+    {
+        "bug": "meta_objs.update(torch=torch.__version__)",
+        "fix": "meta_objs.update(torch=str(torch.__version__))"
+    },
+    {
+        "bug": "return hist, torch.zeros_like(hist, dtype=hist.dtype, device=device)",
+        "fix": "return hist, torch.zeros_like(hist, dtype=hist.dtype, device=hist.device)"
+    },
+    {
+        "bug": "return outputs * mask.unsqueeze(dim=-1).float()",
+        "fix": "return outputs * mask.unsqueeze(dim=-1)"
+    },
+    {
+        "bug": "return torch.randint(lower_bound, higher_bound+1, shape, dtype=dtype, device=device)",
+        "fix": "return torch.randint(lower_bound.long(), higher_bound.long() + 1, shape, dtype=dtype, device=device)"
+    },
+    {
+        "bug": "dropout_grads = torch._masked_scale(matmul2_dgrad1, dropout_mask, dropout_prob_t[0])",
+        "fix": "dropout_grads = torch._masked_scale(matmul2_dgrad1, dropout_mask, 1.0/(1.0-dropout_prob_t[0]))"
+    },
+    {
+        "bug": "p = next(self.model.parameters()) if self.pt else torch.zeros(1)  # for device and type",
+        "fix": "p = next(self.model.parameters()) if self.pt else torch.zeros(1, device=self.model.device)  # for device, type"
+    },
+    {
+        "bug": "assert_gte0 = tf.debugging.assert_greater_equal(shifted_input_ids, tf.constant(0))",
+        "fix": "assert_gte0 = tf.debugging.assert_greater_equal(shifted_input_ids, tf.constant(0, dtype=input_ids.dtype))"
+    },
+    {
+        "bug": "return torch.range(start, stop, step=step, dtype=dtype, device=dev)",
+        "fix": "return torch.arange(start, stop, step=step, dtype=dtype, device=dev)"
+    },
+    {
+        "bug": "padded_tensor = F.pad(tensor, padding_side, value=pad_value)",
+        "fix": "padded_tensor = nn.functional.pad(tensor, padding_side, value=pad_value)"
+    },
+    {
+        "bug": "\"input_ids\": tf.TensorSpec((None, None), tf.int32, name=\"input_ids\"),",
+        "fix": "\"input_ids\": tf.TensorSpec((None, None), tf.int64, name=\"input_ids\"),"
+    },
+    {
+        "bug": "elmo_representations = self._elmo(elmo_tokens)[\"elmo_representations\"]",
+        "fix": "elmo_representations = self._elmo(elmo_tokens[\"tokens\"])[\"elmo_representations\"]"
+    },
+    {
+        "bug": "value = (indices, value.data, value.shape)",
+        "fix": "value = (indices, sparse_coo.data, sparse_coo.shape)"
+    },
+    {
+        "bug": "plot.plot_multi_head_attention(data, attn_dict, \"\", savefn=_savefn)",
+        "fix": "plot.plot_multi_head_attention(data, uttid_list, attn_dict, \"\", savefn=_savefn)"
+    },
+    {
+        "bug": "attn_weights = torch.where(causal_mask, attn_weights, mask_value)",
+        "fix": "attn_weights = torch.where(causal_mask, attn_weights.to(attn_weights.dtype), mask_value)"
+    },
+    {
+        "bug": "mask = torch.from_numpy(numpy_mask)",
+        "fix": "mask = torch.from_numpy(numpy_mask).bool()"
+    },
+    {
+        "bug": "self.assertTrue(abs(input_np.sum() - input_tf.numpy().sum()) < 1e-2)",
+        "fix": "self.assertTrue(abs(input_np.astype(np.float32).sum() - input_tf.numpy().sum()) < 1e-2)"
+    },
+    {
+        "bug": "self.timesteps = torch.linspace(1, sampling_eps, num_inference_steps)",
+        "fix": "self.timesteps = torch.linspace(1, sampling_eps, num_inference_steps, device=device)"
+    },
+    {
+        "bug": "loss = torch.clamp(1. - ssim_map, min=0, max=1) / 2.",
+        "fix": "loss = torch.clamp(torch.tensor(1.) - ssim_map, min=0, max=1) / 2."
+    },
+    {
+        "bug": "label_loss = label_loss * (1. / config.RPN_BATCH_PER_IM)",
+        "fix": "label_loss = tf.reduce_sum(label_loss) * (1. / config.RPN_BATCH_PER_IM)"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)"
+    },
+    {
+        "bug": "self.drop = Dropout(args['dropout'])",
+        "fix": "self.drop = nn.Dropout(args['dropout'])"
+    },
+    {
+        "bug": "array_index_grid = torch.meshgrid(*dim_ranges)",
+        "fix": "array_index_grid = meshgrid(*dim_ranges, indexing=\"ij\")"
+    },
+    {
+        "bug": "attn_weights = nn.Softmax(dim=-1)(attn_weights)",
+        "fix": "attn_weights = nn.functional.softmax(attn_weights, dim=-1)"
+    },
+    {
+        "bug": "self.sess.run(tf.global_variables_initializer())",
+        "fix": "self.sess.run(tf1.global_variables_initializer())"
+    },
+    {
+        "bug": "if self.args.n_gpu > 1:",
+        "fix": "if isinstance(model, nn.DataParallel):"
+    },
+    {
+        "bug": "return tf.argmax(new_logits - tf.log(-tf.log(u)), axis=-1)",
+        "fix": "return tf.argmax(new_logits - tf.log(-1*tf.log(u)), axis=-1)"
+    },
+    {
+        "bug": "kernel_initializer = tf.keras.initializers.VarianceScaling(2.0)",
+        "fix": "kernel_initializer = tf.keras.initializers.VarianceScaling(2.0, distribution='untruncated_normal')"
+    },
+    {
+        "bug": "lengths = torch.LongTensor([t.numel() for t in tokens])",
+        "fix": "lengths = [t.numel() for t in tokens]"
+    },
+    {
+        "bug": "stop = xm.mesh_reduce(\"stop_signal\", stop, torch.cat)",
+        "fix": "stop = xm.mesh_reduce(\"stop_signal\", stop, sum)"
+    },
+    {
+        "bug": "self.classifier = nn.Linear(config.hidden_size, self.config.num_labels)",
+        "fix": "self.classifier = nn.Linear(config.hidden_size, config.num_labels)"
+    },
+    {
+        "bug": "zs = torch.zeros(batch_shape + [1, 1])",
+        "fix": "zs = torch.zeros(batch_shape + [1, 1], device=vector.device)"
+    },
+    {
+        "bug": "att_ws = torch.stack([aw[-1] for aw in att_ws], dim=1).cpu().numpy()",
+        "fix": "att_ws = torch.stack([aw[idx] for idx, aw in enumerate(att_ws)], dim=1).cpu().numpy()"
+    },
+    {
+        "bug": "super(HestonModel, self).__init__(2, _drift_fn, _vol_fn, dtype, name)",
+        "fix": "super(HestonModel, self).__init__(2, _drift_fn, _vol_fn, self._dtype, name)"
+    },
+    {
+        "bug": "0,",
+        "fix": "torch.tensor(0),"
+    },
+    {
+        "bug": "true_values = tf.math.exp(final_t + grid[0])",
+        "fix": "true_values = tf.expand_dims(tf.math.exp(final_t + grid[0]), axis=0)"
+    },
+    {
+        "bug": "sequence_lengths = torch.ne(input_ids, self.config.pad_token_id).sum(-1) - 1",
+        "fix": "sequence_lengths = (torch.ne(input_ids, self.config.pad_token_id).sum(-1) - 1).to(logits.device)"
+    },
+    {
+        "bug": "locs = pyro.sample('locs', dist.Normal(0, 10).reshape([K], extra_event_dims=1))",
+        "fix": "locs = pyro.sample('locs', dist.Normal(0, 10).expand_by([K]).independent(1))"
+    },
+    {
+        "bug": "new_item[mask] = item[torch.from_numpy(mask)]",
+        "fix": "new_item[mask] = item[torch.from_numpy(mask.astype(np.uint8))]"
+    },
+    {
+        "bug": "return torch.tensor(coal_times)",
+        "fix": "return proto.new_tensor(coal_times)"
+    },
+    {
+        "bug": "torch.arange(gold_labels.numel()).long(), gold_labels",
+        "fix": "torch.arange(gold_labels.numel(), device=gold_labels.device).long(), gold_labels"
+    },
+    {
+        "bug": "loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, label)",
+        "fix": "loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=label)"
+    },
+    {
+        "bug": "return tf.cond(pred=pred, true_fn=true_fn, false_fn=false_fn)",
+        "fix": "return tf.fill(dims=shape, value=tf.cond(pred=pred, true_fn=true_fn, false_fn=false_fn))"
+    },
+    {
+        "bug": "lut = torch.cat([torch.zeros(1, device=lut.device), lut[:-1]])",
+        "fix": "lut = torch.cat([torch.zeros(1, device=lut.device, dtype=lut.dtype), lut[:-1]])"
+    },
+    {
+        "bug": "attn_mask = self.get_attn_mask(height_pad, width_pad)",
+        "fix": "attn_mask = self.get_attn_mask(height_pad, width_pad, dtype=hidden_states.dtype)"
+    },
+    {
+        "bug": "E_loss = torch.mean(lam1 * mse + lam2 * D_reg)",
+        "fix": "E_loss = torch.mean(lam1 * mse + lam2 * log(D_reg))"
+    },
+    {
+        "bug": "token_type_ids = torch.zeros(input_shape, dtype=torch.long, device=self.input_embeds.device)",
+        "fix": "token_type_ids = torch.zeros(input_shape, dtype=torch.long, device=self.position_ids.device)"
+    },
+    {
+        "bug": "return tf.no_op()",
+        "fix": "return util.no_operation()"
+    },
+    {
+        "bug": "Luu = Kuu.cholesky()",
+        "fix": "Luu = torch.linalg.cholesky(Kuu)"
+    }
+]

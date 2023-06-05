@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flask App</title>
+    <style>
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 20px;
+
+        }
+        .rejected {
+            color: red;
+        }
+        .accepted {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    {% if item.label == "no" %}
+    <h1 class="rejected">Rejected</h1>
+    {% elif item.label == "yes" %}
+        <h1 class="accepted">Accepted</h1>
+    {% endif %}
+    <h1>JSON Data</h1>
+    <p>{{ item.comments|safe }}</p>
+
+    <div style="display: flex; flex-direction: row;">
+        <form method="POST" action="{{ url_for('accept_item', item_id=index) }}">
+            <input type="text" name="comments_accept" placeholder="Enter comments...">
+            <button type="submit">Accept</button>
+          </form>
+        <form method="POST" action="{{ url_for('reject_item', item_id=index) }}">
+            <input type="text" name="comments_reject" placeholder="Enter comments...">
+            <button type="submit">Reject</button>
+        </form>
+        
+        {% if index > 0 %}
+        <form method="GET" action="{{ url_for('review', index=index-1) }}">
+            <button type="submit">Previous</button>
+        </form>
+        {% endif %}
+        {% if index + 1 < len_data %} 
+        <form method="GET" action="{{ url_for('review', index=index+1) }}">
+            <button type="submit">Next</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- <p>{{ item.commit_message|safe }}</p>
+    <p>{{ item.commit_message|replace('\n', '<br>')|safe }}</p>
+    <p>{{ item.core_change}}</p>
+    <pre>{{ json_data }}</pre> -->
+
+    <div style="display: flex;">
+        <div style="width: 50%;">
+            <h3>Commit Message:</h3>
+            <p>{{ item.commit_message|replace('\n', '<br>')|safe }}</p>
+        </div>
+        <div style="width: 50%;">
+            <pre>{{ json_data|safe }}</pre>
+        </div>
+    </div>
+
+</body>
+
+</html>

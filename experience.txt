@@ -1,0 +1,188 @@
+
+### categoried note:
+
+based on the 1k manual labeled Moshi file:
+
+I want to document the fix with multiple categories:
+
+action:
+
+add API call 
+    new API call
+    wrapper
+    
+remove API call
+update API call (use proper API)
+
+motivation:
+    wrong parameter:
+        math fix
+        shape fix
+        wrong value
+
+    wrong state
+    wrong return value(?)
+
+    missing null check
+    missing try catch
+    missing condition check:
+        type check(overlap)
+        state check(overlap)
+
+    version issue:
+        deprecated
+        new API
+        refacotr
+    resource issue:
+        memory
+        device
+
+    type issue:
+        add constraint
+        convert to type:
+            call API
+            add wrapper
+        add type check
+    math bug:
+        wrong value
+        devide by zero
+        wrong shape
+
+automatic filter:
+
+check "depreca" keywords, very likely to be  API update for deprecation
+check "refactor" keywords for refacotr
+check "type" keywords for type issue
+check "test" keywords for test related issue
+check "return" keywords for return value issue
+check "cuda" keywords for device issue
+check "device" keywords for device issue
+check "->" keywords for add type constraint
+
+#####
+
+manual process:
+
+manually label 1k commits on merged_split_hunk_AST_filter_manual.json , result is merged_split_hunk_AST_filter_manual_1k_labeled_moshi_05_23.json
+review all the accepted commits  comments and pick the incorrect label, result override to merged_split_hunk_AST_filter_manual.json
+review all the rejectted commits  comments and pick the incorrect label, result override to merged_split_hunk_AST_filter_manual.json
+check similar commit by core change (straing that contains only + and - lines) and check consistency, run 10_check_duplicate_consistent.py to get deduplicate json,result merged_split_hunk_AST_filter_manual_deduplica.json 
+
+
+
+#####################
+
+according to the paper: 
+A Systematic Evaluation of Static API-Misuse Detectors
+
+here are list of 13 types of API misuse:
+
+1. Argument misuse: incorrect or invalid arguments passed to an API function.
+2. Return value misuse: incorrect or invalid return values from an API function.
+3. State misuse: incorrect or invalid state of an object or system when calling an API function.
+4. Control flow misuse: incorrect or invalid control flow in the use of an API function.
+5. Exception handling misuse: incorrect or invalid exception handling in the use of an API function.
+6. Resource management misuse: incorrect or invalid management of resources (e.g., memory, files) used by an API function.
+7. Interface misuse: incorrect or invalid use of the interface provided by an API function.
+8. Type misuse: incorrect or invalid data types used in the parameters, return values, or variables associated with an API function.
+9. Naming and documentation misuse: incorrect or inconsistent naming and documentation of APIs and their components.
+10. Semantic constraint violation: violation of semantic constraints imposed by the design and specification of APIs.
+11. Security constraint violation: violation of security constraints imposed by the design and specification of APIs.
+12. Performance constraint violation: violation of performance constraints imposed by the design and specification of APIs.
+13. Compatibility constraint violation: violation of compatibility constraints imposed by the design and specification of APIs.
+14. Hardware constraint violation: violation of hardware constraints imposed by the design and specification of APIs.
+15. hardware consistency constraint violation: violation of hardware consistency constraints imposed by the design and specification of APIs.
+15. tensor shape constraint violation: violation of tensor shape constraints imposed by the design and specification of APIs.
+16. distributed related misuse: API behavior is not compatible with distributed training.
+17. mathmatical API misuse: API behavior is not compatible with mathmatical operation.
+
+
+Each type is further elaborated with examples in Section 3.1 (page 4) of the paper if you need more information about them!
+
+
+
+I want to check API misuse
+negative toekn in commit:
+doc enable
+
+possitive:
+fix, update
+
+
+current progress 
+
+filter_bu_fix.json : 0- 50247,  99483-end
+
+
+current type:
+
+add codition for hardware switch GPU/CPU: 
+806731155aa059ce4f6297d75f9dbfb2f0dad7ad
+
+add hardware support:
+
+fix divid by sero problem:
+
+fix type problem:
+
+check if model is compatable with the library:
+a19f102c65b943a668616df5f3b46cfb4376e04c
+
+fix parameter problem:
+    forget to add learning rate:
+    aa756cec4359aff3df1d9abb68dc6e6e92920e0c
+
+add parameters to prevent harware problem:
+274cc0630286d598e14860cfda91752d0840f712
+
+fix the null pointer exception:( I think this is the easiest to ping point)
+90e5b05a2d2ff3e1f59328bc284aeff5d4abe951
+
+fix typo:
+dc55a996ea0232fec50a55b39fc24078b1b37b43
+
+fix bug caused by the precision issue:
+ed8236fa188c81426fba004ea198b05f0c1c4e38
+
+fix deprecated warning:(hard to say if its a bug)
+
+fix shape error by parameter change:
+    swap parameters related to shape:
+    3b2cf7b0bc152d826f74a90f5f6b922a8b9f7b21
+
+fix distributes system training bug:
+    fix counter issue on distributed learning
+    56cd54ad242b27cb43b4abcfb007d3be42b39877
+
+calling wrong API causing bug:
+    7e34478a90513a680611a89025b4b592e6289dcc
+
+add conditiong check on harware:
+    07fc4b7724f48a7fe555dcf696881525105af600
+
+wrong API, missing brakets:
+    323c266cfe65f16f522092f1bc84998e04ed7f94
+
+is this a misuse? or just update?
+    211055216792cbb52ab6d355f698c194f9c55efb
+
+reduce randomness and improve reproducability
+    9b6385488617ee99188b60c0525cbe4ec7e8f2a0
+typo
+    b7f0ce5b39acc2e0d879c55c56b374738be7c027
+mathmatical bug caused by wrong api
+    e138d6ac2a76c7ca969baa923a89c189478171e4
+
+add eps to avoid devide by sero problem
+    68badf3b9497b27ede89cb586770c3b14aba31de
+
+missing parameter
+    1c13d02d700ebcd053a560754f22e4247257a344
+
+device do not support certain API
+    3910ad033074367f6abfe0001562db725a75cb73
+
+math bug , wrong equation
+    92f122e0df7e233f3a8b7873c7294155afbbf852
+
+

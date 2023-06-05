@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask App</title>
+</head>
+<body>
+    <h1>JSON Data</h1>
+    <ul>
+    {% for obj in data %}
+        <li>
+            {% for key, value in obj.items() %}
+                {{ key }}: {{ value }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

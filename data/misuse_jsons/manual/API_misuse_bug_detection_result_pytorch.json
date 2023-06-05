@@ -1,0 +1,297 @@
+[
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\__init__.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\handle.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\_initialize.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\contrib\\test\\layer_norm\\test_fast_layer_norm.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\torch_utils\\recursive_op.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\gan_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\uasr_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\distributed.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\types.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\pytorch\\strategies\\ddp.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\tests\\tests_pytorch\\strategies\\test_ddp_strategy_with_comm_hook.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\beginner_source\\introyt\\autogradyt_tutorial.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\model_parallel_tutorial.py"
+    },
+    {
+        "bug": "torch.cuda.synchronize()",
+        "fix": "get_accelerator().synchronize()",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\nvfuser_intro_tutorial.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\pipeline_tutorial.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\save_load_across_devices.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\tuning_guide.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\__init__.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\handle.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\_initialize.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\contrib\\test\\layer_norm\\test_fast_layer_norm.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\handle.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\amp\\_initialize.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\contrib\\test\\layer_norm\\test_fast_layer_norm.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\contrib\\test\\layer_norm\\test_fast_layer_norm.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\apex\\apex\\contrib\\test\\layer_norm\\test_fast_layer_norm.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\torch_utils\\recursive_op.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\gan_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\uasr_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\torch_utils\\recursive_op.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\gan_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\espnet\\espnet2\\train\\uasr_trainer.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\distributed.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\types.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\pytorch\\strategies\\ddp.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\tests\\tests_pytorch\\strategies\\test_ddp_strategy_with_comm_hook.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\distributed.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\types.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\pytorch\\strategies\\ddp.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\distributed.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\types.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\pytorch\\strategies\\ddp.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\distributed.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\fabric\\utilities\\types.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\src\\lightning\\pytorch\\strategies\\ddp.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\tests\\tests_pytorch\\strategies\\test_ddp_strategy_with_comm_hook.py"
+    },
+    {
+        "bug": "if torch.distributed.is_available():",
+        "fix": "if torch.distributed.is_available() and sys.platform not in ['win32', 'cygwin']:",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\lightning\\tests\\tests_pytorch\\strategies\\test_ddp_strategy_with_comm_hook.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\beginner_source\\introyt\\autogradyt_tutorial.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\model_parallel_tutorial.py"
+    },
+    {
+        "bug": "torch.cuda.synchronize()",
+        "fix": "get_accelerator().synchronize()",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\nvfuser_intro_tutorial.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\intermediate_source\\pipeline_tutorial.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\save_load_across_devices.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\tuning_guide.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\beginner_source\\introyt\\autogradyt_tutorial.py"
+    },
+    {
+        "bug": "device = torch.device(\"cuda\")",
+        "fix": "device = torch.device(f\"cuda:{gpu_id}\")",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\save_load_across_devices.py"
+    },
+    {
+        "bug": "optimizer.zero_grad()",
+        "fix": "optimizer.zero_grad(set_to_none=args.set_grads_to_none)",
+        "file_path": "C:\\@code\\APIMISUSE\\data\\repo_pytorch\\tutorials\\recipes_source\\recipes\\tuning_guide.py"
+    }
+]

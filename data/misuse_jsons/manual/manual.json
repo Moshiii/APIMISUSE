@@ -1,0 +1,2370 @@
+[
+    {
+        "commit_hash": "ab4f7b5c3e820ab84fa0bcbf746e75aa47919878",
+        "index": "0cab01c6..7d9a7af2 100644",
+        "core_change": [
+            "+        # This function is only called after training. So load model on the CPU.",
+            "+        device = torch.device(\"cpu\")",
+            "-            self._ddp_wrapped_model.load_state_dict(torch.load(path))",
+            "+            self._ddp_wrapped_model.load_state_dict(torch.load(path, map_location=device))",
+            "-            self._pytorch_model.load_state_dict(torch.load(path))",
+            "+            self._pytorch_model.load_state_dict(torch.load(path, map_location=device))"
+        ],
+        "commit_message": "Fix model loading on GPU post training (#5518)\n\n* Fixes #5511: Load model on CPU post training to save GPU memory\n\n* Edited Changelog\n"
+    },
+    {
+        "commit_hash": "b72bbfc9680d4410e0ce7a48a233f834593d9e4a",
+        "index": "26d129f5..d2224294 100644",
+        "core_change": [
+            "-            backpointer = restricted_beam_indices // self.per_node_beam_size",
+            "+            backpointer = torch.divide(",
+            "+                restricted_beam_indices, self.per_node_beam_size, rounding_mode=\"trunc\"",
+            "+            )",
+            "-                    constraint_states[i], restricted_predicted_classes",
+            "+                    constraint_states[i], restricted_predicted_classes, last_backpointer=backpointer"
+        ],
+        "commit_message": "fix constraint bug in beam search, clean up tests (#5328)\n\n* fix constraint bug in beam search, clean up tests\n\n* fix linting error\n\nCo-authored-by: Dirk Groeneveld <dirkg@allenai.org>\n"
+    },
+    {
+        "commit_hash": "56e1f49df918cff52707d64dcf894885250aaf89",
+        "index": "c40e1935..7b2cb43f 100644",
+        "core_change": [
+            "-            mask = torch.ones(*tags.size(), dtype=torch.bool)",
+            "+            mask = torch.ones(*tags.size(), dtype=torch.bool, device=inputs.device)"
+        ],
+        "commit_message": "Fix training Conditional Random Fields on GPU (#5313) (#5315)\n\nCo-authored-by: Pete <petew@allenai.org>\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "67aad524..a1c5980e 100644",
+        "core_change": [
+            "-            noise = torch.randn(output.shape).to(output.device) * stdev * scale",
+            "+            noise = torch.randn(output.shape, device=output.device) * stdev * scale"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "c500fd2a..88e82975 100644",
+        "core_change": [
+            "-            return torch.tensor(0.0).to(embeddings.device)",
+            "+            return torch.tensor(0.0, device=embeddings.device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "24154074..8b1a48f2 100644",
+        "core_change": [
+            "-                _precision_matches = torch.tensor(precision_matches).to(device)",
+            "-                _precision_totals = torch.tensor(precision_totals).to(device)",
+            "+                _precision_matches = torch.tensor(precision_matches, device=device)",
+            "+                _precision_totals = torch.tensor(precision_totals, device=device)",
+            "-            prediction_lengths = torch.tensor(_prediction_lengths).to(device)",
+            "-            reference_lengths = torch.tensor(_reference_lengths).to(device)",
+            "+            prediction_lengths = torch.tensor(_prediction_lengths, device=device)",
+            "+            reference_lengths = torch.tensor(_reference_lengths, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "180810d6..8877f4f2 100644",
+        "core_change": [
+            "-        #     delta_mean_prediction = torch.tensor(delta_mean_prediction).to(device)",
+            "-        #     delta_mean_label = torch.tensor(delta_mean_label).to(device)",
+            "-        #     delta_co_moment = torch.tensor(delta_co_moment).to(device)",
+            "-        #     _total_count = torch.tensor(updated_count).to(device)",
+            "+        #     delta_mean_prediction = torch.tensor(delta_mean_prediction, device=device)",
+            "+        #     delta_mean_label = torch.tensor(delta_mean_label, device=device)",
+            "+        #     delta_co_moment = torch.tensor(delta_co_moment, device=device)",
+            "+        #     _total_count = torch.tensor(updated_count, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "fe326e47..997d72db 100644",
+        "core_change": [
+            "-            count = torch.tensor(_count).to(device)",
+            "+            count = torch.tensor(_count, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "5bb70dc9..beb0bd95 100644",
+        "core_change": [
+            "-            true_positive_sum = torch.zeros(num_classes, device=predictions.device)",
+            "+            true_positive_sum = torch.zeros(num_classes, device=device)",
+            "-            pred_sum = torch.zeros(num_classes, device=predictions.device)",
+            "+            pred_sum = torch.zeros(num_classes, device=device)",
+            "-            true_positive_sum = torch.tensor(true_positive_sum).to(device)",
+            "-            pred_sum = torch.tensor(pred_sum).to(device)",
+            "-            true_sum = torch.tensor(true_sum).to(device)",
+            "+            true_positive_sum = torch.tensor(true_positive_sum, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "ca925672..c95a757e 100644",
+        "core_change": [
+            "-            true_positive_sum = torch.tensor(true_positive_sum).to(device)",
+            "-            pred_sum = torch.tensor(pred_sum).to(device)",
+            "-            true_sum = torch.tensor(true_sum).to(device)",
+            "+            true_positive_sum = torch.tensor(true_positive_sum, device=device)",
+            "+            pred_sum = torch.tensor(pred_sum, device=device)",
+            "+            true_sum = torch.tensor(true_sum, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "d10de4d8..cceaa6ea 100644",
+        "core_change": [
+            "-            _total_f1 = torch.tensor(total_f1).to(device)",
+            "+            _total_f1 = torch.tensor(total_f1, device=device)",
+            "-            _total_recall = torch.tensor(total_recall).to(device)",
+            "-            _total_precision = torch.tensor(total_precision).to(device)",
+            "-            _total_f1 = torch.tensor(total_f1).to(device)",
+            "+            _total_recall = torch.tensor(total_recall, device=device)",
+            "+            _total_precision = torch.tensor(total_precision, device=device)",
+            "+            _total_f1 = torch.tensor(total_f1, device=device)",
+            "-            _sequence_count = torch.tensor(sequence_count).to(device)",
+            "+            _sequence_count = torch.tensor(sequence_count, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "cec92098641d3f4c395cd51d84ba93b691d1cdf3",
+        "index": "a2963e23..46fdde6b 100644",
+        "core_change": [
+            "-            correct_count = torch.tensor(_correct_count).to(device)",
+            "-            total_count = torch.tensor(_total_count).to(device)",
+            "+            correct_count = torch.tensor(_correct_count, device=device)",
+            "+            total_count = torch.tensor(_total_count, device=device)"
+        ],
+        "commit_message": "Several micro optimizations (#4833)\n\n* benchmark transfers\n\n* create tensors directl on device when possible\n\n* fix\n"
+    },
+    {
+        "commit_hash": "711afaa7720ebaba4a3739c1753c02568039993d",
+        "index": "3d8a6570..d8ad5d69 100644",
+        "core_change": [
+            "-        orig_embeddings = span_embeddings_sum / span_embeddings_len",
+            "+        orig_embeddings = span_embeddings_sum / torch.clamp_min(span_embeddings_len, 1)"
+        ],
+        "commit_message": "Fix division by zero when there are zero-length spans in MismatchedEmbedder. (#4615)\n\n* Implment MattG's fix for NaN gradients in MismatchedEmbedder.\n\nFix `clamp_min` on embeddings.\n\nImplment MattG's fix for NaN gradients in MismatchedEmbedder.\n\n* Fix NaN gradients caused by weird tokens in MismatchedEmbedder.\n\nFixed division by zero error when there are zero-length spans in the input to a\nmismatched embedder.\n\n* Add changelog message.\n\n* Re-run `black` to get code formatting right.\n\n* combine fixed sections after merging with master\n\nCo-authored-by: Matt Gardner <mattg@allenai.org>\n"
+    },
+    {
+        "commit_hash": "593dd8cf58fcd2fc0ba48aa81724cd82b904f7cf",
+        "index": "e69b18cb..6ed94b25 100644",
+        "core_change": [
+            "+    tiny_value_of_dtype,",
+            "-    vector1: torch.Tensor, vector2: torch.Tensor, weight: torch.Tensor, eps: float = 1e-8",
+            "+    vector1: torch.Tensor, vector2: torch.Tensor, weight: torch.Tensor",
+            "-    eps : `float` optional, (default = 1e-8)",
+            "-        A small value to avoid zero division problem",
+            "-    return (mul_result / norm_value.clamp(min=eps)).permute(0, 2, 3, 1)",
+            "+    return (mul_result / norm_value.clamp(min=tiny_value_of_dtype(norm_value.dtype))).permute(",
+            "+        0, 2, 3, 1",
+            "+    )"
+        ],
+        "commit_message": "Fix special values overflow/underflow for amp (#3901)\n\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "593dd8cf58fcd2fc0ba48aa81724cd82b904f7cf",
+        "index": "47eeda0d..c807d0b1 100644",
+        "core_change": [
+            "-    def __init__(self, size: int, gamma0: float = 0.1, eps: float = 1e-6) -> None:",
+            "+    def __init__(self, size: int, gamma0: float = 0.1) -> None:",
+            "-        self.eps = eps",
+            "-        std = torch.sqrt((masked_centered * masked_centered).sum() / num_elements + self.eps)",
+            "-        return self.gamma * (tensor - mean) / (std + self.eps) + self.beta",
+            "+        std = torch.sqrt(",
+            "+            (masked_centered * masked_centered).sum() / num_elements",
+            "+            + util.tiny_value_of_dtype(tensor.dtype)",
+            "+        )",
+            "+        return (",
+            "+            self.gamma * (tensor - mean) / (std + util.tiny_value_of_dtype(tensor.dtype))",
+            "+            + self.beta",
+            "+        )"
+        ],
+        "commit_message": "Fix special values overflow/underflow for amp (#3901)\n\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "1ef8ce27..7a4258a7 100644",
+        "core_change": [
+            "-        mask : `torch.LongTensor`",
+            "+        mask : `torch.BoolTensor`",
+            "-                metric(class_probabilities, tags, mask.float())",
+            "+                metric(class_probabilities, tags, mask)",
+            "-                self._f1_metric(class_probabilities, tags, mask.float())",
+            "+                self._f1_metric(class_probabilities, tags, mask)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "24a181cd..8ad97de8 100644",
+        "core_change": [
+            "-        self, token_embeddings: torch.Tensor, mask: torch.Tensor, direction: int",
+            "+        self, token_embeddings: torch.Tensor, mask: torch.BoolTensor, direction: int",
+            "-        `'mask'` : `torch.Tensor`",
+            "+        `'mask'` : `torch.BoolTensor`"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5e18cbe8..71a30c6c 100644",
+        "core_change": [
+            "-        mask_positions: torch.LongTensor,",
+            "+        mask_positions: torch.BoolTensor,"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "c1062520..abb88b60 100644",
+        "core_change": [
+            "-        self, vector: torch.Tensor, matrix: torch.Tensor, matrix_mask: torch.Tensor = None",
+            "+        self, vector: torch.Tensor, matrix: torch.Tensor, matrix_mask: torch.BoolTensor = None"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "fd598d83..34f72c26 100644",
+        "core_change": [
+            "-        variational_dropout_mask: Optional[torch.Tensor] = None,",
+            "+        variational_dropout_mask: Optional[torch.BoolTensor] = None,"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "a5c40bd6..e69b18cb 100644",
+        "core_change": [
+            "-        mask_1: torch.Tensor,",
+            "+        mask_1: torch.BoolTensor,",
+            "-        mask_2: torch.Tensor,",
+            "+        mask_2: torch.BoolTensor,",
+            "-        mask_1 : `torch.Tensor`",
+            "-            Binary Tensor of shape (batch_size, seq_len1), indicating which",
+            "+        mask_1 : `torch.BoolTensor`",
+            "+            Boolean Tensor of shape (batch_size, seq_len1), indicating which",
+            "-        mask_2 : `torch.Tensor`",
+            "-            Binary Tensor of shape (batch_size, seq_len2), indicating which",
+            "+        mask_2 : `torch.BoolTensor`",
+            "+            Boolean Tensor of shape (batch_size, seq_len2), indicating which",
+            "-        # (batch, seq_len*)",
+            "-        mask_1, mask_2 = mask_1.float(), mask_2.float()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "57abc058..b862e6c4 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.LongTensor) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor) -> torch.Tensor:",
+            "-        mask : `torch.LongTensor`, required.",
+            "+        mask : `torch.BoolTensor`, required."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "eb90fe21..47eeda0d 100644",
+        "core_change": [
+            "-    def forward(self, tensor: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:",
+            "+    def forward(self, tensor: torch.Tensor, mask: torch.BoolTensor) -> torch.Tensor:",
+            "-        broadcast_mask = mask.unsqueeze(-1).float()",
+            "+        broadcast_mask = mask.unsqueeze(-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "489b0bc1..6a5cc119 100644",
+        "core_change": [
+            "-    def forward(self, tensors: List[torch.Tensor], mask: torch.Tensor = None) -> torch.Tensor:",
+            "+    def forward(self, tensors: List[torch.Tensor], mask: torch.BoolTensor = None) -> torch.Tensor:",
+            "-            mask_float = mask.float()",
+            "-            broadcast_mask = mask_float.unsqueeze(-1)",
+            "+            broadcast_mask = mask.unsqueeze(-1)",
+            "-            num_elements_not_masked = torch.sum(mask_float) * input_dim",
+            "+            num_elements_not_masked = torch.sum(mask) * input_dim"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "77dcc4d2..2c9c1fbe 100644",
+        "core_change": [
+            "-            (batch_size,), fill_value=self._start_index",
+            "+            (batch_size,), fill_value=self._start_index, dtype=torch.long",
+            "-            last_predictions = source_mask.new_full((batch_size,), fill_value=self._start_index)",
+            "+            last_predictions = source_mask.new_full(",
+            "+                (batch_size,), fill_value=self._start_index, dtype=torch.long",
+            "+            )",
+            "-        self, logits: torch.LongTensor, targets: torch.LongTensor, target_mask: torch.LongTensor",
+            "+        self, logits: torch.LongTensor, targets: torch.LongTensor, target_mask: torch.BoolTensor"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "8098d52c..5aed66d3 100644",
+        "core_change": [
+            "-        source_mask: torch.Tensor,",
+            "+        source_mask: torch.BoolTensor,",
+            "-        previous_steps_mask: Optional[torch.Tensor] = None,",
+            "+        previous_steps_mask: Optional[torch.BoolTensor] = None,",
+            "-        source_mask : `torch.Tensor`, required",
+            "+        source_mask : `torch.BoolTensor`, required"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "02c67d6b..0537c0c3 100644",
+        "core_change": [
+            "-        encoder_outputs_mask: torch.Tensor = None,",
+            "+        encoder_outputs_mask: torch.BoolTensor = None,",
+            "-        # Ensure mask is also a FloatTensor. Or else the multiplication within",
+            "-        # attention will complain.",
+            "-        # shape: (batch_size, max_input_sequence_length, encoder_output_dim)",
+            "-        encoder_outputs_mask = encoder_outputs_mask.float()",
+            "-        source_mask: torch.Tensor,",
+            "+        source_mask: torch.BoolTensor,",
+            "-        previous_steps_mask: Optional[torch.Tensor] = None,",
+            "+        previous_steps_mask: Optional[torch.BoolTensor] = None,"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "0fa6d924..63ff5766 100644",
+        "core_change": [
+            "-        source_mask: torch.Tensor,",
+            "+        source_mask: torch.BoolTensor,",
+            "-        previous_steps_mask: Optional[torch.Tensor] = None,",
+            "+        previous_steps_mask: Optional[torch.BoolTensor] = None,",
+            "-        self, x: torch.Tensor, memory: torch.Tensor, src_mask: torch.Tensor, tgt_mask: torch.Tensor",
+            "+        self,",
+            "+        x: torch.Tensor,",
+            "+        memory: torch.Tensor,",
+            "+        src_mask: torch.BoolTensor,",
+            "+        tgt_mask: torch.BoolTensor,",
+            "-        self, x: torch.Tensor, memory: torch.Tensor, src_mask: torch.Tensor, tgt_mask: torch.Tensor",
+            "+        self,",
+            "+        x: torch.Tensor,",
+            "+        memory: torch.Tensor,",
+            "+        src_mask: torch.BoolTensor,",
+            "+        tgt_mask: torch.BoolTensor,"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "fbd3ce52..327cc733 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.LongTensor = None) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:",
+            "-        mask : `torch.LongTensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "ba7e8bd6..4b644275 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.LongTensor = None) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:",
+            "-        mask : `torch.LongTensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            return outputs * mask.unsqueeze(dim=-1).float()",
+            "+            return outputs * mask.unsqueeze(dim=-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "49ed47b5..ded8e431 100644",
+        "core_change": [
+            "-    def forward(self, token_embeddings: torch.Tensor, mask: torch.Tensor):",
+            "+    def forward(self, token_embeddings: torch.Tensor, mask: torch.BoolTensor):",
+            "-        mask_for_fill = (1 - mask).unsqueeze(1).to(dtype=torch.bool)",
+            "+        mask_for_fill = ~mask.unsqueeze(1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5a66c4eb..4cfeb379 100644",
+        "core_change": [
+            "-    def forward(self, tokens: torch.Tensor, mask: torch.Tensor):",
+            "+    def forward(self, tokens: torch.Tensor, mask: torch.BoolTensor):"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "3edee3f9..8ee2241b 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.LongTensor = None) -> torch.FloatTensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.FloatTensor:",
+            "-        mask : `torch.FloatTensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            mask = inputs.new_ones(batch_size, timesteps)",
+            "+            mask = inputs.new_ones(batch_size, timesteps).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "0aece37b..70a73b2d 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.LongTensor = None) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:",
+            "-        mask : `torch.LongTensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            return inputs * mask.unsqueeze(dim=-1).float()",
+            "+            return inputs * mask.unsqueeze(dim=-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "eb031037..32075a40 100644",
+        "core_change": [
+            "-        self, inputs: torch.Tensor, mask: torch.Tensor, hidden_state: torch.Tensor = None",
+            "+        self, inputs: torch.Tensor, mask: torch.BoolTensor, hidden_state: torch.Tensor = None"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "bb8a276d..6b604f7f 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:",
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor = None) -> torch.Tensor:"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "706b87b7..ac303c44 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.Tensor):",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor):"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "ebf35330..d1967cf8 100644",
+        "core_change": [
+            "-    def forward(self, tokens: torch.Tensor, mask: torch.Tensor = None):",
+            "+    def forward(self, tokens: torch.Tensor, mask: torch.BoolTensor = None):"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e5b67897..3f2ba222 100644",
+        "core_change": [
+            "-    def forward(self, tokens: torch.Tensor, mask: torch.Tensor = None):",
+            "+    def forward(self, tokens: torch.Tensor, mask: torch.BoolTensor = None):",
+            "-            tokens = tokens * mask.unsqueeze(-1).float()",
+            "+            tokens = tokens * mask.unsqueeze(-1)",
+            "-                summed = summed * (length_mask > 0).float().unsqueeze(-1)",
+            "+                summed = summed * (length_mask > 0).unsqueeze(-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "4c12c220..6d635214 100644",
+        "core_change": [
+            "-    def forward(self, tokens: torch.Tensor, mask: torch.Tensor = None):",
+            "+    def forward(self, tokens: torch.Tensor, mask: torch.BoolTensor = None):"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "3f3e8241..1b221ef7 100644",
+        "core_change": [
+            "-    def forward(self, tokens: torch.Tensor, mask: torch.Tensor):",
+            "+    def forward(self, tokens: torch.Tensor, mask: torch.BoolTensor):",
+            "-            tokens = tokens * mask.unsqueeze(-1).float()",
+            "+            tokens = tokens * mask.unsqueeze(-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "ac1c55f1..80e8d825 100644",
+        "core_change": [
+            "-    def forward(self, inputs: torch.Tensor, mask: torch.Tensor) -> Dict[str, torch.Tensor]:",
+            "+    def forward(self, inputs: torch.Tensor, mask: torch.BoolTensor) -> Dict[str, torch.Tensor]:"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "4b5ba969..6eabe486 100644",
+        "core_change": [
+            "-        self, inputs: torch.Tensor, mask: torch.Tensor, hidden_state: torch.Tensor = None",
+            "+        self, inputs: torch.Tensor, mask: torch.BoolTensor, hidden_state: torch.Tensor = None"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "7fa9c7a4..96cdf558 100644",
+        "core_change": [
+            "-        span_indices_mask: torch.LongTensor = None,",
+            "+        span_indices_mask: torch.BoolTensor = None,",
+            "-            return attended_text_embeddings * span_indices_mask.unsqueeze(-1).float()",
+            "+            return attended_text_embeddings * span_indices_mask.unsqueeze(-1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "3bc008c2..0b76fb60 100644",
+        "core_change": [
+            "-        sequence_mask: torch.LongTensor = None,",
+            "-        span_indices_mask: torch.LongTensor = None,",
+            "+        sequence_mask: torch.BoolTensor = None,",
+            "+        span_indices_mask: torch.BoolTensor = None,",
+            "-        sequence_mask : `torch.LongTensor`, optional (default = `None`).",
+            "+        sequence_mask : `torch.BoolTensor`, optional (default = `None`).",
+            "-        span_indices_mask : `torch.LongTensor`, optional (default = `None`).",
+            "+        span_indices_mask : `torch.BoolTensor`, optional (default = `None`)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "394c7093..00777cd0 100644",
+        "core_change": [
+            "-            mask *= (inputs != self._oov_idx).long()",
+            "+            mask &= inputs != self._oov_idx",
+            "-            document = torch.masked_select(document, doc_mask.to(dtype=torch.bool))",
+            "+            document = torch.masked_select(document, doc_mask)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "99b5e788..f032d8e4 100644",
+        "core_change": [
+            "-        mask: torch.LongTensor,",
+            "+        mask: torch.BoolTensor,",
+            "-        wordpiece_mask: torch.LongTensor,",
+            "+        wordpiece_mask: torch.BoolTensor,",
+            "-        segment_concat_mask: Optional[torch.LongTensor] = None,",
+            "+        segment_concat_mask: Optional[torch.BoolTensor] = None,",
+            "-        mask: torch.LongTensor",
+            "+        mask: torch.BoolTensor",
+            "-        wordpiece_mask: torch.LongTensor",
+            "+        wordpiece_mask: torch.BoolTensor",
+            "-        segment_concat_mask: Optional[torch.LongTensor]",
+            "+        segment_concat_mask: Optional[torch.BoolTensor]"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "6f376065..ad70fc29 100644",
+        "core_change": [
+            "-        copy_mask = torch.tensor([[1.0, 1.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0]])",
+            "+        copy_mask = torch.BoolTensor(",
+            "+            [[True, True, False], [True, False, False], [True, True, True]]",
+            "+        )",
+            "-        generation_scores_mask = generation_scores.new_full(generation_scores.size(), 1.0)",
+            "+        generation_scores_mask = generation_scores.new_full(",
+            "+            generation_scores.size(), True, dtype=torch.bool",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "72aab036..a8c20cf5 100644",
+        "core_change": [
+            "-        sample_mask = torch.from_numpy(numpy.random.randint(0, 2, (batch_size, num_decoding_steps)))",
+            "+        sample_mask = torch.from_numpy(",
+            "+            numpy.random.randint(0, 2, (batch_size, num_decoding_steps))",
+            "+        ).bool()",
+            "-            (batch_size,), fill_value=self.model._start_index",
+            "+            (batch_size,), fill_value=self.model._start_index, dtype=torch.long"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "4b8ae7d4..ab9546c9 100644",
+        "core_change": [
+            "-        mask = torch.FloatTensor([[1.0, 0.0, 1.0]])",
+            "+        mask = torch.BoolTensor([[True, False, True]])",
+            "-        mask = torch.FloatTensor([[1.0, 1.0, 0.0], [1.0, 0.0, 1.0]])",
+            "+        mask = torch.BoolTensor([[True, True, False], [True, False, True]])",
+            "-        mask = torch.FloatTensor([[1.0, 1.0, 0.0], [0.0, 0.0, 0.0]])",
+            "+        mask = torch.BoolTensor([[True, True, False], [False, False, False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "1b075ee8..c9094e56 100644",
+        "core_change": [
+            "-        mask1 = torch.FloatTensor(mask1)",
+            "+        mask1 = torch.BoolTensor(mask1)",
+            "-        mask2 = torch.FloatTensor(mask2)",
+            "+        mask2 = torch.BoolTensor(mask2)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "7e8d6d3b..dc49e1b5 100644",
+        "core_change": [
+            "-        mask = torch.ones(5, 7)",
+            "-        mask[1, 6:] = 0",
+            "-        mask[2, :] = 0  # <= completely masked",
+            "-        mask[3, 2:] = 0",
+            "-        mask[4, :] = 0  # <= completely masked",
+            "+        mask = torch.ones(5, 7).bool()",
+            "+        mask[1, 6:] = False",
+            "+        mask[2, :] = False  # <= completely masked",
+            "+        mask[3, 2:] = False",
+            "+        mask[4, :] = False  # <= completely masked",
+            "-        mask = torch.FloatTensor([1, 1, 0, 0, 0])",
+            "+        mask = torch.BoolTensor([True, True, False, False, False])",
+            "-        bad_mask = torch.FloatTensor([1, 1, 0])",
+            "+        bad_mask = torch.BoolTensor([True, True, False])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "9182d995..08e41e70 100644",
+        "core_change": [
+            "-        mask = torch.from_numpy(mask_n)",
+            "+        mask = torch.from_numpy(mask_n).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "abb269c3..c3331d18 100644",
+        "core_change": [
+            "-        mask = torch.from_numpy(numpy_mask)",
+            "+        mask = torch.from_numpy(numpy_mask).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "f82e91fc..bc7631e9 100644",
+        "core_change": [
+            "-        source_mask = torch.ones(batch_size, time_steps).long()",
+            "+        source_mask = torch.ones(batch_size, time_steps).bool()",
+            "-        source_mask[0, 1:] = 0",
+            "+        source_mask[0, 1:] = False",
+            "-        source_mask = torch.ones(batch_size, time_steps).long()",
+            "+        source_mask = torch.ones(batch_size, time_steps).bool()",
+            "-        source_mask[0, 1:] = 0",
+            "+        source_mask[0, 1:] = False"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "edb957f9..6e1568af 100644",
+        "core_change": [
+            "-        source_mask = torch.ones(batch_size, time_steps)",
+            "+        source_mask = torch.ones(batch_size, time_steps).bool()",
+            "-        source_mask = torch.ones(batch_size, time_steps)",
+            "+        source_mask = torch.ones(batch_size, time_steps).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "a7e308d5..69cfe813 100644",
+        "core_change": [
+            "-        mask = torch.ones(5, 10)",
+            "-        mask[0, 7:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(5, 10).bool()",
+            "+        mask[0, 7:] = False",
+            "+        mask[1, 5:] = False",
+            "-        mask = torch.ones(5, 10)",
+            "-        mask[0, 7:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(5, 10).bool()",
+            "+        mask[0, 7:] = False",
+            "+        mask[1, 5:] = False",
+            "-        mask = torch.ones(3, 6).int()",
+            "-        mask[0, 3:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(3, 6).bool()",
+            "+        mask[0, 3:] = False",
+            "+        mask[1, 5:] = False"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e681731b..a3b06f28 100644",
+        "core_change": [
+            "-        mask = torch.LongTensor([[1, 1, 1], [1, 0, 0]])",
+            "+        mask = torch.BoolTensor([[True, True, True], [True, False, False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "f3d49ba0..fced4ef4 100644",
+        "core_change": [
+            "-        mask = torch.LongTensor([[1, 1, 1], [1, 0, 0]])",
+            "+        mask = torch.BoolTensor([[True, True, True], [True, False, False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "58797b3c..f7534c8c 100644",
+        "core_change": [
+            "-        mask = torch.ones(5, 10)",
+            "-        mask[0, 7:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(5, 10).bool()",
+            "+        mask[0, 7:] = False",
+            "+        mask[1, 5:] = False",
+            "-        mask = torch.ones(5, 10)",
+            "-        mask[0, 7:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(5, 10).bool()",
+            "+        mask[0, 7:] = False",
+            "+        mask[1, 5:] = False",
+            "-        mask = torch.ones(5, 10)",
+            "-        mask[0, 7:] = 0",
+            "-        mask[1, 5:] = 0",
+            "+        mask = torch.ones(5, 10).bool()",
+            "+        mask[0, 7:] = False",
+            "+        mask[1, 5:] = False"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "3ac4c1c2..5d6b0af5 100644",
+        "core_change": [
+            "-        mask = torch.ones([2, 12])",
+            "-        mask[0, 6:] = 0",
+            "+        mask = torch.ones([2, 12]).bool()",
+            "+        mask[0, 6:] = False"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5e5e2a8d..2312e38c 100644",
+        "core_change": [
+            "-        mask = torch.LongTensor([[1, 1, 1], [1, 0, 0]])",
+            "+        mask = torch.BoolTensor([[True, True, True], [True, False, False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e8ec3b94..554cee0f 100644",
+        "core_change": [
+            "-        mask = torch.LongTensor(",
+            "-            [[1, 1, 1, 1], [1, 1, 1, 0], [1, 1, 1, 1], [1, 0, 0, 0], [1, 1, 0, 0]]",
+            "+        mask = torch.BoolTensor(",
+            "+            [",
+            "+                [True, True, True, True],",
+            "+                [True, True, True, False],",
+            "+                [True, True, True, True],",
+            "+                [True, False, False, False],",
+            "+                [True, True, False, False],",
+            "+            ]"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "f2eed3a7..61b85563 100644",
+        "core_change": [
+            "-        mask = torch.ones(5, 6, 50).long()",
+            "+        mask = torch.ones(5, 6, 50).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5cd06bb7..04f875bd 100644",
+        "core_change": [
+            "-        sequence_mask = torch.LongTensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]])",
+            "+        sequence_mask = torch.BoolTensor(",
+            "+            [[True, True, True, True, True], [True, True, True, False, False]]",
+            "+        )",
+            "-        sequence_mask = torch.LongTensor([[0, 0]])",
+            "+        sequence_mask = torch.BoolTensor([[False, False]])",
+            "-        span_indices_mask = torch.LongTensor([[0]])",
+            "+        span_indices_mask = torch.BoolTensor([[False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "0945b652..dfc76177 100644",
+        "core_change": [
+            "-        indices_mask = torch.LongTensor([[1, 1], [0, 0]])",
+            "+        indices_mask = torch.BoolTensor([[True, True], [False, False]])",
+            "-        sequence_mask = torch.LongTensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]])",
+            "+        sequence_mask = torch.BoolTensor(",
+            "+            [[True, True, True, True, True], [True, True, True, False, False]]",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e2705d35..b5d88239 100644",
+        "core_change": [
+            "-        indices_mask = torch.LongTensor([[1, 1], [1, 0]])",
+            "+        indices_mask = torch.BoolTensor([[True, True], [True, False]])"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "609a1647..1327d5f0 100644",
+        "core_change": [
+            "-        mask = torch.ones(4, 5)",
+            "+        mask = torch.ones(4, 5).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "dc6472c1..a49f18ef 100644",
+        "core_change": [
+            "-        mask = torch.ones([4, 5])",
+            "-        mask[1, 4:] = 0.0",
+            "-        mask[2, 2:] = 0.0",
+            "-        mask[3, 1:] = 0.0",
+            "+        mask = torch.ones([4, 5]).bool()",
+            "+        mask[1, 4:] = False",
+            "+        mask[2, 2:] = False",
+            "+        mask[3, 1:] = False"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "6c867633..a5696978 100644",
+        "core_change": [
+            "-        mask = torch.randint(0, 2, (1, 4))",
+            "+        mask = torch.randint(0, 2, (1, 4)).bool()",
+            "-        mask = torch.ones_like(token_ids)",
+            "+        mask = torch.ones_like(token_ids).bool()",
+            "-        mask = torch.ones_like(token_ids)",
+            "+        mask = torch.ones_like(token_ids).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "58d55dca..b77df4bf 100644",
+        "core_change": [
+            "-        self.mask = torch.Tensor([[1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0]])",
+            "+        self.mask = torch.BoolTensor(",
+            "+            [[True, True, True, True, True, True], [True, True, True, True, False, False]]",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "dfd33bde..f60fc4a3 100644",
+        "core_change": [
+            "-        mask = torch.tensor([1, 1, 1, 1, 0, 0, 0, 0], dtype=torch.uint8, device=device)",
+            "+        mask = torch.BoolTensor([True, True, True, True, False, False, False, False], device=device)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "bb332b74..d75d6522 100644",
+        "core_change": [
+            "-        mask = torch.ones(4, 2, device=device)",
+            "+        mask = torch.ones(4, 2, device=device).bool()",
+            "-        mask = torch.tensor([[0, 0], [1, 0], [1, 1], [1, 1]], device=device)",
+            "+        mask = torch.BoolTensor(",
+            "+            [[False, False], [True, False], [True, True], [True, True]], device=device",
+            "+        )",
+            "-        incorrect_shape_mask = torch.randint(0, 2, [5, 8], device=device)",
+            "+        incorrect_shape_mask = torch.randint(0, 2, [5, 8], device=device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "87252f39..0b44918b 100644",
+        "core_change": [
+            "-        mask = torch.tensor([0, 1, 1], device=device)",
+            "+        mask = torch.BoolTensor([False, True, True], device=device)",
+            "-        mask = torch.tensor([[0, 1, 1], [1, 0, 1]], device=device)",
+            "+        mask = torch.BoolTensor([[False, True, True], [True, False, True]], device=device)",
+            "-        mask = torch.tensor([1, 0, 1], device=device)",
+            "+        mask = torch.BoolTensor([True, False, True], device=device)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "c1690fb2..c3dce560 100644",
+        "core_change": [
+            "-        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device)",
+            "+        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "c93749b4..f346c84f 100644",
+        "core_change": [
+            "-        mask = torch.tensor([0, 1], device=device)",
+            "+        mask = torch.BoolTensor([False, True], device=device)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "ac871367..d449154a 100644",
+        "core_change": [
+            "-        mask = torch.tensor([1, 0, 1, 1, 1, 0], device=device)",
+            "+        mask = torch.BoolTensor([True, False, True, True, True, False], device=device)",
+            "-        mask = torch.tensor([[0, 1, 0], [1, 1, 1]], device=device)",
+            "+        mask = torch.BoolTensor([[False, True, False], [True, True, True]], device=device)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "9b0c1240..7d1553ae 100644",
+        "core_change": [
+            "-        mask = torch.tensor([1, 1, 1, 1, 1, 0], device=device)",
+            "+        mask = torch.BoolTensor([True, True, True, True, True, False], device=device)",
+            "-        mask = torch.tensor([1], device=device)",
+            "+        mask = torch.BoolTensor([True], device=device)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "f3901225..d6ec7abe 100644",
+        "core_change": [
+            "-        mask = torch.tensor(",
+            "-            [[1.0, 1.0, 0.0], [1.0, 1.0, 0.0], [1.0, 1.0, 0.0], [1.0, 1.0, 0.0]], device=device",
+            "+        mask = torch.BoolTensor(",
+            "+            [[True, True, False], [True, True, False], [True, True, False], [True, True, False]],",
+            "+            device=device,"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5378aafb..dbdaa988 100644",
+        "core_change": [
+            "-        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device)",
+            "+        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "c01656b5..170dbf1c 100644",
+        "core_change": [
+            "-        mask = torch.tensor([[0, 1, 1], [1, 1, 1], [1, 1, 0], [1, 0, 1]], device=device)",
+            "+        mask = torch.BoolTensor(",
+            "+            [[False, True, True], [True, True, True], [True, True, False], [True, False, True]],",
+            "+            device=device,",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e4aaca1f..5600e1a9 100644",
+        "core_change": [
+            "-        mask = torch.tensor(",
+            "-            [[1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0]], device=device",
+            "+        mask = torch.BoolTensor(",
+            "+            [",
+            "+                [True, True, True, True, True, True, True, True, True],",
+            "+                [False, False, False, False, False, False, False, False, False],",
+            "+            ],",
+            "+            device=device,",
+            "-        mask = torch.tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1]], device=device)",
+            "+        mask = torch.BoolTensor(",
+            "+            [[True, True, True, True, True, True, True, True, True]], device=device",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "8f2edd98..de207432 100644",
+        "core_change": [
+            "-        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device)",
+            "+        mask = torch.randint(0, 2, size=(batch_size, num_labels), device=device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "38f7523e..608d7c39 100644",
+        "core_change": [
+            "-        mask = torch.tensor([[1, 1, 1], [0, 1, 1], [1, 1, 0], [1, 0, 1]], device=device)",
+            "+        mask = torch.BoolTensor(",
+            "+            [[True, True, True], [False, True, True], [True, True, False], [True, False, True]],",
+            "+            device=device,",
+            "+        )"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "f3ddd243..49678830 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            mask = torch.ones(batch_size, device=gold_labels.device)",
+            "-        mask = mask.to(dtype=torch.bool)",
+            "+            mask = torch.ones(batch_size, device=gold_labels.device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "5e3777fe..298c70ff 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            keep = mask.view(batch_size, -1).max(dim=1)[0].float()",
+            "+            keep = mask.view(batch_size, -1).max(dim=1)[0]",
+            "-            keep = torch.ones(batch_size, device=predictions.device).float()",
+            "+            keep = torch.ones(batch_size, device=predictions.device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "cc8aac66..1722ac1a 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            correct *= mask.view(-1, 1).float()",
+            "+            correct *= mask.view(-1, 1)"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "ddb316b1..e0fa7d45 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "72c2d603..033e677d 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            mask = torch.ones(logits.size()[:-1], device=logits.device)",
+            "+            mask = torch.ones(logits.size()[:-1], device=logits.device).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "a87f156f..32b97f9d 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            mask = torch.ones_like(gold_labels)",
+            "-        mask = mask.to(dtype=torch.bool)",
+            "+            mask = torch.ones_like(gold_labels).bool()",
+            "-        true_positives = (gold_labels == argmax_predictions) * mask",
+            "+        true_positives = (gold_labels == argmax_predictions) & mask"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "4d12ec7a..e464137a 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "fb6af0ef..e9dc7284 100644",
+        "core_change": [
+            "-        self, predictions: torch.Tensor, gold_labels: torch.Tensor, mask: Optional[torch.Tensor]",
+            "+        self, predictions: torch.Tensor, gold_labels: torch.Tensor, mask: Optional[torch.BoolTensor]",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "846900b7..5e4803ac 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "983ed240..d03fa55a 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "01f69524..4becbfef 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None).",
+            "-            mask = torch.ones_like(gold_labels)",
+            "+            mask = torch.ones_like(gold_labels).bool()"
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "b66ad2f2..4b64fc86 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "95b6d985ffb231d9a2047c039c95660913063b9d",
+        "index": "e4e1a604..29e8489a 100644",
+        "core_change": [
+            "-        mask: Optional[torch.Tensor] = None,",
+            "+        mask: Optional[torch.BoolTensor] = None,",
+            "-        mask : `torch.Tensor`, optional (default = None).",
+            "+        mask : `torch.BoolTensor`, optional (default = None)."
+        ],
+        "commit_message": "Change all masks to type torch.bool (#3890)\n\n* get_text_field_mask\n\n* masked_softmax\n\n* masked_log_softmax\n\n* masked_max/mean\n\n* get_lengths_from_binary_sequence_mask\n\n* get_final_encoder_states\n\n* replace_masked_values\n\n* batched_span_select\n\n* sequence_cross_entropy_with_logits\n\n* add_sentence_boundary_token_ids/remove_sentence_boundaries\n\n* scalar mix\n\n* More changes\n\n* Fix tests\n\n* More changes, mostly in tests\n\n* Test fix\n\n* black\n\n* More changes\n\n* More cahnges\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "ddebbdc53544c64a1957cf0ec04a34578e9b57ba",
+        "index": "c426d541..f2856119 100644",
+        "core_change": [
+            "-    def test_get_predicted_clusters(self):",
+            "-        top_spans = torch.Tensor([[0, 1], [4, 6], [8, 9]]).long()",
+            "-        antecedent_indices = torch.Tensor([[-1, -1, -1], [0, -1, -1], [0, 1, -1]]).long()",
+            "-        predicted_antecedents = torch.Tensor([-1, -1, 1]).long()",
+            "+    @multi_device",
+            "+    def test_get_predicted_clusters(self, device: str):",
+            "+        top_spans = torch.tensor([[0, 1], [4, 6], [8, 9]], device=device)",
+            "+        antecedent_indices = torch.tensor([[-1, -1, -1], [0, -1, -1], [0, 1, -1]], device=device)",
+            "+        predicted_antecedents = torch.tensor([-1, -1, 1], device=device)"
+        ],
+        "commit_message": "Make most metrics work on GPU (#3851)\n\n* Make most metrics work on GPU\n\n* Make metric tests work on both GPU and CPU\n\n* Add a test for the test utility\n\n* mypy\n\n* Update allennlp/common/testing/test_case.py\n\nCo-Authored-By: Mark Neumann <markn@allenai.org>\n\n* Fix a PR comment\n\n* flake8\n\nCo-authored-by: Mark Neumann <markn@allenai.org>\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "8cf70b8493c13c33d766aac78a1652348e0e942a",
+        "index": "5d7b434..6ba0a01 100644",
+        "core_change": [
+            "-        return torch.tensor_as(img), torch.zeros(1, 5)",
+            "+        return torch.as_tensor(img), torch.zeros(1, 5)"
+        ],
+        "commit_message": "Fix eval bug (#161)\n\n* change to subprocess beckend\n\n* fix eval bug\n\n* Update launch.py\n\nmake flake8 happy\n\nCo-authored-by: Feng Wang <wangfeng19950315@163.com>\n",
+        "repo_name": "YOLOX"
+    },
+    {
+        "commit_hash": "ddebbdc53544c64a1957cf0ec04a34578e9b57ba",
+        "index": "a1bc038e..cc8aac66 100644",
+        "core_change": [
+            "-        predictions, gold_labels, mask = self.unwrap_to_tensors(predictions, gold_labels, mask)",
+            "+        predictions, gold_labels, mask = self.detach_tensors(predictions, gold_labels, mask)",
+            "-                torch.arange(gold_labels.numel()).long(), gold_labels",
+            "+                torch.arange(gold_labels.numel(), device=gold_labels.device).long(), gold_labels"
+        ],
+        "commit_message": "Make most metrics work on GPU (#3851)\n\n* Make most metrics work on GPU\n\n* Make metric tests work on both GPU and CPU\n\n* Add a test for the test utility\n\n* mypy\n\n* Update allennlp/common/testing/test_case.py\n\nCo-Authored-By: Mark Neumann <markn@allenai.org>\n\n* Fix a PR comment\n\n* flake8\n\nCo-authored-by: Mark Neumann <markn@allenai.org>\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "ddebbdc53544c64a1957cf0ec04a34578e9b57ba",
+        "index": "15b8f6b0..fb6af0ef 100644",
+        "core_change": [
+            "-    def unwrap_to_tensors(*tensors: torch.Tensor):",
+            "+    def detach_tensors(*tensors: torch.Tensor) -> Iterable[torch.Tensor]:",
+            "-        graph. This method ensures that you're using tensors directly and that they are on",
+            "-        the CPU.",
+            "+        graph. This method ensures the tensors are detached.",
+            "-        return (x.detach().cpu() if isinstance(x, torch.Tensor) else x for x in tensors)",
+            "+        # Check if it's actually a tensor in case something else was passed.",
+            "+        return (x.detach() if isinstance(x, torch.Tensor) else x for x in tensors)"
+        ],
+        "commit_message": "Make most metrics work on GPU (#3851)\n\n* Make most metrics work on GPU\n\n* Make metric tests work on both GPU and CPU\n\n* Add a test for the test utility\n\n* mypy\n\n* Update allennlp/common/testing/test_case.py\n\nCo-Authored-By: Mark Neumann <markn@allenai.org>\n\n* Fix a PR comment\n\n* flake8\n\nCo-authored-by: Mark Neumann <markn@allenai.org>\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "ca6e72e3b7cd0b119b0eb36c37d4a45da06b81d1",
+        "index": "7c0a7f67..d17225a7 100644",
+        "core_change": [
+            "-                memory.data.clamp_(-self.memory_cell_clip_value, self.memory_cell_clip_value)",
+            "+                memory = torch.clamp(memory, -self.memory_cell_clip_value, self.memory_cell_clip_value)",
+            "-                timestep_output.data.clamp_(-self.state_projection_clip_value,",
+            "-                                            self.state_projection_clip_value)",
+            "+                timestep_output = torch.clamp(timestep_output,",
+            "+                                              -self.state_projection_clip_value,",
+            "+                                              self.state_projection_clip_value)"
+        ],
+        "commit_message": "Fix clamping in LSTMCellWithProjection (#862)\n\n* More logging options in trainer\n\n* Don't clamp in place\n\n* cleanup\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "54e0bb4dd9c025a551b2071151a49f88946624d4",
+        "index": "c7af5481..140c49d5 100644",
+        "core_change": [
+            "-            encoder_outputs_mask = encoder_outputs_mask.type(torch.FloatTensor)",
+            "+            encoder_outputs_mask = encoder_outputs_mask.float()"
+        ],
+        "commit_message": "Fixed casting to FloatTensor in simple_seq2seq.py (#585)\n\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "806731155aa059ce4f6297d75f9dbfb2f0dad7ad",
+        "index": "84dd744e..f72de4ed 100644",
+        "core_change": [
+            "-    def as_array(self, padding_lengths: Dict[str, int]) -> numpy.ndarray:",
+            "+    def as_tensor(self,",
+            "+                  padding_lengths: Dict[str, int],",
+            "+                  cuda_device: int = -1,",
+            "+                  for_training: bool = True) -> torch.Tensor:",
+            "-        return numpy.asarray(padded_tags)",
+            "+        tensor = Variable(torch.LongTensor(padded_tags), volatile=not for_training)",
+            "+        return tensor if cuda_device == -1 else tensor.cuda(cuda_device)"
+        ],
+        "commit_message": "Removed arrays_to_variables (#580)\n\n* Removed arrays_to_variables\n\n* Fix merged tests\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "e6f5ce7db2534fa01804364d0cbeb1b5564688d2",
+        "index": "75d31ad2..e47ac41a 100644",
+        "core_change": [
+            "-    elif isinstance(x, torch.Tensor):",
+            "+    elif isinstance(x, torch.autograd.Variable):",
+            "+        return sanitize(x.data)",
+            "+    elif isinstance(x, torch._TensorBase):  # pylint: disable=protected-access"
+        ],
+        "commit_message": "More sanitize cases (#460)\n\n* Sanitize LongTensor and Variable\n\n* Fix pylint warnings\n\n* Use _TensorBase for sanitize, add tests\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "a19f102c65b943a668616df5f3b46cfb4376e04c",
+        "index": "94440585..c7d59727 100644",
+        "core_change": [
+            "+    PYTORCH_MODELS = [torch.nn.GRU, torch.nn.LSTM, torch.nn.RNN]",
+            "-        params['batch_first'] = True",
+            "+        if self._module_class in self.PYTORCH_MODELS:",
+            "+            params['batch_first'] = True"
+        ],
+        "commit_message": "Misc fixes (#88)\n\n* make log_dir if it doesn't exist\n\n* use tqdm for all dataset readers\n\n* save vocab if log_dir exists\n\n* fix logging error\n\n* get around passing batch_first to custom lstms\n\n* fix srl default params\n\n* tentative fix for tensor creation\n\n* use tdqm at correct abstraction in srl reader\n\n* don't do boolean checks on tensors\n\n* use an actual tensor in get_dropout_mask to preserve type\n\n* ensure tensors are on cpu for logging in training loop\n\n* raise if Datasets from readers are empty\n\n* use os.path.join fr logging\n\n* update config\n\n* use incorrect american spelling of labeller\n\n* use more sensible order for bulding things in train\n\n* try different lstm in model\n\n* unpack validation tensors into forward\n\n* fix byteTensor overflow bug in masking\n\n* pylint\n\n* fix merge\n\n* fixes for Matt\n\n* fix pylint\n\n",
+        "repo_name": "allennlp"
+    },
+    {
+        "commit_hash": "fb21698e83a89cace9dd02da1ff5ebeecf8fc98b",
+        "index": "21a072c..a8d16bf 100644",
+        "core_change": [
+            "-        group = torch.distributed.new_group(encoder_relative_position_embedding_ranks)",
+            "+        if encoder_relative_position_embedding_ranks:",
+            "+            group = torch.distributed.new_group(encoder_relative_position_embedding_ranks)",
+            "-        group = torch.distributed.new_group(decoder_relative_position_embedding_ranks)",
+            "+        if decoder_relative_position_embedding_ranks:",
+            "+            group = torch.distributed.new_group(decoder_relative_position_embedding_ranks)"
+        ],
+        "commit_message": "Fix bug when initializing model-parallel process groups for GPT-3 (#1435)\n\n* Hack to enable training GPT-3\n\nSeems to fix bug from #1416\n\n* Add test to initialize model-parallelism for decoder-only Transformers\n\nNamely GPT-3.\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "809043f5abb19109ef63775770dd615e57b2cce8",
+        "index": "28329c0..cef255b 100644",
+        "core_change": [
+            "-        softmax_grads = torch._softmax_backward_data(dropout_grads, softmax_results, -1, softmax_results)",
+            "+        softmax_grads = torch._softmax_backward_data(dropout_grads, softmax_results, -1, softmax_results.dtype)"
+        ],
+        "commit_message": "[contrib] Fix the reference implementation of multihead_attn (#1423)\n\n* follow the current signature\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n\n* call .backward on outputs\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n\n* update the other caller of _softmax_backward_data\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "809043f5abb19109ef63775770dd615e57b2cce8",
+        "index": "37ef3e5..c27a720 100644",
+        "core_change": [
+            "-        softmax_grads = torch._softmax_backward_data(dropout_grads, softmax_results, -1, softmax_results)",
+            "+        softmax_grads = torch._softmax_backward_data(dropout_grads, softmax_results, -1, softmax_results.dtype)",
+            "+            None,"
+        ],
+        "commit_message": "[contrib] Fix the reference implementation of multihead_attn (#1423)\n\n* follow the current signature\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n\n* call .backward on outputs\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n\n* update the other caller of _softmax_backward_data\n\nSigned-off-by: Masaki Kozuki <mkozuki@nvidia.com>\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "aa756cec4359aff3df1d9abb68dc6e6e92920e0c",
+        "index": "b60b84d..d772fa8 100644",
+        "core_change": [
+            "-    torch.optim.Adam(_param_groups)",
+            "+    torch.optim.Adam(_param_groups, lr=1e-4)"
+        ],
+        "commit_message": "minimal bert pipeline parallel test (#1216)\n\n* minimal bert pipeline parallel test\n\n* fix global and cleanup\n\n* use get_forward_backward_func\n\n* cleanup and fix some tests\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "274cc0630286d598e14860cfda91752d0840f712",
+        "index": "54b6871..f4099bc 100644",
+        "core_change": [
+            "-            self._dummy_overflow_buf = torch.cuda.IntTensor([0])",
+            "+            self._dummy_overflow_buf = torch.tensor([0], dtype=torch.int, device=self.param_groups[0][\"params\"][0].device)"
+        ],
+        "commit_message": "set device guard for multi tensor optimizer implementations (#927)\n\n* add device guards to the optimizers\n\n* add untracked file\n\n* set deviceGuard in multi_tensor_apply\n\n* address review comments; fix lamb\n\n* indent\n\n* typo\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "7a219aa9b350d055b8bb37fab1caab0b06a9be63",
+        "index": "d3f32b8..2432f5c 100644",
+        "core_change": [
+            "-                        v_16 = [torch.max(torch.abs(g)).item() for g in g_16]",
+            "+                        v_16 = [torch.max(torch.abs(g.to(torch.float32))).item() for g in g_16]",
+            "-                        v_16 = [torch.sum(torch.pow(g, 2)).sqrt().item() for g in g_16]",
+            "+                        v_16 = [torch.sum(torch.pow(g.to(torch.float32), 2)).sqrt().item() for g in g_16]"
+        ],
+        "commit_message": "fix novograd init overflow\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "90e5b05a2d2ff3e1f59328bc284aeff5d4abe951",
+        "index": "bddf248..4aa3638 100644",
+        "core_change": [
+            "-        input.record_stream(torch.cuda.current_stream())",
+            "-        target.record_stream(torch.cuda.current_stream())",
+            "+        if input is not None:",
+            "+            input.record_stream(torch.cuda.current_stream())",
+            "+        if target is not None:",
+            "+            target.record_stream(torch.cuda.current_stream())"
+        ],
+        "commit_message": "Fix end-of-epoch with record_stream\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "dc55a996ea0232fec50a55b39fc24078b1b37b43",
+        "index": "d39aaab..0dc79de 100644",
+        "core_change": [
+            "-                           \"found torch.__version__ = {}\".format(torch.__version))",
+            "+                           \"found torch.__version__ = {}\".format(torch.__version__))"
+        ],
+        "commit_message": "Fix typo in setup.py error message on torch version check (#219)\n\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "ed8236fa188c81426fba004ea198b05f0c1c4e38",
+        "index": "4ff9380..e8762b0 100644",
+        "core_change": [
+            "+    torch.set_printoptions(precision=10)",
+            "-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\\t'",
+            "+                  'Loss {loss.val:.10f} ({loss.avg:.4f})\\t'"
+        ],
+        "commit_message": "Fix for unscale usage in fp16_utils.FP16_Optimizer\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "e49dca6efdb32b094fa8f7db89e5943aa64f13c8",
+        "index": "7616d31..a60395a 100644",
+        "core_change": [
+            "-   if (args.local_rank//args.group_size == group_num):",
+            "+   if (torch.distributed.get_rank()//args.group_size == group_num):"
+        ],
+        "commit_message": "fixing it to work properly in multi-node environment\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "a99e18758090e859238e531702915aeeaaaed8f6",
+        "index": "b2e43fb..f4d45ce 100644",
+        "core_change": [
+            "+    ReduceOp = torch.distributed.ReduceOp",
+            "+    ReduceOp = torch.distributed.reduce_op"
+        ],
+        "commit_message": "Fix deprecation warnings for ReduceOp\n\n",
+        "repo_name": "apex"
+    },
+    {
+        "commit_hash": "3b2cf7b0bc152d826f74a90f5f6b922a8b9f7b21",
+        "index": "9524eac..021d5a1 100644",
+        "core_change": [
+            "-            learned_queries = torch.cat((image_embed, self_cond), dim = -2)",
+            "+            learned_queries = torch.cat((self_cond, learned_queries), dim = -2)"
+        ],
+        "commit_message": "fix for self conditioning in diffusion prior network https://github.com/lucidrains/DALLE2-pytorch/issues/273\n\n",
+        "repo_name": "DALLE2-pytorch"
+    },
+    {
+        "commit_hash": "1bd8a7835ab66f266daf11cff2aa56ed6a46a001",
+        "index": "694483d..4301a54 100644",
+        "core_change": [
+            "+    # attempting to correct nan gradients when learned variance is turned on",
+            "+    # in the setting of deepspeed fp16",
+            "+    eps = 1e-12 if x.dtype == torch.float32 else 1e-5",
+            "-            log(cdf_delta)))",
+            "+            log(cdf_delta, eps = eps)))"
+        ],
+        "commit_message": "attempting to fix issue with deepspeed fp16 seeing overflowing gradient\n\n",
+        "repo_name": "DALLE2-pytorch"
+    },
+    {
+        "commit_hash": "1a81670718652541f5040db73b1dbbf7565f1129",
+        "index": "ca3eba7..faa7bc1 100644",
+        "core_change": [
+            "-    return torch.linspace(beta_start**2, beta_end**2, timesteps, dtype = torch.float64) ** 2",
+            "+    return torch.linspace(beta_start**0.5, beta_end**0.5, timesteps, dtype = torch.float64) ** 2"
+        ],
+        "commit_message": "fix quadratic_beta_schedule (#141)\n\n\n",
+        "repo_name": "DALLE2-pytorch"
+    },
+    {
+        "commit_hash": "0e6033c12862db1d1838282421d3dc47f7ad7a86",
+        "index": "2c6f73a..bf08ea7 100755",
+        "core_change": [
+            "-    gain = torch.ones(6, device=targets.device)  # normalized to gridspace gain",
+            "+    gain = torch.ones(6, device=targets.device).long()  # normalized to gridspace gain"
+        ],
+        "commit_message": "fix type issue\n\n",
+        "repo_name": "deep-learning-for-image-processing"
+    },
+    {
+        "commit_hash": "56cd54ad242b27cb43b4abcfb007d3be42b39877",
+        "index": "6f044f5..577d5ea 100644",
+        "core_change": [
+            "-        self.count = 0",
+            "+        self.count = None",
+            "+        if self.count is None:",
+            "+            self.count = torch.zeros(1, dtype=pred.dtype, device=pred.device)",
+            "-        self.count = 0",
+            "+        if self.count is not None:",
+            "+            self.count.zeros_()",
+            "+        torch.distributed.all_reduce(self.count)"
+        ],
+        "commit_message": "fix count bug\n\n",
+        "repo_name": "deep-learning-for-image-processing"
+    },
+    {
+        "commit_hash": "7e34478a90513a680611a89025b4b592e6289dcc",
+        "index": "f5be228..dbfbc22 100644",
+        "core_change": [
+            "-            torch.save(model.state_dict(), \"./weights/model-{}.pth\".format(epoch))",
+            "+            torch.save(model.module.state_dict(), \"./weights/model-{}.pth\".format(epoch))"
+        ],
+        "commit_message": "fix a bug for save weights when multi-GPU training\n\n",
+        "repo_name": "deep-learning-for-image-processing"
+    },
+    {
+        "commit_hash": "07fc4b7724f48a7fe555dcf696881525105af600",
+        "index": "ce38789..0219d36 100644",
+        "core_change": [
+            "-        torch.cuda.synchronize(device)",
+            "+        # \u5f53\u4f7f\u7528CPU\u65f6\uff0c\u8df3\u8fc7GPU\u76f8\u5173\u6307\u4ee4",
+            "+        if device != torch.device(\"cpu\"):",
+            "+            torch.cuda.synchronize(device)"
+        ],
+        "commit_message": "fix some code\n\n",
+        "repo_name": "deep-learning-for-image-processing"
+    },
+    {
+        "commit_hash": "93e528979365be809f47540f56037f99581f2911",
+        "index": "17946140..84be2012 100644",
+        "core_change": [
+            "-        pipe = pipeline(task, model=model, device=-1, framework=\"pt\")",
+            "+        pipe = pipeline(task, model=model, device=torch.device(\"cpu\"), framework=\"pt\")",
+            "-        pipe = pipeline(task, model=model, device=-1, framework=\"pt\")",
+            "+        pipe = pipeline(task, model=model, device=torch.device(\"cpu\"), framework=\"pt\")",
+            "-        pipe = pipeline(task, model=model, device=-1, framework=\"pt\")",
+            "+        pipe = pipeline(task, model=model, device=torch.device(\"cpu\"), framework=\"pt\")",
+            "-        pipe = pipeline(task, model=model, device=-1, framework=\"pt\")",
+            "+        pipe = pipeline(task, model=model, device=torch.device(\"cpu\"), framework=\"pt\")"
+        ],
+        "commit_message": "Fix inference CI device error (#2824)\n\n\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "323c266cfe65f16f522092f1bc84998e04ed7f94",
+        "index": "88f0df44..3bf90640 100755",
+        "core_change": [
+            "-        if not torch.cuda.is_available:",
+            "+        if not torch.cuda.is_available():"
+        ],
+        "commit_message": "[Bug Fixed] use torch.cuda.is_available() (#2661)\n\nCo-authored-by: Olatunji Ruwase <olruwase@microsoft.com>\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "323c266cfe65f16f522092f1bc84998e04ed7f94",
+        "index": "6e5e151a..10edf4ba 100755",
+        "core_change": [
+            "-        if not torch.cuda.is_available:",
+            "+        if not torch.cuda.is_available():"
+        ],
+        "commit_message": "[Bug Fixed] use torch.cuda.is_available() (#2661)\n\nCo-authored-by: Olatunji Ruwase <olruwase@microsoft.com>\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "211055216792cbb52ab6d355f698c194f9c55efb",
+        "index": "c892316a..62b8e1da 100644",
+        "core_change": [
+            "-        worker_scale = torch.norm(buffer_m) / np.sqrt(torch.numel(buffer_m))",
+            "+        worker_scale = torch.norm(buffer_m) / np.sqrt(buffer_m.numel())"
+        ],
+        "commit_message": "Fixes for torch 1.14 due to new torch.numel return type (#2522)\n\n* fixes for new torch.numel return type\n\n* address comment\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "57140e8e951e8e149e998505d6b7ba6adeeaaede",
+        "index": "35f8bbd3..303267f0 100644",
+        "core_change": [
+            "-                if torch.is_tensor(value)",
+            "+                if torch.is_tensor(value) and value.dim() > 0"
+        ],
+        "commit_message": "fix: fix BF16_Optimizer compatibility issue with optimizer state 0-dim tensor (#2152)\n\nCo-authored-by: Olatunji Ruwase <olruwase@microsoft.com>\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "b4513f63107bb54bef694de2612260f72e8b0eaf",
+        "index": "7dcf4144..399f512b 100644",
+        "core_change": [
+            "-            coef = torch.nn.functional.softmax(coef, dim=1)",
+            "+            coef = torch.nn.functional.softmax(coef, dim=-1)"
+        ],
+        "commit_message": "fix softmax dim of Residual MoE in moe/layer.py (#2110)\n\nThanks a lot for finding this issue and fixed it :)\nCo-authored-by: Zhewei Yao <zheweiyao@gmail.com>\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "d38ad6a17164b9bf07477ceb17ca5c7f09657720",
+        "index": "e70f00b4..c9722af2 100644",
+        "core_change": [
+            "-        assert dist.get_rank() == rank, \"MPI rank {} does not match torch rank {}\".format(rank, dist.get_rank())",
+            "-        assert dist.get_world_size() == world_size, \"MPI world size {} does not match torch world size {}\".format(",
+            "-            world_size, dist.get_world_size())",
+            "+        assert torch.distributed.get_rank() == rank, \"MPI rank {} does not match torch rank {}\".format(rank, dist.get_rank())",
+            "+        assert torch.distributed.get_world_size() == world_size, \"MPI world size {} does not match torch world size {}\".format(",
+            "+            world_size, torch.distributed.get_world_size())"
+        ],
+        "commit_message": "change dist to torch.distributed to fix bug in assert. (#638)\n\n\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "0178e6cc227e0f6d60cb5f3675edd1cda9a0396e",
+        "index": "0dc8711b..360efa0a 100755",
+        "core_change": [
+            "-        self.input_layer = VerboseLinear(in_features=self.input_dim,",
+            "-                                         out_features=self.hidden_dim)",
+            "+        self.input_layer = torch.nn.Linear(in_features=self.input_dim,",
+            "+                                           out_features=self.hidden_dim)"
+        ],
+        "commit_message": "Fix unbalanced gradients bug in ZeRO-2 gradient accumulation (#545)\n\n* Use zero-tensors for missing gradients to avoid size mismatch\n\n* Unit test for unbalanced gradients in ZeRO\n\n* Formatting fixes\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "607814feb9b44977b83812dc38ee952c8ae61f84",
+        "index": "bdd95591..c17ef493 100644",
+        "core_change": [
+            "-    train_data = torch.randn(total_samples, hidden_dim, device=device, dtype=torch.half)",
+            "+    train_data = torch.randn(total_samples, hidden_dim, device=device, dtype=dtype)"
+        ],
+        "commit_message": "Fix bug in fp32 optimizer state loading (#289)\n\n\n",
+        "repo_name": "DeepSpeed"
+    },
+    {
+        "commit_hash": "9b6385488617ee99188b60c0525cbe4ec7e8f2a0",
+        "index": "40e026e2..3043ee20 100644",
+        "core_change": [
+            "-        noise = torch.randn(init_latents.shape, generator=generator, device=self.device, dtype=dtype)",
+            "+        noise = randn_tensor(init_latents.shape, generator=generator, device=self.device, dtype=dtype)"
+        ],
+        "commit_message": "Improve reproduceability 2/3 (#1906)\n\n* [Repro] Correct reproducability\n\n* up\n\n* up\n\n* uP\n\n* up\n\n* need better image\n\n* allow conversion from no state dict checkpoints\n\n* up\n\n* up\n\n* up\n\n* up\n\n* check tensors\n\n* check tensors\n\n* check tensors\n\n* check tensors\n\n* next try\n\n* up\n\n* up\n\n* better name\n\n* up\n\n* up\n\n* Apply suggestions from code review\n\n* correct more\n\n* up\n\n* replace all torch randn\n\n* fix\n\n* correct\n\n* correct\n\n* finish\n\n* fix more\n\n* up\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "8ed08e4270fdcb889c3a62e016328d7f14171d3c",
+        "index": "87ad1414..daf84c19 100644",
+        "core_change": [
+            "-        generator = torch.Generator(device=torch_device).manual_seed(0)",
+            "+        generator = torch.Generator(device=\"cpu\").manual_seed(0)"
+        ],
+        "commit_message": "[Deterministic torch randn] Allow tensors to be generated on CPU (#1902)\n\n* [Deterministic torch randn] Allow tensors to be generated on CPU\n\n* fix more\n\n* up\n\n* fix more\n\n* up\n\n* Update src/diffusers/utils/torch_utils.py\n\nCo-authored-by: Anton Lozhkov <anton@huggingface.co>\n\n* Apply suggestions from code review\n\n* up\n\n* up\n\n* Apply suggestions from code review\n\nCo-authored-by: Pedro Cuenca <pedro@huggingface.co>\n\nCo-authored-by: Anton Lozhkov <anton@huggingface.co>\nCo-authored-by: Pedro Cuenca <pedro@huggingface.co>\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "02d83c9ff1b93f2c6f9c94f9369b3e4bc1ba8ce7",
+        "index": "b9e590de..f5f2d404 100644",
+        "core_change": [
+            "-            image = torch.randn(image_shape, generator=generator)",
+            "+            image = torch.randn(image_shape, generator=generator, dtype=self.unet.dtype)",
+            "-            image = torch.randn(image_shape, generator=generator, device=self.device)",
+            "+            image = torch.randn(image_shape, generator=generator, device=self.device, dtype=self.unet.dtype)"
+        ],
+        "commit_message": "Standardize fast pipeline tests with PipelineTestMixin (#1526)\n\n* [WIP] Standardize fast pipeline tests with PipelineTestMixin\n\n* refactor the sd tests a bit\n\n* add more common tests\n\n* add xformers\n\n* add progressbar test\n\n* cleanup\n\n* upd fp16\n\n* CycleDiffusionPipelineFastTests\n\n* DanceDiffusionPipelineFastTests\n\n* AltDiffusionPipelineFastTests\n\n* StableDiffusion2PipelineFastTests\n\n* StableDiffusion2InpaintPipelineFastTests\n\n* StableDiffusionImageVariationPipelineFastTests\n\n* StableDiffusionImg2ImgPipelineFastTests\n\n* StableDiffusionInpaintPipelineFastTests\n\n* remove unused mixins\n\n* quality\n\n* add missing inits\n\n* try to fix mps tests\n\n* fix mps tests\n\n* add mps warmups\n\n* skip for some pipelines\n\n* style\n\n* Update tests/test_pipelines_common.py\n\nCo-authored-by: Patrick von Platen <patrick.v.platen@gmail.com>\n\nCo-authored-by: Patrick von Platen <patrick.v.platen@gmail.com>\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "61719bf26c3f09f2fd8483d83778f12e151d2ed4",
+        "index": "294a43e8..fc530603 100644",
+        "core_change": [
+            "-    def enable_sequential_cpu_offload(self):",
+            "+    def enable_sequential_cpu_offload(self, gpu_id=0):",
+            "-        device = torch.device(\"cuda\")",
+            "+        device = torch.device(f\"cuda:{gpu_id}\")"
+        ],
+        "commit_message": "Fix gpu_id (#1326)\n\n\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "b7f0ce5b39acc2e0d879c55c56b374738be7c027",
+        "index": "2cb81968..ea94f486 100755",
+        "core_change": [
+            "-        expected_slice = torch.rensor([0.3163, 0.8670, 0.6465, 0.1865, 0.6291, 0.5139, 0.2824, 0.3723, 0.4344])",
+            "+        expected_slice = torch.tensor([0.3163, 0.8670, 0.6465, 0.1865, 0.6291, 0.5139, 0.2824, 0.3723, 0.4344])"
+        ],
+        "commit_message": "fix test_ldm_text2img_fast\n\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "01b238d0de58ec1cf21aa8f651a412480d677636",
+        "index": "bd9688cc..10ee253f 100644",
+        "core_change": [
+            "-                noise = torch.randn(image.shape, generator=generator)to(image.device)",
+            "+                noise = torch.randn(image.shape, generator=generator).to(image.device)"
+        ],
+        "commit_message": "fix typo\n\n",
+        "repo_name": "diffusers"
+    },
+    {
+        "commit_hash": "155c2a8380da87e07d54165c5b637b9c2b69ab4a",
+        "index": "10b19ad..c392820 100644",
+        "core_change": [
+            "-        net = torch.nn.DataParallel(net)",
+            "+        net = torch.nn.DataParallel(net).to(device)"
+        ],
+        "commit_message": "Fix missing to(device) for DataParallel in detection.py\n\n",
+        "repo_name": "EasyOCR"
+    },
+    {
+        "commit_hash": "ee57ff94dfa2c3ced30c1b103076b4ae18fa9199",
+        "index": "ffd6e03c5..b2910a018 100755",
+        "core_change": [
+            "-                pad = torch.zeros(self.win_length - speech.size(0))",
+            "+                pad = torch.zeros(self.win_length - speech.size(0), dtype=getattr(torch, self.dtype))"
+        ],
+        "commit_message": "Update asr_inference_streaming.py\n\nFix dtype CI error\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "14f4df750c8dff68588038af2c917274007e967e",
+        "index": "ab3e072df..ca988a7bd 100644",
+        "core_change": [
+            "-            ret2 = torch.solve(vec2, mat)[0]",
+            "+            return torch.linalg.solve(mat, vec2)"
+        ],
+        "commit_message": "Fix CI test failures related to torch_complex 0.4.0\n\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "e138d6ac2a76c7ca969baa923a89c189478171e4",
+        "index": "849424af4..7701a0dc2 100644",
+        "core_change": [
+            "-        loss_att = torch.mean(loss_att)",
+            "+        loss_att = torch.stack(loss_att, dim=0).mean()"
+        ],
+        "commit_message": "update espnet2/bin/asr_mix_inference.py; fix bugs\n\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "e750fe7819ce00cb3585aea628a038ed67ad364f",
+        "index": "8c1752710..961cc164e 100644",
+        "core_change": [
+            "-        return torch.tensor([1.0], device=y.device).expand(self.n), None",
+            "+        return torch.tensor([1.0], device=x.device, dtype=x.dtype).expand(self.n), None"
+        ],
+        "commit_message": "fix test for dtype\n\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "e750fe7819ce00cb3585aea628a038ed67ad364f",
+        "index": "c865bcccd..ae5061245 100644",
+        "core_change": [
+            "-        tscore = torch.as_tensor(presub_score - prev_score, device=y.device)",
+            "+        tscore = torch.as_tensor(presub_score - prev_score, device=x.device, dtype=x.dtype)"
+        ],
+        "commit_message": "fix test for dtype\n\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "e0288b141173da88ee87e85060750af241bdb170",
+        "index": "30513e7d1..66915e7ff 100644",
+        "core_change": [
+            "-        return torch.tensor([1.0]).expand(self.n), None",
+            "+        return torch.tensor([1.0], device=y.device).expand(self.n), None"
+        ],
+        "commit_message": "fix length bonus in cuda\n\n",
+        "repo_name": "espnet"
+    },
+    {
+        "commit_hash": "ffecb4e3496379edf5ecae1483df5b7e0886c264",
+        "index": "40e07d46..24e9630d 100644",
+        "core_change": [
+            "-        torch.manual_seed(args.seed)",
+            "+        utils.set_torch_seed(args.seed)"
+        ],
+        "commit_message": "Small fixes (#1215)\n\nSummary: Pull Request resolved: https://github.com/fairinternal/fairseq-py/pull/1215\n\nReviewed By: ngoyal2707, msbaines\n\nDifferential Revision: D22514719\n\nPulled By: myleott\n\nfbshipit-source-id: 5f15ba501fd66af1eb49b5702aff940f06c3d91f\n\n",
+        "repo_name": "fairseq"
+    },
+    {
+        "commit_hash": "8377ddca4905150a398067667df3f76d1f5d68b5",
+        "index": "8ee13203..4fee32d4 100644",
+        "core_change": [
+            "-            with torch.cuda.device(x.device):",
+            "+            if not x.is_cuda:",
+            "+            else:",
+            "+                with torch.cuda.device(x.device):",
+            "+                    return super().forward(x)"
+        ],
+        "commit_message": "Fix FusedLayerNorm with CPU inputs (#1106)\n\nSummary: Pull Request resolved: https://github.com/fairinternal/fairseq-py/pull/1106\n\nReviewed By: hudeven\n\nDifferential Revision: D20627297\n\nPulled By: myleott\n\nfbshipit-source-id: 9beff9b13dbc8e47fb53198fc0c4bf7469c9c740\n\n",
+        "repo_name": "fairseq"
+    },
+    {
+        "commit_hash": "bee6d71646c22eb552ec7d78d439729b38dfa55b",
+        "index": "bb3b812f..8ee13203 100644",
+        "core_change": [
+            "-            return super().forward(x)",
+            "+            with torch.cuda.device(x.device):",
+            "+                return super().forward(x)"
+        ],
+        "commit_message": "Fix MHA and LayerNorm on devices other than cuda:0 (fixes #1860) (#1873)\n\nSummary:\nThis also includes a fix required for LayerNorm due to a bug in apex: https://github.com/NVIDIA/apex/issues/770\nPull Request resolved: https://github.com/pytorch/fairseq/pull/1873\n\nReviewed By: ngoyal2707\n\nDifferential Revision: D20564542\n\nPulled By: myleott\n\nfbshipit-source-id: f1603779351671a5a44f606f550281bcdd2aa9b7\n\n",
+        "repo_name": "fairseq"
+    },
+    {
+        "commit_hash": "e28d15b33aa4434b04d8dd16427b802d6035ea22",
+        "index": "54d245c5..fbba0d89 100644",
+        "core_change": [
+            "-        mask = torch.zeros_like(toks, dtype=torch.uint8)",
+            "+        mask = torch.zeros_like(toks, dtype=torch.bool)"
+        ],
+        "commit_message": "Fix some criterion code after recent API change (fixes #1866) (#1874)\n\nSummary: Pull Request resolved: https://github.com/pytorch/fairseq/pull/1874\n\nReviewed By: ngoyal2707\n\nDifferential Revision: D20565473\n\nPulled By: myleott\n\nfbshipit-source-id: 25edef9f41f28a41f1c573dcc3da48b674b678e4\n\n",
+        "repo_name": "fairseq"
+    },
+    {
+        "commit_hash": "af38ed48bb88cc489d1251e16519c7eef3a2fba7",
+        "index": "384644f0..2da6d0b1 100644",
+        "core_change": [
+            "-                return torch.cat([",
+            "-                    torch.cat([outs[2 * i], outs[2 * i + 1]], dim=0).view(1, bsz, self.output_units)",
+            "-                    for i in range(self.num_layers)",
+            "-                ], dim=0)",
+            "+                return outs.view(self.num_layers, 2, bsz, -1).transpose(1, 2).contiguous().view(self.num_layers, bsz, -1)"
+        ],
+        "commit_message": "Fix bidirectional LSTM concatenation (#249)\n\n\n",
+        "repo_name": "fairseq"
+    },
+    {
+        "commit_hash": "61933c8a41d77df19533079295fee99c36627ea3",
+        "index": "a0d71d1..90492ad 100644",
+        "core_change": [
+            "-            bg_num_rois = bg_inds.numel()",
+            "+            bg_num_rois = bg_inds.size(0)",
+            "-            # bg_rois_per_this_image = min(bg_rois_per_this_image, bg_num_rois)",
+            "+            bg_rois_per_this_image = min(bg_rois_per_this_image, bg_inds.size)",
+            "-                # rand_num = torch.randperm(bg_num_rois).type_as(all_rois).long()",
+            "-                rand_num = torch.floor(torch.rand(bg_rois_per_this_image) \\",
+            "-                    * bg_num_rois).type_as(all_rois).long()",
+            "-                bg_inds = bg_inds[rand_num]",
+            "+                rand_num = torch.randperm(bg_num_rois).type_as(all_rois).long()",
+            "+                bg_inds = bg_inds[rand_num[:bg_rois_per_this_image]]",
+            "+                # rand_num = torch.floor(torch.rand(bg_rois_per_this_image).type_as(all_rois)",
+            "+                #                         * bg_num_rois).long()",
+            "+                # bg_inds = bg_inds[rand_num]"
+        ],
+        "commit_message": "fix an error in multiGPU training\n\n",
+        "repo_name": "faster-rcnn.pytorch"
+    },
+    {
+        "commit_hash": "039aca02737f4a240b73dd1742fecf45987225be",
+        "index": "c8f1bd1..215826b 100644",
+        "core_change": [
+            "-  dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg.TRAIN.IMS_PER_BATCH,",
+            "+  dataloader = torch.utils.data.DataLoader(dataset, batch_size=8,"
+        ],
+        "commit_message": "fix a size mismatch bug in faster_rcnn\n\n",
+        "repo_name": "faster-rcnn.pytorch"
+    },
+    {
+        "commit_hash": "439d7609dfcbca5bafa13b7b6098c4d0e9ecddf3",
+        "index": "0fae6205..a0716571 100644",
+        "core_change": [
+            "-                                dtype=torch.float, device=flair.device).unsqueeze(0)",
+            "+                                dtype=torch.float).unsqueeze(0)",
+            "-            word_embeddings_tensor = torch.cat(word_embeddings, 0)",
+            "+            word_embeddings_tensor = torch.cat(word_embeddings, 0).to(flair.device)"
+        ],
+        "commit_message": "GH-462: fix cuda errors in classifier and unit tests\n\n",
+        "repo_name": "flair"
+    },
+    {
+        "commit_hash": "439d7609dfcbca5bafa13b7b6098c4d0e9ecddf3",
+        "index": "012fa961..224d8e95 100644",
+        "core_change": [
+            "-        text_embedding_tensor = torch.cat(text_embedding_list, 0)",
+            "+        text_embedding_tensor = torch.cat(text_embedding_list, 0).to(flair.device)"
+        ],
+        "commit_message": "GH-462: fix cuda errors in classifier and unit tests\n\n",
+        "repo_name": "flair"
+    },
+    {
+        "commit_hash": "f7bb107b417905c778215344e9c63eb4d1f4b6ac",
+        "index": "c73f036..a7fb25b 100644",
+        "core_change": [
+            "-    return -log((torch.cos((t + s) / (1 + s) * torch.pi * 0.5) ** -2) - 1)",
+            "+    return -log((torch.cos((t + s) / (1 + s) * math.pi * 0.5) ** -2) - 1)"
+        ],
+        "commit_message": "fix some issue with torch.pi and torch jit script\n\n",
+        "repo_name": "imagen-pytorch"
+    },
+    {
+        "commit_hash": "834abcff51bc6050342cd35d445766643fd7e1d6",
+        "index": "3f66d264..b318b234 100644",
+        "core_change": [
+            "-        cum_sum = torch.cat((torch.tensor([0]), cum_sum[:-1]))",
+            "+        cum_sum = torch.cat((torch.tensor([0], dtype=cum_sum.dtype, device=cum_sum.device), cum_sum[:-1]))"
+        ],
+        "commit_message": "fix cuda tests failing (#1941)\n\n* fix cuda tests failing\n\nCo-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "1b1901e4ef49cd6d338a5059dafedf2defa2f103",
+        "index": "e68b8438..e6088af3 100644",
+        "core_change": [
+            "-    shifted = (image + torch.stack(shifts).view(-1, 3, 1, 1).to(image)).clamp_(min=0, max=1)",
+            "+    shifted = (image + torch.stack(shifts, dim=1).view(-1, 3, 1, 1).to(image)).clamp_(min=0, max=1)"
+        ],
+        "commit_message": "fix shift_rgb stack dimension (#1930)\n\n* fix shift_rgb stack dimension\n\n* update RandomRGBShift tests\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "f6521366df57f8469850f38164629bb9d5fc8978",
+        "index": "194920c4..cbc4dab2 100644",
+        "core_change": [
+            "-                torch.ones((1, 3, 4, 5) * 200, device=self.device, dtype=self.dtype)",
+            "+                torch.ones((1, 3, 4, 5) * 3, device=self.device, dtype=self.dtype)"
+        ],
+        "commit_message": "Fix fail test (#1896)\n\n* fix OOM\n\n* Union is not supported still\n\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "4b06cbf728ff49054f3e35f74d32c66b873eb834",
+        "index": "2d5ac689..254039b9 100644",
+        "core_change": [
+            "+    signal_ones = torch.ones_like(boundary)",
+            "-        boundary[mask == 1] = 1",
+            "+        boundary = torch.where(mask == 1, signal_ones, boundary)"
+        ],
+        "commit_message": "Fix gradient bug for `distance_transform` (#1584)\n\n* Fix gradient bug for distance_transform.\n\n* Move signal_ones outside the loop && Add another grad check for distance_transform.\n\n* Move signal_ones outside the loop && Add another grad check for distance_transform.\n\nMove signal_ones outside the loop && Add another grad check for distance_transform.\n\n* Removing try/catch block of distance_transform grad test.\n\nCo-authored-by: guangpan.cd <guangpan.cd@alibaba-inc.com>\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "8973a322b96b93d4ea421955bb763e2ce00e365d",
+        "index": "8aa9a782..1049dd8b 100644",
+        "core_change": [
+            "-        scale = torch.ones(batch_size, device=device, dtype=dtype).repeat(1, 3)",
+            "+        scale = torch.ones(batch_size, device=device, dtype=dtype).reshape(batch_size, 1).repeat(1, 3)"
+        ],
+        "commit_message": "Fixed scale parameter generation (#1400)\n\n* Fixed scale parameter generation\n\n* Minor fix\n\n* Added test for Random Affine 3d transformation\n\n* [pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci\n\n* Flake issue fixed\n\n* Refactored random affine 3d test into TestRandomAffine3D class\n\n* Newline addition\n\n* Addressing PR comments\n\n* Minor fixes\n\nCo-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "68badf3b9497b27ede89cb586770c3b14aba31de",
+        "index": "d287c172..d0675823 100644",
+        "core_change": [
+            "-        T_inv = (U).mm(torch.sqrt(S) * U.t())",
+            "+        T_inv = (U).mm(torch.sqrt(S + eps) * U.t())"
+        ],
+        "commit_message": "Zca inverse transform fix (#695)\n\n* fix inv transform\n\n* update zca test\n\nCo-authored-by: Edgar Riba <edgar.riba@gmail.com>\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "709cc2e206f384bfacc6f2732203c3d37f09b228",
+        "index": "8bf6daf6..c830e7e7 100644",
+        "core_change": [
+            "-        batch_prob = torch.rand(1) < 0.5",
+            "+        batch_prob = torch.rand(1, device=device) < 0.5"
+        ],
+        "commit_message": "[Fix] Missing device initializations (#672)\n\n* Fix device initialization in several variables\n\n* Fix device initialization in several variables\n\n* Skip CUDA tests for #666\n\n* Lint\n\n* Fix device initialization in several variables\n\n* Skip CUDA tests for #666\n\n* Lint\n\n* Remove half-precision tests (#649) and add a jit test\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "6ba874b017f47949f5b4107b70c12bdd96b410b9",
+        "index": "4295ad2d..e3898eef 100644",
+        "core_change": [
+            "-    matches_idxs = torch.cat([idxs_in1.view(-1, 1), idxs_in_2.cpu().view(-1, 1)], dim=1)",
+            "+    matches_idxs = torch.cat([idxs_in1.view(-1, 1), idxs_in_2.view(-1, 1)], dim=1)"
+        ],
+        "commit_message": "fix gpu test errors\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "51572b6d19e316766bb895a10c1c5450af0f5d2f",
+        "index": "806db93b..382360a7 100644",
+        "core_change": [
+            "-    tensor: torch.Tensor = torch.from_numpy(image).to(torch.float)",
+            "+    tensor: torch.Tensor = torch.from_numpy(image)"
+        ],
+        "commit_message": "[BUG] remove float casting in image_to_tensor (#497)\n\n* remove float casting when onverting to tensor\n\n* test dtype is persistent\n\n* fixl linter issues\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "7b8cad3ad8449f260e3b282bf0f9b824cc94b58d",
+        "index": "a3fa6954..97e45d48 100644",
+        "core_change": [
+            "-    h: torch.Tensor = image[..., 0, :, :] / (2 * pi)",
+            "+    h: torch.Tensor = image[..., 0, :, :] / (2 * pi.to(image.device))",
+            "-    h = 2 * pi * h",
+            "+    h = 2 * pi.to(image.device) * h"
+        ],
+        "commit_message": "Bug fixed (#475)\n\nCo-authored-by: Edgar Riba <edgar.riba@gmail.com>\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "dcdc63b95be066df01635b2b163721924a87318b",
+        "index": "0af3c25a..a8a56271 100644",
+        "core_change": [
+            "-        mask, torch.tensor(1.0) / z_vec[mask])",
+            "+        mask, torch.tensor(1.0).to(points.device) / z_vec[mask])"
+        ],
+        "commit_message": "Fix CUDA error on illegal memory access.\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "b6a671703b7e9e20b6a6992d0765c29e12b714f0",
+        "index": "c0f89550..f5ab2991 100644",
+        "core_change": [
+            "-        padded_inp: torch.Tensor = F.pad(input.view(b * c, 1, h, w), spatial_pad, 'replicate')[:, :, None]",
+            "+        padded_inp: torch.Tensor = F.pad(input.reshape(b * c, 1, h, w), spatial_pad, 'replicate')[:, :, None]"
+        ],
+        "commit_message": "fix reshape for depth2normals\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "2fe1a3ad30cb5fa7226eee375f1008f1b647b1d3",
+        "index": "9463dc8a..e9619d44 100644",
+        "core_change": [
+            "-    return torch.mean(1. - dice_score)",
+            "+    return torch.mean(-dice_score + 1.)",
+            "-        return dice_loss(input, target)",
+            "+        return dice_loss(input, target, self.eps)"
+        ],
+        "commit_message": "fix mypy error\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "2fe1a3ad30cb5fa7226eee375f1008f1b647b1d3",
+        "index": "dc7a713b..eadf0659 100644",
+        "core_change": [
+            "-    weight = torch.pow(1. - input_soft, gamma)",
+            "+    weight = torch.pow(-input_soft + 1., gamma)"
+        ],
+        "commit_message": "fix mypy error\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "b90f271d897cd96f3101999587ceeef28c35a856",
+        "index": "5667bca4..482b0c77 100644",
+        "core_change": [
+            "-        input (torch.Tensor): image to be converted to grayscale.",
+            "+        input (torch.Tensor): RGB image to be converted to grayscale.",
+            "-        input (torch.Tensor): Image to be converted to grayscale.",
+            "+        input (torch.Tensor): RGB image to be converted to grayscale."
+        ],
+        "commit_message": "Fix typo in color files\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "2c31cd0098a5a484934c7f24bcbf728acbe6d924",
+        "index": "078f6d38..c599645e 100644",
+        "core_change": [
+            "-        lafs = lafs[:, idxs.view(-1), :, :]",
+            "+        lafs = torch.gather(lafs, 1, idxs.unsqueeze(-1).unsqueeze(-1).repeat(1, 1, 2, 3))"
+        ],
+        "commit_message": "batch size fix\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "e6ffda5078caf73855ee512c59dc86ec12ea38d9",
+        "index": "c04b9a36..078f6d38 100644",
+        "core_change": [
+            "-                max_coords_best = max_coords_flatten[:, idxs.view(-1)]",
+            "+                max_coords_best = torch.gather(max_coords_flatten, 1, idxs.unsqueeze(-1).repeat(1, 1, 3))"
+        ],
+        "commit_message": "fixed batch indexing\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "7db18ce0c28c0b7c93e9a61af55433f2d88d4213",
+        "index": "19205474..ad60b298 100644",
+        "core_change": [
+            "-    scale: torch.Tensor = 1. / torch.clamp(z_vec, eps)",
+            "+    scale: torch.Tensor = torch.tensor(1.) / torch.clamp(z_vec, eps)"
+        ],
+        "commit_message": "fix mypy errors\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "1c13d02d700ebcd053a560754f22e4247257a344",
+        "index": "8b038d2e..60634ad0 100644",
+        "core_change": [
+            "-        tensor (Tensor): image of the form (C, H, W).",
+            "+        tensor (Tensor): image of the form (1, C, H, W).",
+            "+    tensor = torch.squeeze(tensor)",
+            "-    tensor = torch.squeeze(tensor)"
+        ],
+        "commit_message": "Fix tensor_to_image\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "335a2791d8125622baaba01d20bce54d5dc4c977",
+        "index": "005e3b49..9907e148 100644",
+        "core_change": [
+            "-    return torch.stack(torch.meshgrid([ys, xs])).view(1, 2, -1)",
+            "+    return torch.stack(torch.meshgrid([ys, xs])).view(1, 2, -1)[:, (1, 0), :]"
+        ],
+        "commit_message": "fix create_meshgrid indexing and refactor tensor_to_image\n\n",
+        "repo_name": "kornia"
+    },
+    {
+        "commit_hash": "8e5e4892af72062a7c3f7fd890caefdcf19bab28",
+        "index": "7239988..71618ce 100644",
+        "core_change": [
+            "-        set_seed(config.sd_seed)",
+            "+            generator=torch.manual_seed(config.sd_seed)"
+        ],
+        "commit_message": "fix seed generator\n\n",
+        "repo_name": "lama-cleaner"
+    },
+    {
+        "commit_hash": "4686c7cb78ab9e4a4f8880a5f23505bd58edc8f6",
+        "index": "2fd73a8..577883a 100644",
+        "core_change": [
+            "-        mask = torch.where(mask > 0.5, torch.tensor(1.0), torch.tensor(0.0))",
+            "+        mask = torch.where(mask > 0.5, 1.0, 0.0)"
+        ],
+        "commit_message": "fix manga mask\n\n",
+        "repo_name": "lama-cleaner"
+    },
+    {
+        "commit_hash": "b40766c3330cf57957952b3a93c9735a8eced727",
+        "index": "a33359a3f..27cb3cb03 100644",
+        "core_change": [
+            "-            if not isinstance(cache, torch.Tensor):",
+            "+            if not isinstance(cache, Tensor):"
+        ],
+        "commit_message": "Fix mypy typing errors in pytorch_lightning/callbacks/model_checkpoint.py (#13617)\n\nCo-authored-by: Carlos Mochol\u00ed <carlossmocholi@gmail.com>\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "07b1b56d5c59ecc62e12fafd17f947934a9edb63",
+        "index": "ec5714776..6b70f6af1 100644",
+        "core_change": [
+            "-            current = torch.tensor(float(\"inf\" if self.mode == \"min\" else \"-inf\"))",
+            "+            current = torch.tensor(float(\"inf\" if self.mode == \"min\" else \"-inf\"), device=current.device)"
+        ],
+        "commit_message": "Fix setting device when creating \"inf\" monitor value in `ModelCheckpoint` (#10118)\n\nCo-authored-by: thomas chaton <thomas@grid.ai>\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "5593b6f772c75ae016580e2579c2af9f86b19a39",
+        "index": "a54d00a98..a507afa6b 100644",
+        "core_change": [
+            "-    if torch.distributed.is_available() and torch.distributed.is_initialized():",
+            "+    if torch.distributed.is_available() and torch.distributed.is_initialized() or tpu_distributed():"
+        ],
+        "commit_message": "Merge pull request #7872 from PyTorchLightning/refactor/logger-poc-changes\n\nRandom fixes for logger connector PoC\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "651c25feb66ba0a4c715ca671744a20f0a1355b0",
+        "index": "c43520410..a547144c8 100644",
+        "core_change": [
+            "-            hook_result.detach()",
+            "+            hook_result = hook_result.detach()",
+            "-                hook_result.cpu()",
+            "+                hook_result = hook_result.cpu()",
+            "-                hook_result.to(torch.device(\"cuda\", self.trainer.root_gpu))",
+            "+                hook_result = hook_result.to(torch.device(\"cuda\", self.trainer.root_gpu))"
+        ],
+        "commit_message": "Fix for incorrect usage of detach(), cpu(), to() (#6216)\n\n* Fix for incorrect detach/cpu calls (#6214)\n\n* Fix incorrect use of detach(), to(), and cpu(), #6214\n\n* Fix incorrect use of detach() and cpu(), #6214\n\n* update pr\n\n* add typing\n\n* chlog\n\n* more...\n\n* revert on module\n\n* update on comments\n\n* revert changes on model\n\nCo-authored-by: tchaton <thomas@grid.ai>\nCo-authored-by: Jirka Borovec <jirka.borovec@seznam.cz>\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "d0b23f784aa0ee37e0cc2eb64696086d7e17dfac",
+        "index": "c315c6633..be5d78193 100644",
+        "core_change": [
+            "-            with torch.no_grad:",
+            "+            with torch.no_grad():"
+        ],
+        "commit_message": "[bugfix] Correct call to torch.no_grad (#5124)\n\nCo-authored-by: Gregor Koporec <gregork@unicorn.gorenje.com>\nCo-authored-by: Jirka Borovec <Borda@users.noreply.github.com>\nCo-authored-by: Sean Naren <sean.narenthiran@gmail.com>\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "d521c1b1787930dd4f6375a3c61a25579ca59ee5",
+        "index": "a41a621c9..2bfe8fa28 100644",
+        "core_change": [
+            "-        gathered_result = world_size * [torch.zeros_like(result)]",
+            "+        gathered_result = [torch.zeros_like(result) for range(world_size)]"],
+        "commit_message": "Fix: gather_all_tensors cross GPUs  in DDP (#3319)\n\n* Fix: gather_all_tensors cross GPUs in metrics\n\n* add a test case for gather_all_tensors_ddp in #3253\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "3910ad033074367f6abfe0001562db725a75cb73",
+        "index": "670d36902..a9a96abaf 100644",
+        "core_change": [
+            "+            if isinstance(v, torch.Tensor):",
+            "+                v = v.detach()",
+            "-    numerator = torch.dot(result.float(), weights.t().float())",
+            "+    numerator = torch.dot(result.float(), weights.transpose(-1, 0).float())"
+        ],
+        "commit_message": "bugfix/3185 transpose (#3252)\n\n* change t() to transpose() as xla devices do not support .t() on 1-dim tensor\n\n* detach tensor before copying\n\n* Revert \"detach tensor before copying\"\n\nThis reverts commit 37cc7bbe\n\n* changed dims\n\n* added test_result_obj_on_tpu\n\n* detach before copying\n\n* detach before copying\n\n* detach before copying\n\n* replace torch.cat with sum\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "92f122e0df7e233f3a8b7873c7294155afbbf852",
+        "index": "8b392e5a1..c5d361364 100644",
+        "core_change": [
+            "-    return -torch.sum(recall[1:] - recall[:-1] * precision[:-1])",
+            "+    return -torch.sum((recall[1:] - recall[:-1]) * precision[:-1])"
+        ],
+        "commit_message": "Fix average_precision metric (#2319)\n\n* Fixed average_precision metric, parenthesis were missing. Added test test that failed with the old implementation\n\n* Modified CHANGELOG.md\n\n* Update CHANGELOG.md\n\nCo-authored-by: Jirka Borovec <Borda@users.noreply.github.com>\n\nCo-authored-by: Jirka Borovec <Borda@users.noreply.github.com>\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "cf2d32d0a6c757aad39c36b621a646ed3a24619a",
+        "index": "4604b6454..9d98c799a 100644",
+        "core_change": [
+            "-        loss_val = sum(output['val_loss'] for output in outputs) / len(outputs)",
+            "+        loss_val = torch.stack([x['val_loss'] for x in outputs]).mean()"
+        ],
+        "commit_message": "fix bugs in semantic segmentation example (#1824)\n\n* Update unet.py\n\n* Update semantic_segmentation.py\n",
+        "repo_name": "lightning"
+    },
+    {
+        "commit_hash": "4c64d0958cd6f484f73f7434750177dc1ec7c596",
+        "index": "aa1971f7..3dd0946f 100644",
+        "core_change": [
+            "-    entropy_per_class = torch.maximum(-probabilities * torch.log(torch.clamp(probabilities, 1e-10, 1)), 0)",
+            "+    entropy_per_class, _ = torch.max(-probabilities * torch.log(torch.clamp(probabilities, 1e-10, 1)), dim=0)"
+        ],
+        "commit_message": "Fixed confidence_penalty for newer versions of pytorch (#3156)\n\n\n",
+        "repo_name": "ludwig"
+    },
+    {
+        "commit_hash": "9f4639200d87195dca3e97a96067e63c813a7d16",
+        "index": "96a61063..6d8b4a7f 100644",
+        "core_change": [
+            "-            img = torch.from_numpy(img_entry).permute(2, 0, 1)",
+            "+            img = torch.from_numpy(np.array(img_entry, copy=True)).permute(2, 0, 1)"
+        ],
+        "commit_message": "Fix flaky ray nightly image test (#2493)\n\n\n",
+        "repo_name": "ludwig"
+    },
+    {
+        "commit_hash": "10b04bf3cc91a20834540e3e517ba1a8cfa87d07",
+        "index": "39895188..61889796 100644",
+        "core_change": [
+            "+    loss = loss_modules.RMSPELoss()",
+            "+    assert torch.isclose(loss(preds, target), output, rtol=0.0001)"
+        ],
+        "commit_message": "rmspe: add epsilon to avoid division by zero (#2139)\n\n* rmspe: add epsilon to avoid division by zero\n\nFixes #1281\n\n* use test convention\n\n* Update ludwig/utils/loss_utils.py\n\n* [pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci\n\nCo-authored-by: Justin <justinxzhao@gmail.com>\nCo-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>\n",
+        "repo_name": "ludwig"
+    },
+    {
+        "commit_hash": "81c260fb483e92c39195a1ca36e65bed33868157",
+        "index": "2042fd28..e6017722 100644",
+        "core_change": [
+            "-    binary_tensor = torch.randn([SEQ_SIZE, BINARY_W_SIZE], dtype=torch.float32)",
+            "+    binary_tensor = torch.randn([SEQ_SIZE, BINARY_W_SIZE], dtype=torch.float32).to(DEVICE)"
+        ],
+        "commit_message": "Fixed audio/bag/binary feature tests to work on GPU (#1600)\n\n* Fixed audio/bag/binary feature tests to work on GPU\n\n* Added timeseries feature test (#1601)\n\n* Removed device transfer calls from encoders to features\n",
+        "repo_name": "ludwig"
+    },
+    {
+        "commit_hash": "1daab8714463e63c8f4b4ba4caed3cc1ef97a195",
+        "index": "884f1c45..926a3297 100644",
+        "core_change": [
+            "-            inputs = inputs.type(torch.IntTensor)",
+            "+            inputs = inputs.type(torch.int)"
+        ],
+        "commit_message": "[torch] Enable GPU training (#1508)\n\n* Added more descriptive description_summary, fixed bug in TabNet combiner\n\n* Updated modules to do proper GPU conversion\n\n* Functional GPU training\n\n* Tabnet working, removed RayRemoteTrainer\n\n* Temporary changes to unblock GPU training\n\n* Functional test_seq_encoder\n\n* Cleaned up PR\n\n* Fixed failing CPU tests\n\n* Responded to comments\n\n* Fix failing GPU tests in test_api.py\n\n* [torch] Fix GPU tests for test_visualizations (#1539)\n\nUpdated torch.aranges to registered buffers in embedding_modules.py\n\n* [torch] Fix test_encoder.py for GPU (#1544)\n\n* Accept and move model to GPU as part of Predictor init (#1559)\n\n* [torch] Fixed tests in test_experiment.py (#1562)\n\n* Fixed tests in tests/integration_tests/test_experiment.py\n\n* Moved set embed and inputs to correct device in tests/ludwig/encoders/test_set_encoders.py\n\n* Moved set date and inputs to correct device in tests/ludwig/encoders/test_date_encoders.py\n\n* Moved bag embed and inputs to correct device in tests/ludwig/encoders/test_bag_encoders.py\n\n* Moved sequence embed and inputs to correct device in tests/ludwig/features/test_sequence_features.py\n\n* [torch] Fixed GPU issues in combiners.py (#1568)\n\n* Fix GPU tests in test_collect.py (#1569)\n\n* Added model to Predictor initialization\n\n* Fixed embedding modules tests (#1554)\n\n* Fixed embedding modules tests\n* Moved embedding modules to device in tests, removed duplicate argument\n\nCo-authored-by: Shreya Rajpal <shreya.rajpal@gmail.com>\n\n* Fixed encoders tests except test_h3_rnn_embed (#1556)\n\n* Fixed encoders tests except test_h3_rnn_embed\n\n* Addressed Shreya's comments\n\n* Moved embedding modules to device, used registered buffers\n\nCo-authored-by: Shreya Rajpal <shreya.rajpal@gmail.com>\n\n* Pass ECD object to Predictor\n\n* Removed model arg from predict function\n\nCo-authored-by: Jeffrey Tang <jeff@predibase.com>\nCo-authored-by: Jeffrey Tang <810895+jeffreyftang@users.noreply.github.com>\nCo-authored-by: Animesh Kumar <anmshkmr@users.noreply.github.com>\n",
+        "repo_name": "ludwig"
+    },
+    {
+        "commit_hash": "8e942aed8527fabb4995a3c46918056a5308604b",
+        "index": "3b181a64..e836225f 100644",
+        "core_change": [
+            "-    labels = torch.arange(num_classes, dtype=torch.long)",
+            "+    labels = torch.arange(num_classes, dtype=torch.long, device=scores.device)"
+        ],
+        "commit_message": "Fix the device of label in multiclass_nms (#5673)\n\n\n",
+        "repo_name": "mmdetection"
+    },
+    {
+        "commit_hash": "2a24412846b45cda96f1da91ec30e41e296911a5",
+        "index": "efd7603a..0b59a6e7 100644",
+        "core_change": [
+            "-            weight_targets = torch.tensor(0).cuda()",
+            "+            weight_targets = bbox_pred.new_tensor(0)"
+        ],
+        "commit_message": "[Enhance]: Avoid crash in empty gt training of GFL (#4631)\n\n* avoid crash in empty gt training of GFL\n\n* real fix of the bug\n",
+        "repo_name": "mmdetection"
+    }
+]
