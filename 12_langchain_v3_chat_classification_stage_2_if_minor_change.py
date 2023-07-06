@@ -11,11 +11,11 @@ import openai
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-input_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category_strict_general_case_Moshi.json"
-# input_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_compare.json"
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
+input_path = base_path + "test_1_data_1k.json"
+stage_1_path = base_path + "misuse_v2_stage_1_code_explain.json"
+output_path = base_path + "misuse_v2_stage_1_code_explain.json"
 
-stage_1_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v2_stage_1_code_explain.json'
-output_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_2_minor_change.json'
 data_dict = {}
 with open(input_path, encoding="utf-8") as f:
     data_manual = json.load(f)
@@ -91,7 +91,7 @@ def completion_with_backoff(**kwargs):
 
 
 # 844
-for i in range(1451, len(data)):
+for i in range(0, len(data)):
     # for i in range(110, 114):
     print("current_index:", i, "/", len(data))
 

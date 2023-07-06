@@ -4,12 +4,11 @@ import json
 import Levenshtein
 
 
-manual_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category_strict_general_case_Moshi.json"
-predict_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_2_if_api_fix.json'
-predict_path_minor_change = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_2_minor_change.json'
-
-output_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_2.json'
-
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
+manual_path = base_path + "test_1_data_1k.json"
+predict_path = base_path + "misuse_v3_classification_stage_2_if_api_fix.json"
+predict_path_minor_change = base_path + "misuse_v3_classification_stage_2_minor_change.json"
+output_path = base_path + "misuse_v3_classification_stage_2.json"
 
 def check_API(data_list, API_method_list):
     data_list = " ".join(data_list)

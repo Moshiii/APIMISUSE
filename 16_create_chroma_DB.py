@@ -6,9 +6,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-input_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category_strict_general_case_Moshi_1k.json"
+input_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\manual_invest_data_1k.json"
 rule_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_fix_pattern_rules.json"
-DB_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_changes_fix_pattern_rules.json"
 
 
 client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet",
@@ -46,7 +45,8 @@ with open(rule_path, encoding="utf-8") as f:
     for line in data:
         item = {
             "number": line["number"],
-            "fix_rule": line["stage_3_answer"],
+            "change": line["change"],
+            "fix_rule": line["fix_rule"],
         }
         rule_dict[line["number"]] = item
 
@@ -62,11 +62,6 @@ for key in data_dict.keys():
 print(len(data_list))
 print(data_list[0])
 
-#write to file 
-with open(DB_path, "w", encoding="utf-8") as f:
-    json.dump(data_list, f, indent=4)
-
-
 documents = []
 ids = []
 for x in data_list:
@@ -74,8 +69,8 @@ for x in data_list:
     ids.append(str(x["number"]))
 print("start db injection")
 
-collection.add(
-    documents=documents,
-    ids=ids,
-)
-print("finished")
+# collection.add(
+#     documents=documents,
+#     ids=ids,
+# )
+# print("finished")

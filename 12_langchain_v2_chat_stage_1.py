@@ -14,8 +14,11 @@ from tenacity import (
 def completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
 
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
+input_path = base_path + "test_1_data_1k.json"
+output_path = base_path + "misuse_v2_stage_1_code_explain.json"
 # read
-with open("C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category.json", encoding="utf-8") as f:
+with open(input_path, encoding="utf-8") as f:
     data = json.load(f)
 # get commit message and change
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -44,7 +47,7 @@ code change explaination:
 """
 
 #1032
-for i in range(1032, len(data)):
+for i in range(0, len(data)):
     # for i in range(110, 114):
     print("current_index:", i, "/", len(data))
 
@@ -93,6 +96,6 @@ for i in range(1032, len(data)):
         "code_change_explaination": code_change_explaination,
     }
 
-    with open('C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v2_stage_1_code_explain.json', 'a') as f:
+    with open(output_path, 'a') as f:
         json.dump(output, f)
         f.write(os.linesep)
