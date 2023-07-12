@@ -1,0 +1,625 @@
+{
+    "4": {
+        "number": 4,
+        "change": [
+            "class TrainerIntegrationTest(unittest.TestCase):",
+            "",
+            "# Adding one column not used by the model should have no impact",
+            "z = np.random.normal(size=(64,)).astype(np.float32)",
+            "-        train_dataset = nlp.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})",
+            "+        train_dataset = datasets.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})",
+            "model = RegressionModel()",
+            "trainer = Trainer(model, args, train_dataset=train_dataset)",
+            "trainer.train()",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of using dataset for training the model, if the pattern \"nlp.Dataset.from_dict\" is detected, then change the code from \"nlp.Dataset.from_dict\" to \"datasets.Dataset.from_dict\" to fix the API misuse."
+        ]
+    },
+    "7": {
+        "number": 7,
+        "change": [
+            "def test_quantile():",
+            "",
+            "",
+            "def test_pi():",
+            "-    x = torch.empty(1000).log_normal_(0, 1)",
+            "+    x = torch.randn(1000).exp()",
+            "assert_equal(pi(x, prob=0.8), quantile(x, probs=[0.1, 0.9]))",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of initializing \"x\" using the \"torch.empty\" function, if the pattern of generating random numbers with \"torch.randn\" and applying the exponential function \"exp()\" is detected, then change the code from \"x = torch.empty(1000).log_normal_(0, 1)\" to \"x = torch.randn(1000).exp()\" to fix the API misuse."
+        ]
+    },
+    "8": {
+        "number": 8,
+        "change": [
+            "class TPUAccelerator(Accelerator):",
+            "Return:",
+            "A tensor of shape (world_size, batch, ...)",
+            "\"\"\"",
+            "-        return xm.all_gather(tensor, group=group, sync_grads=sync_grads)",
+            "+        # todo: Add support for backward with all_gather",
+            "+        if torch.distributed.is_initialized():",
+            "+            return xm.all_gather(tensor, group=group, sync_grads=sync_grads)",
+            "+        return tensor",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of \"if torch.distributed.is_initialized()\" is True, if the pattern of calling \"xm.all_gather\" is detected, then remove the code that directly returns the result of \"xm.all_gather\" and add additional code to support backward with all_gather."
+        ]
+    },
+    "9": {
+        "number": 9,
+        "change": [
+            "class Swinv2SelfAttention(nn.Module):",
+            "query_layer = self.transpose_for_scores(mixed_query_layer)",
+            "",
+            "# cosine attention",
+            "-        attention_scores = F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)",
+            "+        attention_scores = nn.functional.normalize(query_layer, dim=-1) @ nn.functional.normalize(",
+            "+            key_layer, dim=-1",
+            "+        ).transpose(-2, -1)",
+            "logit_scale = torch.clamp(self.logit_scale, max=math.log(1.0 / 0.01)).exp()",
+            "attention_scores = attention_scores * logit_scale",
+            "relative_position_bias_table = self.continuous_position_bias_mlp(self.relative_coords_table).view(",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of using the `normalize` function from the `nn.functional` module, if the pattern `F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)` is detected, then change the code from `F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)` to `nn.functional.normalize(query_layer, dim=-1) @ nn.functional.normalize(key_layer, dim=-1).transpose(-2, -1)` to fix the API misuse."
+        ]
+    },
+    "12": {
+        "number": 12,
+        "change": [
+            "def get_rotation_matrix2d(",
+            "",
+            "# create output tensor",
+            "batch_size: int = center.shape[0]",
+            "-    one = torch.tensor(1.).to(center.device)",
+            "+    one = torch.tensor(1., device=center.device, dtype=center.dtype)",
+            "M: torch.Tensor = torch.zeros(",
+            "batch_size, 2, 3, device=center.device, dtype=center.dtype)",
+            "M[..., 0:2, 0:2] = scaled_rotation",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of creating a tensor with a specific device and dtype, if the pattern of using \".to()\" to specify the device is detected, then the \".to()\" should be replaced with an argument in the constructor to fix the API misuse."
+        ]
+    },
+    "15": {
+        "number": 15,
+        "change": [
+            "class Trainer(TrainerBase):",
+            "break",
+            "sys.stdout.flush()",
+            "",
+            "-        model.load_state_dict(torch.load(best_model_path))",
+            "+        if rank == 0:",
+            "+            model.load_state_dict(torch.load(best_model_path))",
+            "return model, best_metric",
+            "",
+            "def _run_epoch(",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of \"rank == 0\", if the pattern of loading the model's state dictionary is detected, then the code for loading the model's state dictionary is added to fix the API misuse."
+        ]
+    },
+    "16": {
+        "number": 16,
+        "change": [
+            "def test_preprocess_weights_for_loading_gru_incompatible():",
+            "",
+            "def assert_not_compatible(src, dest, message):",
+            "with pytest.raises(ValueError) as ex:",
+            "-            keras.engine.topology.preprocess_weights_for_loading(",
+            "+            keras.engine.saving.preprocess_weights_for_loading(",
+            "dest, initialize_weights(src).get_weights())",
+            "assert message in ex.value.message",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of testing for compatibility between weight sources, if there is a call to `keras.engine.topology.preprocess_weights_for_loading`, it should be changed to `keras.engine.saving.preprocess_weights_for_loading` to fix the API misuse."
+        ]
+    },
+    "17": {
+        "number": 17,
+        "change": [
+            "Returns:",
+            "\"\"\"",
+            "",
+            "",
+            "-class BERTScore(nlp.Metric):",
+            "+class BERTScore(datasets.Metric):",
+            "def _info(self):",
+            "-        return nlp.MetricInfo(",
+            "+        return datasets.MetricInfo(",
+            "description=_DESCRIPTION,",
+            "citation=_CITATION,",
+            "homepage=\"https://github.com/Tiiiger/bert_score\",",
+            "inputs_description=_KWARGS_DESCRIPTION,",
+            "-            features=nlp.Features(",
+            "+            features=datasets.Features(",
+            "{",
+            "-                    \"predictions\": nlp.Value(\"string\", id=\"sequence\"),",
+            "-                    \"references\": nlp.Sequence(nlp.Value(\"string\", id=\"sequence\"), id=\"references\"),",
+            "+                    \"predictions\": datasets.Value(\"string\", id=\"sequence\"),",
+            "+                    \"references\": datasets.Sequence(datasets.Value(\"string\", id=\"sequence\"), id=\"references\"),",
+            "}",
+            "),",
+            "codebase_urls=[\"https://github.com/Tiiiger/bert_score\"],",
+            ""
+        ],
+        "fix_pattern": [
+            "In the context of the code, if the class `BERTScore` is using `nlp` module and its features and info classes, then change it to use `datasets` module and its corresponding classes and features to fix the API misuse."
+        ]
+    },
+    "18": {
+        "number": 18,
+        "change": [
+            "class CoarseMaskHead(FCNMaskHead):",
+            "for i in range(num_fcs):",
+            "fc_in_channels = (",
+            "last_layer_dim if i == 0 else self.fc_out_channels)",
+            "-            self.fcs.append(nn.Linear(fc_in_channels, self.fc_out_channels))",
+            "+            self.fcs.append(Linear(fc_in_channels, self.fc_out_channels))",
+            "last_layer_dim = self.fc_out_channels",
+            "output_channels = self.num_classes * self.output_area",
+            "-        self.fc_logits = nn.Linear(last_layer_dim, output_channels)",
+            "+        self.fc_logits = Linear(last_layer_dim, output_channels)",
+            "",
+            "def init_weights(self):",
+            "for m in self.fcs.modules():",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of adding linear layers to self.fcs, if the pattern of using \"nn.Linear\" is detected, then change \"nn.Linear\" to \"Linear\" to fix the API misuse."
+        ]
+    },
+    "21": {
+        "number": 21,
+        "change": [
+            "class SequenceTagger(flair.nn.DefaultClassifier):",
+            "for sentence in batch:",
+            "sentence.remove_labels(label_name)",
+            "",
+            "-            loss = self._calculate_loss(features, gold_labels)",
+            "-",
+            "if return_loss:",
+            "+                loss = self._calculate_loss(features, gold_labels)",
+            "overall_loss += loss[0]",
+            "label_count += loss[1]",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of \"if return_loss\", if the pattern of \"loss = self._calculate_loss(features, gold_labels)\" is detected, then remove the code \"loss = self._calculate_loss(features, gold_labels)\" to fix the API misuse."
+        ]
+    },
+    "23": {
+        "number": 23,
+        "change": [
+            "class TacotronTrainTest(unittest.TestCase):",
+            "optimizer = optim.Adam(model.parameters(), lr=c.lr)",
+            "for i in range(5):",
+            "mel_out, linear_out, align, stop_tokens = model.forward(",
+            "-                input, input_lengths, mel_spec)",
+            "+                input, input_lengths, mel_spec, speaker_ids)",
+            "optimizer.zero_grad()",
+            "loss = criterion(mel_out, mel_spec, mel_lengths)",
+            "stop_loss = criterion_st(stop_tokens, stop_targets)",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of calling the `model.forward` method, if the pattern of not providing the `speaker_ids` argument is detected, then the `input, input_lengths, mel_spec` part of the code is changed to `input, input_lengths, mel_spec, speaker_ids` to fix the API misuse."
+        ]
+    },
+    "24": {
+        "number": 24,
+        "change": [
+            "def evaluate(args, model, tokenizer, prefix=\"\", test=False):",
+            "eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size)",
+            "",
+            "# multi-gpu evaluate",
+            "-        if args.n_gpu > 1:",
+            "+        if args.n_gpu > 1 and not isinstance(model, torch.nn.DataParallel):",
+            "model = torch.nn.DataParallel(model)",
+            "",
+            "# Eval!",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of checking if multiple GPUs are available <condition>, if the model is not already wrapped in the torch.nn.DataParallel module <pattern>, then the line of code that assigns the model to the torch.nn.DataParallel module is added <code_one> while the old line of code that checks if multiple GPUs are available is removed <code_code_two> to fix the API misuse."
+        ]
+    },
+    "31": {
+        "number": 31,
+        "change": [
+            "class StableDiffusionProcessingTxt2Img(StableDiffusionProcessing):",
+            "return samples",
+            "",
+            "x = create_random_tensors([opt_C, self.firstphase_height // opt_f, self.firstphase_width // opt_f], seeds=seeds, subseeds=subseeds, subseed_strength=self.subseed_strength, seed_resize_from_h=self.seed_resize_from_h, seed_resize_from_w=self.seed_resize_from_w, p=self)",
+            "-        samples = self.sampler.sample(self, x, conditioning, unconditional_conditioning, image_conditioning=self.create_dummy_mask(x))",
+            "+        samples = self.sampler.sample(self, x, conditioning, unconditional_conditioning, image_conditioning=self.create_dummy_mask(x, first_phase=True))",
+            "",
+            "samples = samples[:, :, self.truncate_y//2:samples.shape[2]-self.truncate_y//2, self.truncate_x//2:samples.shape[3]-self.truncate_x//2]",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of calling the \"sample\" method of the \"sampler\" object, if the \"image_conditioning\" argument is missing, then add the \"image_conditioning=self.create_dummy_mask(x, first_phase=True)\" code to fix the API misuse."
+        ]
+    },
+    "32": {
+        "number": 32,
+        "change": [
+            "def sort_batch_by_length(tensor: torch.autograd.Variable, sequence_lengths: torc",
+            "sorted_tensor = tensor.index_select(0, permutation_index)",
+            "# This is the equivalent of zipping with index, sorting by the original",
+            "# sequence lengths and returning the now sorted indices.",
+            "-    index_range = Variable(torch.range(0, len(sequence_lengths) - 1).long())",
+            "+    index_range = Variable(torch.arange(0, len(sequence_lengths)).long())",
+            "_, reverse_mapping = permutation_index.sort(0, descending=False)",
+            "restoration_indices = index_range.index_select(0, reverse_mapping)",
+            "return sorted_tensor, sorted_sequence_lengths, restoration_indices",
+            ""
+        ],
+        "fix_pattern": [
+            "in the condition of updating the range of indices, if there is an issue with the API usage, then change the code for creating the index range from torch.range to torch.arange to correctly handle the length of the sequence."
+        ]
+    },
+    "40": {
+        "number": 40,
+        "change": [
+            "def makenp(x, modality=None):",
+            "",
+            "def pytorch_np(x, modality):",
+            "import torch",
+            "-    if isinstance(x, torch.autograd.variable.Variable):",
+            "+    if isinstance(x, torch.autograd.Variable):",
+            "x = x.data",
+            "x = x.cpu().numpy()",
+            "if modality == 'IMG':",
+            ""
+        ],
+        "fix_pattern": [
+            "in the condition of checking if x is an instance of torch.autograd.variable.Variable, if the pattern of lower case \"variable\" is detected, then change the code from \"torch.autograd.variable.Variable\" to \"torch.autograd.Variable\" to fix the API misuse."
+        ]
+    },
+    "43": {
+        "number": 43,
+        "change": [
+            "class TrainingTypePlugin(ABC):",
+            "self.lr_schedulers = schedulers",
+            "",
+            "def _move_optimizer_state(self, device: Optional[torch.device] = None) -> None:",
+            "-        \"\"\"Moves the state of the optimizers to the GPU if needed.\"\"\"",
+            "-        device = device or self.root_device",
+            "+        \"\"\"Moves the state of the optimizers to the appropriate device if needed.\"\"\"",
+            "for opt in self.optimizers:",
+            "for p, v in opt.state.items():",
+            "-                opt.state[p] = apply_to_collection(v, torch.Tensor, move_data_to_device, device)",
+            "+                # `self.root_device` would raise error if called outside the spawn process",
+            "+                # while training on 8 and more cores.",
+            "+                opt.state[p] = apply_to_collection(v, torch.Tensor, move_data_to_device, device or self.root_device)",
+            "",
+            "def optimizer_state(self, optimizer: Optimizer) -> Dict[str, Tensor]:",
+            "\"\"\"Returns state of an optimizer.",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of `_move_optimizer_state` function, if the code to move the state of the optimizers to the GPU is detected, then the code is changed to move the state of the optimizers to the appropriate device if needed by using `device or self.root_device` instead of `device` as the argument for `move_data_to_device` function."
+        ]
+    },
+    "50": {
+        "number": 50,
+        "change": [
+            "class GraphConv(MessagePassing):",
+            "self.lin.reset_parameters()",
+            "",
+            "def forward(self, x, edge_index):",
+            "+        if isinstance(x, Tensor):",
+            "+            x = (x, x)",
+            "return self.propagate(edge_index, x=(self.lin(x[0]), x[1]))",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of checking if x is an instance of Tensor, if a pattern of x being a tuple (x, x) is detected, then the code is modified to assign x as a tuple (x, x) to fix the API misuse."
+        ]
+    },
+    "53": {
+        "number": 53,
+        "change": [
+            "class Trainer:",
+            ").to(self.args.device)",
+            "",
+            "elif is_sagemaker_dp_enabled():",
+            "-            model = DDP(model, device_ids=[dist.get_local_rank()], broadcast_buffers=False)",
+            "+            model = nn.parallel.DistributedDataParallel(",
+            "+                model, device_ids=[int(os.getenv(\"SMDATAPARALLEL_LOCAL_RANK\"))]",
+            "+            )",
+            "elif self.args.local_rank != -1:",
+            "kwargs = {}",
+            "if self.args.ddp_find_unused_parameters is not None:",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of `elif is_sagemaker_dp_enabled()`, if the pattern `model = DDP(...)` is detected, then remove the `model = DDP(...)` code and add `model = nn.parallel.DistributedDataParallel(...)` to fix the API misuse."
+        ]
+    },
+    "54": {
+        "number": 54,
+        "change": [
+            "class Network(object):",
+            "\"\"\"",
+            "@layer",
+            "def softmax(self, target, axis, name=None):",
+            "-        max_axis = tf.reduce_max(target, axis, keepdims=True)",
+            "+        max_axis = tf.reduce_max(target, axis, keep_dims=True)",
+            "target_exp = tf.exp(target-max_axis)",
+            "-        normalize = tf.reduce_sum(target_exp, axis, keepdims=True)",
+            "+        normalize = tf.reduce_sum(target_exp, axis, keep_dims=True)",
+            "softmax = tf.div(target_exp, normalize, name)",
+            "return softmax",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of \"softmax\" function, if the \"keepdims\" parameter is used as \"keep_dims\", then the code is changed from \"reduce_max(target, axis, keepdims=True)\" to \"reduce_max(target, axis, keep_dims=True)\" to fix the API misuse."
+        ]
+    },
+    "55": {
+        "number": 55,
+        "change": [
+            "class RNN(torch.nn.Module):",
+            "if not isinstance(ilens, torch.Tensor):",
+            "ilens = torch.tensor(ilens)",
+            "xs_pack = pack_padded_sequence(xs_pad, ilens.cpu(), batch_first=True)",
+            "-        self.nbrnn.flatten_parameters()",
+            "+        if self.training:",
+            "+            self.nbrnn.flatten_parameters()",
+            "if prev_state is not None and self.nbrnn.bidirectional:",
+            "# We assume that when previous state is passed,",
+            "# it means that we're streaming the input",
+            ""
+        ],
+        "fix_pattern": [
+            "in the condition of checking if the model is in training mode, if the pattern of self.nbrnn.flatten_parameters() is detected, then remove the self.nbrnn.flatten_parameters() code to fix the API misuse."
+        ]
+    },
+    "56": {
+        "number": 56,
+        "change": [
+            "class TFXLNetModelTest(TFModelTesterMixin, unittest.TestCase):",
+            "# Send to model",
+            "loss = model(tuple_input[:-1])[0]",
+            "",
+            "-                self.assertEqual(loss.shape, [loss_size])",
+            "+                self.assertEqual(loss.shape.as_list(), expected_loss_size)",
+            "",
+            "",
+            "@require_tf",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of \"comparing the shape of the loss with a specific value\", if the pattern of \"loss.shape\" is detected, then change the code from \"loss.shape\" to \"loss.shape.as_list()\" to fix the API misuse."
+        ]
+    },
+    "58": {
+        "number": 58,
+        "change": [
+            "def sigmoid_example(design):",
+            "torch.tensor([[-1.5, 0.5], [1.5, 0.]])",
+            "),",
+            "(",
+            "-        known_covariance_linear_model(torch.tensor([1., -1.]), torch.tensor(10.), torch.tensor(1.)),",
+            "+        known_covariance_linear_model(torch.tensor([1., -1.]), torch.tensor([10., 10.]), torch.tensor(1.)),",
+            "nz_lm_2p_10_10_1,",
+            "torch.tensor([[-1., 0.5], [2.5, -2.]])",
+            "),",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of `sigmoid_example` function, if a pattern of using `torch.tensor()` with different values inside the parentheses is detected, then change the values inside the parentheses to `[10., 10.]` to fix the API misuse."
+        ]
+    },
+    "59": {
+        "number": 59,
+        "change": [
+            "class DetaModel(DetaPreTrainedModel):",
+            "scale = 2 * math.pi",
+            "",
+            "dim_t = torch.arange(num_pos_feats, dtype=torch.float32, device=proposals.device)",
+            "-        dim_t = temperature ** (2 * (dim_t // 2) / num_pos_feats)",
+            "+        dim_t = temperature ** (2 * torch.div(dim_t, 2) / num_pos_feats)",
+            "# batch_size, num_queries, 4",
+            "proposals = proposals.sigmoid() * scale",
+            "# batch_size, num_queries, 4, 128",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of calculating `dim_t`, if division between `dim_t` and 2 is detected, then the code `(dim_t // 2)` should be changed to `torch.div(dim_t, 2)` to fix the API misuse."
+        ]
+    },
+    "61": {
+        "number": 61,
+        "change": [
+            "class LxmertAttention(nn.Module):",
+            "attention_scores = attention_scores + attention_mask",
+            "",
+            "# Normalize the attention scores to probabilities.",
+            "-        attention_probs = nn.Softmax(dim=-1)(attention_scores)",
+            "+        attention_probs = nn.functional.softmax(attention_scores, dim=-1)",
+            "",
+            "# This is actually dropping out entire tokens to attend to, which might",
+            "# seem a bit unusual, but is taken from the original Transformer paper.",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of normalizing attention scores to probabilities, if the pattern of using nn.Softmax() is detected, then change it to nn.functional.softmax() to fix the API misuse."
+        ]
+    },
+    "66": {
+        "number": 66,
+        "change": [
+            "class DynamicConvolution2D(nn.Module):",
+            "weight = self.linear_weight(x)  # B x T x kH",
+            "weight = F.dropout(weight, self.dropout_rate, training=self.training)",
+            "weight = weight.view(B, T, H, k).transpose(1, 2).contiguous()  # B x H x T x k",
+            "-        weight_new = torch.zeros(B * H * T * (T + k - 1)).view(B, H, T, T + k - 1).fill_(float('-inf'))",
+            "+        weight_new = torch.zeros(B * H * T * (T + k - 1), dtype=weight.dtype)",
+            "+        weight_new = weight_new.view(B, H, T, T + k - 1).fill_(float('-inf'))",
+            "weight_new = weight_new.to(x.device)  # B x H x T x T+k-1",
+            "weight_new.as_strided((B, H, T, k), ((T + k - 1) * T * H, (T + k - 1) * T, T + k, 1)).copy_(weight)",
+            "weight_new = weight_new.narrow(-1, int((k - 1) / 2), T)  # B x H x T x T(k)",
+            ""
+        ],
+        "fix_pattern": [
+            "in the condition of creating a new tensor with zeros and filling it with a specific value, if the tensor is reshaped before filling, then add a dtype argument to the tensor creation to fix the API misuse."
+        ]
+    },
+    "68": {
+        "number": 68,
+        "change": [
+            "class Gru(TransformationBase):",
+            "",
+            "def tf_apply(self, x, sequence_length=None):",
+            "x, state = tf.nn.dynamic_rnn(",
+            "-            cell=self.cell, inputs=x, sequence_length=sequence_length, dtype=tf.float32,",
+            "+            cell=self.cell, inputs=x, sequence_length=sequence_length, initial_state=None,",
+            "+            dtype=util.tf_dtype(dtype='float'),",
+            "# Weird TensorFlow behavior? (https://github.com/tensorflow/tensorflow/issues/15874)",
+            "parallel_iterations=(self.input_spec['shape'][0] + 1)",
+            ")",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of calling `tf.nn.dynamic_rnn` function in the `tf_apply` method of the `Gru` class, if the pattern of not specifying the `initial_state` argument and using `dtype=tf.float32` is detected, then the code should be changed to include the `initial_state=None` argument and use `dtype=util.tf_dtype(dtype='float')` to fix the API misuse."
+        ]
+    },
+    "69": {
+        "number": 69,
+        "change": [
+            "class Optimizer(Component):",
+            "For those we treat model as max_norm.",
+            "eg. optimizer.clip_grad_norm(max_norm)",
+            "\"\"\"",
+            "-            return torch.nn.utils.clip_grad_norm_(self.params, max_norm)",
+            "+            return clip_grad_norm_(self.params, max_norm)",
+            "else:",
+            "-            return torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)",
+            "+            return clip_grad_norm_(model.parameters(), max_norm)",
+            "",
+            "def pre_export(self, model):",
+            "pass",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition where the model is treated as max_norm, the code was changed from using the torch.nn.utils.clip_grad_norm_ method to directly calling the clip_grad_norm_ method to fix the API misuse."
+        ]
+    },
+    "76": {
+        "number": 76,
+        "change": [
+            "def main(args):",
+            "bob_decision = Marginal(Search(bob))",
+            "",
+            "# Here Alice and Bob slightly prefer one location over the other a priori",
+            "-    shared_preference = Variable(torch.Tensor([args.preference]))",
+            "+    shared_preference = torch.tensor([args.preference])",
+            "",
+            "bob_depth = args.depth",
+            "num_samples = args.num_samples",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of declaring a shared preference variable, if the pattern of initializing the variable with the Variable function is detected, then change the code to initialize the variable using the torch.tensor function to fix the API misuse."
+        ]
+    },
+    "81": {
+        "number": 81,
+        "change": [
+            "class Planetoid(Dataset):",
+            "# Create unweighted sparse adjacency matrix.",
+            "weight = torch.ones(index.size(1))",
+            "n = input.size(0)",
+            "-        adj = torch.sparse.FloatTensor(index, weight, torch.Size([n, n]))",
+            "+        adj = SparseTensor(index, weight, torch.Size([n, n]))",
+            "",
+            "# Bundle graph to data object.",
+            "-        self.data = Data(input, adj, position=None, target=target)",
+            "+        self.data = Data(input, adj, position=None, target=target.long())",
+            "",
+            "def __getitem__(self, index):",
+            "data = self.data",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of creating an unweighted sparse adjacency matrix, if the pattern of using the `torch.sparse.FloatTensor` function is detected, then the code is changed to use the `SparseTensor` class instead, and the `target` variable is cast to `long` using `.long()` method to fix the API misuse."
+        ]
+    },
+    "85": {
+        "number": 85,
+        "change": [
+            "\"import sys\\n\",",
+            "\"sys.path.append(f'{os.getcwd()}/SentEval')\\n\",",
+            "\"\\n\",",
+            "-        \"import tensorflow_hub as hub\\n\",",
+            "\"import tensorflow as tf\\n\",",
+            "+        \"\\n\",",
+            "+        \"# Prevent TF from claiming all GPU memory so there is some left for pytorch.\\n\",",
+            "+        \"gpus = tf.config.list_physical_devices('GPU')\\n\",",
+            "+        \"if gpus:\\n\",",
+            "+        \"  # Memory growth needs to be the same across GPUs.\\n\",",
+            "+        \"  for gpu in gpus:\\n\",",
+            "+        \"    tf.config.experimental.set_memory_growth(gpu, True)\\n\",",
+            "+        \"\\n\",",
+            "+        \"import tensorflow_hub as hub\\n\",",
+            "\"import tensorflow_text\\n\",",
+            "\"import senteval\\n\",",
+            "\"import time\\n\",",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of checking if GPUs are available, the pattern of preventing TensorFlow from claiming all GPU memory and setting memory growth for each GPU is added to fix the API misuse of not properly managing GPU memory."
+        ]
+    },
+    "88": {
+        "number": 88,
+        "change": [
+            "def create_checkerboard(h, w, nw):",
+            "",
+            "",
+            "# TODO: Isn't this function duplicated with eye_like?",
+            "-def create_eye_batch(batch_size, eye_size):",
+            "+def create_eye_batch(batch_size, eye_size, device=None, dtype=None):",
+            "\"\"\"Creates a batch of identity matrices of shape Bx3x3",
+            "\"\"\"",
+            "-    return torch.eye(eye_size).view(",
+            "+    return torch.eye(eye_size, device=device, dtype=dtype).view(",
+            "1, eye_size, eye_size).expand(batch_size, -1, -1)",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of adding additional arguments to a function, if a pattern of API misuse is detected (in this case, missing `device` and `dtype` arguments in the `torch.eye()` function), then add the missing arguments (`device=device, dtype=dtype`) to the function call (`torch.eye(eye_size, device=device, dtype=dtype)`)."
+        ]
+    },
+    "93": {
+        "number": 93,
+        "change": [
+            "class DNAConv(MessagePassing):",
+            "num_edges = edge_index.size(1)",
+            "",
+            "edge_index, edge_weight = gcn_norm(edge_index, x.size(self.node_dim),",
+            "-                                           edge_weight, self.improved, x.dtype)",
+            "+                                           edge_weight, dtype=x.dtype)",
+            "",
+            "if self.cached:",
+            "self._cache = (num_edges, edge_index, edge_weight)",
+            ""
+        ],
+        "fix_pattern": [
+            "In the condition of checking if the attribute 'cached' is true, if the pattern of passing 'self.improved' as an argument to the 'gcn_norm' function is detected, then remove 'self.improved' from the arguments passed to the 'gcn_norm' function to fix the API misuse."
+        ]
+    }
+}

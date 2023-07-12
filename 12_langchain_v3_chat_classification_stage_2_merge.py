@@ -3,9 +3,21 @@ from collections import Counter
 import json
 import Levenshtein
 
+# calib
+# manual
+# test_1
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\calib\\"
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\manual\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_2\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\extra\\"
+# manual_path = base_path + "calib_data_1k.json"
+# manual_path = base_path + "test_1_data_1k.json"
+# manual_path = base_path + "test_2_data_1k.json"
+# manual_path = base_path + "extra_data_223.json"
+manual_path = base_path + "manual_data_1k.json"
+# manual_path = base_path + "manual_invest_data_1k.json"
 
-base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
-manual_path = base_path + "test_1_data_1k.json"
 predict_path = base_path + "misuse_v3_classification_stage_2_if_api_fix.json"
 predict_path_minor_change = base_path + "misuse_v3_classification_stage_2_minor_change.json"
 output_path = base_path + "misuse_v3_classification_stage_2.json"
@@ -33,16 +45,13 @@ def check_distance(added,removed):
     distance = Levenshtein.distance(added,removed)
     return added,removed,distance
 
-    
-
-
-
 # read
 data_dict = {}
 with open(manual_path, encoding="utf-8") as f:
     data_manual = json.load(f)
     for line in data_manual:
         data_dict[line["number"]] = line
+print("data_dict ",len(data_dict))
 
 data_stage_minor_change = {}
 with open(predict_path_minor_change, encoding="utf-8") as f:
@@ -51,7 +60,7 @@ with open(predict_path_minor_change, encoding="utf-8") as f:
     data = [json.loads(line) for line in data]
     for line in data:
         data_stage_minor_change[line["number"]] = line
-
+print("data_stage_minor_change ",len(data_stage_minor_change))
 
 data_stage_3_dict = {}
 with open(predict_path, encoding="utf-8") as f:
@@ -60,6 +69,7 @@ with open(predict_path, encoding="utf-8") as f:
     data = [json.loads(line) for line in data]
     for line in data:
         data_stage_3_dict[line["number"]] = line
+print("data_stage_3_dict ",len(data_stage_3_dict))
 
 with open(output_path, 'w', encoding="utf-8") as f:
     f.write("")
@@ -70,7 +80,8 @@ for key in data_dict.keys():
         if key in data_stage_3_dict.keys():
             data_dict[key]["minor_change"] = data_stage_minor_change[key]["answer"]
             data_dict[key]["if_API_fix"] = data_stage_3_dict[key]["answer"]
-print(len(data_dict))
+
+print("data_dict ",len(data_dict))
 # convert data_dict to list
 data = []
 for key in data_dict.keys():
@@ -139,9 +150,8 @@ for idx in range(len(data)):
     # if minor_change == "no" and if_API_fix == "yes" and if_contains_API == True:
     if minor_change == "no" and if_API_fix == "yes" and distance>3:
     # if minor_change == "no" and if_API_fix == "yes" :
-    # if minor_change == "no" and if_API_fix == "yes" :
+    # if if_API_fix == "yes":
     # if minor_change == "no":
-        # if if_API_fix == "yes":
         answer = "yes"
     else:
         answer = "no"
@@ -155,7 +165,6 @@ for idx in range(len(data)):
     data_filtered.append(data[idx])
 
 print("total: ", len(data_filtered))
-data_filtered = [line for line in data_filtered if line["answer"] =="yes" or line["label"] =="yes"]
 print(len(data_filtered))
 # for x in data_filtered:
 #     # print(x["number"],x["distance"],x["comments"])
@@ -164,10 +173,13 @@ print(len(data_filtered))
 print("total: ", len(y_test))
 print("label:", Counter(y_test))
 print("answer:", Counter(y_pred))
-# print("distance:", Counter(distance_list))
-print("comment:", Counter(comment_list))
 
 conf_mat = confusion_matrix(y_test, y_pred)
 print(conf_mat)
+# get accuracy
+from sklearn.metrics import accuracy_score
+accuracy = accuracy_score(y_test, y_pred)
+print("accuracy: ", accuracy)
+
 with open(output_path, 'w', encoding="utf-8") as f:
     json.dump(data_filtered, f, indent=4)

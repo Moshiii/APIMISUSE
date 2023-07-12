@@ -1,0 +1,36 @@
+import collections
+from sklearn.metrics import confusion_matrix
+from collections import Counter
+import json
+
+
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\data_all\\"
+# output_path = base_path + 'data_all.json'
+output_path = base_path + 'misuse_v3_classification_stage_3_result.json'
+
+with open(output_path, encoding="utf-8") as f:
+    data = json.load(f)
+print(len(data))
+
+added_line_list = []
+removed_line_list = []
+total_line_list = []
+
+for x in data:
+    added_counter = 0
+    removed_counter = 0
+    total_counter = 0
+    # print(x["change"])
+    for line in x["change"]:
+        if line.startswith("+"):
+            added_counter += 1
+        if line.startswith("-"):
+            removed_counter -= 1
+    total_counter = added_counter + removed_counter
+    added_line_list.append(added_counter)
+    removed_line_list.append(removed_counter)
+    total_line_list.append(total_counter)
+
+print(Counter(added_line_list))
+print(Counter(removed_line_list))
+print(Counter(total_line_list))

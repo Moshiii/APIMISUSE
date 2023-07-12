@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score
 from collections import Counter
 import json
-
-input_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category_strict_general_case_Moshi_1k.json"
-manual_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_Moshi_1k.json"
-prediction_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\merged_split_hunk_AST_filter_manual_Moshi_result.json'
+base_path ="C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\manual\\"
+input_path = base_path + "manual_data_1k.json"
+manual_path = base_path + "manual_invest_data_1k.json"
+prediction_path = base_path + 'merged_split_hunk_AST_filter_manual_Moshi_result.json'
 
 
 def parse_action(comments):

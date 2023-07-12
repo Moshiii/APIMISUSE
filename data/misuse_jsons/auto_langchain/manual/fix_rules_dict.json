@@ -1,0 +1,226 @@
+{
+    "4": {
+        "number": 4,
+        "change": [
+            "class TrainerIntegrationTest(unittest.TestCase):",
+            "",
+            "# Adding one column not used by the model should have no impact",
+            "z = np.random.normal(size=(64,)).astype(np.float32)",
+            "-        train_dataset = nlp.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})",
+            "+        train_dataset = datasets.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})",
+            "model = RegressionModel()",
+            "trainer = Trainer(model, args, train_dataset=train_dataset)",
+            "trainer.train()",
+            ""
+        ],
+        "fix_pattern": [
+            "Condition: No specific condition is identified in the given context. ",
+            "Pattern: The code previously used `nlp.Dataset.from_dict` to create a dataset, and it was causing API misuse. ",
+            "Code One: `train_dataset = nlp.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})`",
+            "Code Two: `train_dataset = datasets.Dataset.from_dict({\"input_x\": x, \"label\": y, \"extra\": z})`",
+            "Fix Pattern: In the condition of no specific condition, if the pattern of using `nlp.Dataset.from_dict` is detected, then change the code from `nlp.Dataset.from_dict` to `datasets.Dataset.from_dict` to fix the API misuse."
+        ]
+    },
+    "7": {
+        "number": 7,
+        "change": [
+            "def test_quantile():",
+            "",
+            "",
+            "def test_pi():",
+            "-    x = torch.empty(1000).log_normal_(0, 1)",
+            "+    x = torch.randn(1000).exp()",
+            "assert_equal(pi(x, prob=0.8), quantile(x, probs=[0.1, 0.9]))",
+            ""
+        ],
+        "fix_pattern": [
+            "Condition: The condition is not clear in the given context.",
+            "",
+            "Pattern: The pattern is to replace the code that creates an empty tensor with a log-normal distribution with a new code that creates a tensor with a standard normal distribution and applies the exponential function to it.",
+            "",
+            "Code One: The code that creates an empty tensor with a log-normal distribution: `x = torch.empty(1000).log_normal_(0, 1)`",
+            "",
+            "Code Two: The code that creates a tensor with a standard normal distribution and applies the exponential function to it: `x = torch.randn(1000).exp()`",
+            "",
+            "Fix Pattern: In the condition of the unknown condition, if the pattern of creating an empty tensor with a log-normal distribution is detected, then replace the code that creates the empty tensor with a new code that creates a tensor with a standard normal distribution and applies the exponential function to it to fix the API misuse."
+        ]
+    },
+    "8": {
+        "number": 8,
+        "change": [
+            "class TPUAccelerator(Accelerator):",
+            "Return:",
+            "A tensor of shape (world_size, batch, ...)",
+            "\"\"\"",
+            "-        return xm.all_gather(tensor, group=group, sync_grads=sync_grads)",
+            "+        # todo: Add support for backward with all_gather",
+            "+        if torch.distributed.is_initialized():",
+            "+            return xm.all_gather(tensor, group=group, sync_grads=sync_grads)",
+            "+        return tensor",
+            ""
+        ],
+        "fix_pattern": [
+            "Condition: The code is in a class named \"TPUAccelerator\" that is a subclass of \"Accelerator\".",
+            "",
+            "Pattern: The pattern is to remove a specific line of code that calls \"xm.all_gather\" with two arguments, \"group\" and \"sync_grads\".",
+            "",
+            "Code One: The code, \"return xm.all_gather(tensor, group=group, sync_grads=sync_grads)\".",
+            "",
+            "Code Two: The code, \"if torch.distributed.is_initialized():\\n    return xm.all_gather(tensor, group=group, sync_grads=sync_grads)\\nreturn tensor\".",
+            "",
+            "Fix Pattern: In the condition of being in the \"TPUAccelerator\" class, if the pattern of calling \"xm.all_gather\" with \"group\" and \"sync_grads\" is detected, then the code one is removed and replaced with the code two to fix the API misuse."
+        ]
+    },
+    "9": {
+        "number": 9,
+        "change": [
+            "class Swinv2SelfAttention(nn.Module):",
+            "query_layer = self.transpose_for_scores(mixed_query_layer)",
+            "",
+            "# cosine attention",
+            "-        attention_scores = F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)",
+            "+        attention_scores = nn.functional.normalize(query_layer, dim=-1) @ nn.functional.normalize(",
+            "+            key_layer, dim=-1",
+            "+        ).transpose(-2, -1)",
+            "logit_scale = torch.clamp(self.logit_scale, max=math.log(1.0 / 0.01)).exp()",
+            "attention_scores = attention_scores * logit_scale",
+            "relative_position_bias_table = self.continuous_position_bias_mlp(self.relative_coords_table).view(",
+            ""
+        ],
+        "fix_pattern": [
+            "<condition>: There is a need to normalize the query_layer and key_layer before calculating the attention_scores.",
+            "<pattern>: The pattern is to replace the F.normalize function with nn.functional.normalize function.",
+            "<code_one>: The code that was removed is \"attention_scores = F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)\".",
+            "<code_two>: The code that was added is \"attention_scores = nn.functional.normalize(query_layer, dim=-1) @ nn.functional.normalize(key_layer, dim=-1).transpose(-2, -1)\".",
+            "Fix_pattern: In the condition of normalizing the query_layer and key_layer, if the code \"attention_scores = F.normalize(query_layer, dim=-1) @ F.normalize(key_layer, dim=-1).transpose(-2, -1)\" is detected, then replace it with \"attention_scores = nn.functional.normalize(query_layer, dim=-1) @ nn.functional.normalize(key_layer, dim=-1).transpose(-2, -1)\" to fix the API misuse."
+        ]
+    },
+    "12": {
+        "number": 12,
+        "change": [
+            "def get_rotation_matrix2d(",
+            "",
+            "# create output tensor",
+            "batch_size: int = center.shape[0]",
+            "-    one = torch.tensor(1.).to(center.device)",
+            "+    one = torch.tensor(1., device=center.device, dtype=center.dtype)",
+            "M: torch.Tensor = torch.zeros(",
+            "batch_size, 2, 3, device=center.device, dtype=center.dtype)",
+            "M[..., 0:2, 0:2] = scaled_rotation",
+            ""
+        ],
+        "fix_pattern": [
+            "<condition>: The condition in this case is when creating an output tensor in the function \"get_rotation_matrix2d\".",
+            "<pattern>: The pattern is the incorrect use of the torch.tensor function without specifying the device and dtype.",
+            "<code_one>: The code removed is \"one = torch.tensor(1.).to(center.device)\".",
+            "<code_two>: The code added is \"one = torch.tensor(1., device=center.device, dtype=center.dtype)\".",
+            "Fix_pattern: In the condition of creating an output tensor in \"get_rotation_matrix2d\", if the pattern of an incorrect torch.tensor usage is detected, then the code \"one = torch.tensor(1.).to(center.device)\" should be changed to \"one = torch.tensor(1., device=center.device, dtype=center.dtype)\" to fix the API misuse."
+        ]
+    },
+    "15": {
+        "number": 15,
+        "change": [
+            "class Trainer(TrainerBase):",
+            "break",
+            "sys.stdout.flush()",
+            "",
+            "-        model.load_state_dict(torch.load(best_model_path))",
+            "+        if rank == 0:",
+            "+            model.load_state_dict(torch.load(best_model_path))",
+            "return model, best_metric",
+            "",
+            "def _run_epoch(",
+            ""
+        ],
+        "fix_pattern": [
+            "<condition>: No clear condition is needed.",
+            "<pattern>: The code is modified to conditionally load the model state dictionary based on the value of the variable \"rank\".",
+            "<code_one>: model.load_state_dict(torch.load(best_model_path))",
+            "<code_two>: if rank == 0: model.load_state_dict(torch.load(best_model_path))",
+            "Fix_pattern: In the condition of no predefined condition, if the code for loading the model state dictionary is detected, then the code is modified to only load the model state dictionary when the value of the variable \"rank\" is 0 to fix the API misuse."
+        ]
+    },
+    "16": {
+        "number": 16,
+        "change": [
+            "def test_preprocess_weights_for_loading_gru_incompatible():",
+            "",
+            "def assert_not_compatible(src, dest, message):",
+            "with pytest.raises(ValueError) as ex:",
+            "-            keras.engine.topology.preprocess_weights_for_loading(",
+            "+            keras.engine.saving.preprocess_weights_for_loading(",
+            "dest, initialize_weights(src).get_weights())",
+            "assert message in ex.value.message",
+            ""
+        ],
+        "fix_pattern": [
+            "Condition: When we want to preprocess weights for loading in a GRU model.",
+            "Pattern: Using the wrong function for preprocessing weights for loading.",
+            "Code_one: keras.engine.topology.preprocess_weights_for_loading.",
+            "Code_two: keras.engine.saving.preprocess_weights_for_loading.",
+            "Fix_pattern: In the condition of preprocessing weights for loading in a GRU model, if the wrong function for preprocessing weights is detected, then change the code from \"keras.engine.topology.preprocess_weights_for_loading\" to \"keras.engine.saving.preprocess_weights_for_loading\" to fix the API misuse."
+        ]
+    },
+    "17": {
+        "number": 17,
+        "change": [
+            "Returns:",
+            "\"\"\"",
+            "",
+            "",
+            "-class BERTScore(nlp.Metric):",
+            "+class BERTScore(datasets.Metric):",
+            "def _info(self):",
+            "-        return nlp.MetricInfo(",
+            "+        return datasets.MetricInfo(",
+            "description=_DESCRIPTION,",
+            "citation=_CITATION,",
+            "homepage=\"https://github.com/Tiiiger/bert_score\",",
+            "inputs_description=_KWARGS_DESCRIPTION,",
+            "-            features=nlp.Features(",
+            "+            features=datasets.Features(",
+            "{",
+            "-                    \"predictions\": nlp.Value(\"string\", id=\"sequence\"),",
+            "-                    \"references\": nlp.Sequence(nlp.Value(\"string\", id=\"sequence\"), id=\"references\"),",
+            "+                    \"predictions\": datasets.Value(\"string\", id=\"sequence\"),",
+            "+                    \"references\": datasets.Sequence(datasets.Value(\"string\", id=\"sequence\"), id=\"references\"),",
+            "}",
+            "),",
+            "codebase_urls=[\"https://github.com/Tiiiger/bert_score\"],",
+            ""
+        ],
+        "fix_pattern": [
+            "<condition>: There is a need to change the codebase from nlp module to datasets module.",
+            "<pattern>: The class BERTScore needs to be updated.",
+            "<code_one>: nlp.MetricInfo(...)",
+            "<code_two>: datasets.MetricInfo(...)",
+            "Fix_pattern: In the condition of changing the codebase from nlp module to datasets module, the class BERTScore needs to be updated by changing nlp.MetricInfo(...) to datasets.MetricInfo(...)."
+        ]
+    },
+    "18": {
+        "number": 18,
+        "change": [
+            "class CoarseMaskHead(FCNMaskHead):",
+            "for i in range(num_fcs):",
+            "fc_in_channels = (",
+            "last_layer_dim if i == 0 else self.fc_out_channels)",
+            "-            self.fcs.append(nn.Linear(fc_in_channels, self.fc_out_channels))",
+            "+            self.fcs.append(Linear(fc_in_channels, self.fc_out_channels))",
+            "last_layer_dim = self.fc_out_channels",
+            "output_channels = self.num_classes * self.output_area",
+            "-        self.fc_logits = nn.Linear(last_layer_dim, output_channels)",
+            "+        self.fc_logits = Linear(last_layer_dim, output_channels)",
+            "",
+            "def init_weights(self):",
+            "for m in self.fcs.modules():",
+            ""
+        ],
+        "fix_pattern": [
+            "<condition>: The condition is in the context section, which is \"class CoarseMaskHead(FCNMaskHead)\".",
+            "<pattern>: The pattern is the removal of \"nn.\" before \"Linear\" in the code removed section.",
+            "<code_one>: The code one is \"nn.Linear\".",
+            "<code_two>: The code two is \"Linear\".",
+            "Fix_pattern: In the condition of \"class CoarseMaskHead(FCNMaskHead)\", if the pattern of removing \"nn.\" from \"nn.Linear\" is detected, then the code \"nn.Linear\" should be changed to \"Linear\" to fix the API misuse."
+        ]
+    }
+}

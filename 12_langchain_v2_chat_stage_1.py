@@ -13,9 +13,13 @@ from tenacity import (
 @retry(wait=wait_random_exponential(min=1, max=5), stop=stop_after_attempt(4))
 def completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
-
-base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
-input_path = base_path + "test_1_data_1k.json"
+# calib
+# test_1
+# extra
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_2\\"
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\extra\\"
+# input_path = base_path + "calib_data_1k.json"
+input_path = base_path + "extra_data_223.json"
 output_path = base_path + "misuse_v2_stage_1_code_explain.json"
 # read
 with open(input_path, encoding="utf-8") as f:

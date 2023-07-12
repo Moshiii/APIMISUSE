@@ -11,10 +11,17 @@ import openai
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
-input_path = base_path + "test_1_data_1k.json"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\calib\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_1\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_2\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\extra\\"
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\manual\\"
+# input_path = base_path + "test_1_data_1k.json"
+input_path = base_path + "manual_data_1k.json"
+# input_path = base_path + "extra_data_223.json"
+# input_path = base_path + "calib_data_1k.json"
 stage_1_path = base_path + "misuse_v2_stage_1_code_explain.json"
-output_path = base_path + "misuse_v2_stage_1_code_explain.json"
+output_path = base_path + "misuse_v3_classification_stage_2_minor_change.json"
 
 data_dict = {}
 with open(input_path, encoding="utf-8") as f:
@@ -48,38 +55,39 @@ print(len(data))
 
 template_1 = """
 You are an experienced software developer.
-You are great at explain code changes in a concise and easy to understand manner.
-When you don't know the answer to a question you admit that you don't know.
+You excel at explaining code changes in a concise and easy-to-understand manner.
+When you encounter a question to which you don't know the answer, you admit that you don't know.
 
-Please read the code change explaination, removed code, and added code and Answer the question at the end:
-first read the context, code change explaination, 
-then, you need to compare the removed code and added code to what has been changed.
-then, you need to determine if the code change is a minor change or not.
+Please read the code change explanation, removed code, and added code. Then, answer the question at the end.
 
-a source code minor change are changes that are not significant enough to be considered a major change.:
-    spacing change
-    format change
-    variable name change
-    String value change
-    type annotation change in def <function>(var: type annotation)
-    comment change
-    added and removed line do not have machine learning funtion or method
+First, read the context and the code change explanation.
+Next, compare the removed code and added code to determine what has been changed.
+Then, determine if the code change is a minor change or not.
 
-all other types of code changes are not minor changes.
+A source code minor change is a change that is not significant enough to be considered a major change. Minor changes include:
+- Spacing changes
+- Format changes
+- Variable name changes
+- String value changes
+- Type annotation changes in the form "def function(var: type annotation)"
+- Comment changes
+- Added and removed lines that do not involve machine learning functions or methods
 
-context: 
+All other types of code changes are not considered minor changes.
+
+Context:
 {change_code}
 
-removed code: 
+Removed Code:
 {removed_code}
 
-added code: 
+Added Code:
 {added_code}
 
 <answer start>
 
-Questions:    
-is this code change a minor change?
+Questions:
+Is this code change a minor change?
 
 Answer: (Yes, No, Maybe)
 """
@@ -91,7 +99,8 @@ def completion_with_backoff(**kwargs):
 
 
 # 844
-for i in range(0, len(data)):
+for i in range(998, len(data)):
+
     # for i in range(110, 114):
     print("current_index:", i, "/", len(data))
 

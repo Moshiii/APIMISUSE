@@ -1,0 +1,1666 @@
+[
+    {
+        "number": 1476,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class BinaryOutputFeature(BinaryFeatureMixin, OutputFeature):",
+            "confidence_penalty=self.loss[\"confidence_penalty\"],",
+            ")",
+            "",
+            "-    def create_calibration_module(self, feature) -> torch.nn.Module:",
+            "+    def create_calibration_module(self, feature: BinaryOutputFeatureConfig) -> torch.nn.Module:",
+            "\"\"\"Creates the appropriate calibration module based on the feature config.",
+            "",
+            "Today, only one type of calibration (\"temperature_scaling\") is available, but more options may be supported in",
+            "the future.",
+            "\"\"\"",
+            "-        if feature.get(\"calibration\"):",
+            "+        if feature.calibration:",
+            "calibration_cls = calibration.get_calibration_cls(BINARY, \"temperature_scaling\")",
+            "return calibration_cls(binary=True)",
+            "return None"
+        ]
+    },
+    {
+        "number": 1487,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class EpsilonGreedy(Exploration):",
+            "",
+            "chose_random = tf.random_uniform(",
+            "tf.stack([batch_size]),",
+            "-            minval=0, maxval=1, dtype=epsilon.dtype) \\",
+            "+            minval=0, maxval=1, dtype=tf.float32) \\",
+            "< epsilon",
+            "",
+            "action = tf.cond("
+        ]
+    },
+    {
+        "number": 1490,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class AngleProtoLossTests(unittest.TestCase):",
+            "",
+            "# check speaker loss with orthogonal d-vectors",
+            "dummy_input = T.empty(3, 64)",
+            "-        dummy_input = T.nn.init.orthogonal(dummy_input)",
+            "+        dummy_input = T.nn.init.orthogonal_(dummy_input)",
+            "dummy_input = T.cat(",
+            "[",
+            "dummy_input[0].repeat(5, 1, 1).transpose(0, 1),"
+        ]
+    },
+    {
+        "number": 1499,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def make_loss_args(**kwargs):",
+            "",
+            "",
+            "@pytest.mark.skipif(",
+            "-    LooseVersion(torch.__version__) < LooseVersion(\"1.4\"),",
+            "+    V(torch.__version__) < V(\"1.4\"),",
+            "reason=\"Pytorch >= 1.4 is required.\",",
+            ")",
+            "@pytest.mark.skipif("
+        ]
+    },
+    {
+        "number": 1508,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def matrix_rank(",
+            "out: Optional[torch.Tensor] = None,",
+            ") -> torch.Tensor:",
+            "# ToDo: add support for default rtol value here, for the case where None is provided",
+            "-    return torch.linalg.matrix_rank(x, rtol, out=out)",
+            "+    return torch.linalg.matrix_rank(x, rtol=rtol, out=out)",
+            "",
+            "",
+            "def matrix_transpose(x: torch.Tensor) -> torch.Tensor:"
+        ]
+    },
+    {
+        "number": 1511,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class MedicalDialog(datasets.GeneratorBasedBuilder):",
+            "path_to_manual_file = os.path.abspath(os.path.expanduser(dl_manager.manual_dir))",
+            "if not os.path.exists(path_to_manual_file):",
+            "raise FileNotFoundError(",
+            "-                \"{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('medical_dialog', data_dir=...)`. Manual download instructions: {})\".format(",
+            "-                    path_to_manual_file, self.manual_download_instructions",
+            "-                )",
+            "+                f\"{path_to_manual_file} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('medical_dialog', data_dir=...)`. Manual download instructions: {self.manual_download_instructions})\"",
+            ")",
+            "",
+            "filepaths = ["
+        ]
+    },
+    {
+        "number": 1516,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def selu(x):",
+            "\"\"\"",
+            "alpha = 1.6732632423543772848170429916717",
+            "scale = 1.0507009873554804934193349852946",
+            "-    return scale * tf.nn.elu(x, alpha)",
+            "+    return scale*tf.where(x>=0.0, x, alpha*tf.nn.elu(x))"
+        ]
+    },
+    {
+        "number": 1520,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def imag(",
+            "*,",
+            "out: Optional[torch.Tensor] = None,",
+            ") -> torch.Tensor:",
+            "-    if(input.dtype != torch.complex64):",
+            "+    if input.dtype != torch.complex64:",
+            "input = input.to(torch.complex64)",
+            "return torch.imag(input)"
+        ]
+    },
+    {
+        "number": 1523,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Searcher:",
+            "if not re.search('out of memory', str(e)):",
+            "raise e",
+            "if self.verbose:",
+            "-                print('out of memory')",
+            "+                print('\\nCurrent model size is too big. Discontinuing training this model to search for other models.')",
+            "Constant.MAX_MODEL_SIZE = graph.size() - 1",
+            "return",
+            "finally:"
+        ]
+    },
+    {
+        "number": 1527,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class AttentionReference(torch.nn.Module):",
+            "B, _, C = psd_in.size()[:3]",
+            "assert psd_in.size(2) == psd_in.size(3), psd_in.size()",
+            "# psd_in: (B, F, C, C)",
+            "-        psd = psd_in.masked_fill(torch.eye(C, dtype=torch.uint8,",
+            "+        datatype = torch.bool if is_torch_1_2_plus else torch.uint8",
+            "+        psd = psd_in.masked_fill(torch.eye(C, dtype=datatype,",
+            "device=psd_in.device), 0)",
+            "# psd: (B, F, C, C) -> (B, C, F)",
+            "psd = (psd.sum(dim=-1) / (C - 1)).transpose(-1, -2)"
+        ]
+    },
+    {
+        "number": 1529,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def load_pointcloud_ply(filename: str, header_size: int = 8) -> torch.Tensor:",
+            "if not os.path.isfile(filename):",
+            "raise ValueError(\"Input filename is not an existing file.\")",
+            "if not (isinstance(header_size, int) and header_size > 0):",
+            "-        raise TypeError(\"Input header_size must be a positive integer. Got {}.\".format(header_size))",
+            "+        raise TypeError(f\"Input header_size must be a positive integer. Got {header_size}.\")",
+            "# open the file and populate tensor",
+            "-    with open(filename, 'r') as f:",
+            "+    with open(filename) as f:",
+            "points = []",
+            "",
+            "# skip header"
+        ]
+    },
+    {
+        "number": 1533,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class NormalChol(Distribution):",
+            "mu, L = self._sanitize_input(mu, L)",
+            "ll_1 = Variable(torch.Tensor([-0.5 * mu.size(0) * np.log(2.0 * np.pi)])",
+            ".type_as(mu.data))",
+            "+        if L.dim() > 2:",
+            "+            raise NotImplementedError(\"torch.diag() does not support tesors of dim > 2\")",
+            "ll_2 = -torch.sum(torch.log(torch.diag(L)))",
+            "# torch.trtrs() does not support cuda tensors.",
+            "x_chols = torch.trtrs((x - mu).unsqueeze(1).data.cpu(), L.data.cpu(), False)"
+        ]
+    },
+    {
+        "number": 1540,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class CapsNet(object):",
+            "# Method 2. masking with true label, default mode",
+            "else:",
+            "# self.masked_v = tf.matmul(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)), transpose_a=True)",
+            "-                self.masked_v = tf.multply(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)))",
+            "+                self.masked_v = tf.multiply(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)))",
+            "self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True) + epsilon)",
+            "",
+            "# 2. Reconstructe the MNIST images with 3 FC layers"
+        ]
+    },
+    {
+        "number": 1541,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class VectorQuantizerEMA(base.Module):",
+            "tf.reduce_sum(self.embeddings**2, 0, keepdims=True))",
+            "",
+            "encoding_indices = tf.argmax(-distances, 1)",
+            "-    encodings = tf.one_hot(encoding_indices, self.num_embeddings)",
+            "+    encodings = tf.one_hot(encoding_indices,",
+            "+                           self.num_embeddings,",
+            "+                           dtype=distances.dtype)",
+            "",
+            "# NB: if your code crashes with a reshape error on the line below about a",
+            "# Tensor containing the wrong number of values, then the most likely cause"
+        ]
+    },
+    {
+        "number": 1562,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class FastModel(TFModelV2):",
+            "",
+            "if not self._registered:",
+            "self.register_variables(",
+            "-                tf.get_collection(",
+            "-                    tf.GraphKeys.TRAINABLE_VARIABLES, scope=\".+/model/.+\"))",
+            "+                tf1.get_collection(",
+            "+                    tf1.GraphKeys.TRAINABLE_VARIABLES, scope=\".+/model/.+\"))",
+            "self._registered = True",
+            "",
+            "return output, []"
+        ]
+    },
+    {
+        "number": 1569,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def initialize_device_settings(",
+            "devices_to_use = [torch.device(device) for device in range(torch.cuda.device_count())]",
+            "n_gpu = torch.cuda.device_count()",
+            "else:",
+            "-                devices_to_use = [torch.device(\"cuda\")]",
+            "+                devices_to_use = [torch.device(\"cuda:0\")]",
+            "n_gpu = 1",
+            "else:",
+            "devices_to_use = [torch.device(\"cpu\")]"
+        ]
+    },
+    {
+        "number": 1570,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_loading_from_pretrained(pretrained_model_name):",
+            "torch.manual_seed(SEED)",
+            "hf_output = pretrained_module(hidden_states, attention_mask=attention_mask_hf)",
+            "",
+            "-    assert torch.allclose(output[0], hf_output[0])",
+            "+    assert torch.allclose(output.final_hidden_states, hf_output[0])",
+            "",
+            "",
+            "def test_loading_partial_pretrained_weights():"
+        ]
+    },
+    {
+        "number": 1580,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def main(args):  # pylint: disable=redefined-outer-name",
+            "criterion = nn.L1Loss() if c.model in [\"Tacotron\", \"TacotronGST\"",
+            "] else nn.MSELoss()",
+            "criterion_st = nn.BCEWithLogitsLoss(",
+            "-        pos_weight=torch.tensor(20.0)) if c.stopnet else None",
+            "+        pos_weight=torch.tensor(10)) if c.stopnet else None",
+            "",
+            "if args.restore_path:",
+            "checkpoint = torch.load(args.restore_path)"
+        ]
+    },
+    {
+        "number": 1583,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def batch_normalization(incoming, beta=0.0, gamma=1.0, epsilon=1e-5,",
+            "",
+            "# Variable Scope fix for older TF",
+            "try:",
+            "-        vscope = tf.variable_scope(scope, name=name, values=[incoming],",
+            "+        vscope = tf.variable_scope(scope, default_name=name, values=[incoming],",
+            "reuse=reuse)",
+            "except Exception:",
+            "vscope = tf.variable_op_scope([incoming], scope, name, reuse=reuse)"
+        ]
+    },
+    {
+        "number": 1590,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Transformer(TTSInterface, torch.nn.Module):",
+            "self._reset_parameters(args)",
+            "",
+            "def _reset_parameters(self, args):",
+            "-        # alpha in scaled positional encoding init",
+            "-        self.encoder.embed[-1].alpha.data = torch.tensor(args.initial_encoder_alpha)",
+            "-        self.decoder.embed[-1].alpha.data = torch.tensor(args.initial_decoder_alpha)",
+            "+        if self.use_scaled_pos_enc:",
+            "+            # alpha in scaled positional encoding init",
+            "+            self.encoder.embed[-1].alpha.data = torch.tensor(args.initial_encoder_alpha)",
+            "+            self.decoder.embed[-1].alpha.data = torch.tensor(args.initial_decoder_alpha)",
+            "",
+            "if args.transformer_init == \"pytorch\":",
+            "return"
+        ]
+    },
+    {
+        "number": 1595,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def to_float(c):",
+            "def complex_norm(c: Union[torch.Tensor, ComplexTensor]) -> torch.Tensor:",
+            "if not is_complex(c):",
+            "raise TypeError(\"Input is not a complex tensor.\")",
+            "-    return torch.sqrt((c.real**2 + c.imag**2).sum(dim=-1, keepdim=True) + EPS)",
+            "+    return torch.sqrt((c.real ** 2 + c.imag ** 2).sum(dim=-1, keepdim=True) + EPS)",
+            "",
+            "",
+            "def einsum(equation, *operands):"
+        ]
+    },
+    {
+        "number": 1602,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ProphetNetModelTester:",
+            "decoder_attention_mask=decoder_attention_mask,",
+            "labels=lm_labels,",
+            ")",
+            "-        self.parent.assertTrue(torch.allclose(result.loss, torch.tensor(128.2925, device=torch_device), atol=1e-3))",
+            "+        self.parent.assertTrue(torch.allclose(result.loss, torch.tensor(4.5819, device=torch_device), atol=1e-3))",
+            "",
+            "expected_logit_slice = torch.tensor(",
+            "[-0.1565, 0.0418, 0.1207, 0.0030, 0.0665, 0.0467, 0.0412], device=torch_device"
+        ]
+    },
+    {
+        "number": 1603,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def select_device(device='', batch_size=0, newline=True):",
+            "assert torch.cuda.is_available() and torch.cuda.device_count() >= len(device.replace(',', '')), \\",
+            "f\"Invalid CUDA '--device {device}' requested, use '--device cpu' or pass valid CUDA device(s)\"",
+            "",
+            "-    if not (cpu or mps) and torch.cuda.is_available():  # prefer GPU if available",
+            "+    if not cpu and not mps and torch.cuda.is_available():  # prefer GPU if available",
+            "devices = device.split(',') if device else '0'  # range(torch.cuda.device_count())  # i.e. 0,1,6,7",
+            "n = len(devices)  # device count",
+            "if n > 1 and batch_size > 0:  # check batch_size is divisible by device_count"
+        ]
+    },
+    {
+        "number": 1623,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class SimpleSeq2Seq(Model):",
+            "# encoder_outputs : (batch_size, input_sequence_length, encoder_output_dim)",
+            "# Ensuring mask is also a FloatTensor. Or else the multiplication within attention will",
+            "# complain.",
+            "-            encoder_outputs_mask = encoder_outputs_mask.type(torch.FloatTensor)",
+            "+            encoder_outputs_mask = encoder_outputs_mask.float()",
+            "# (batch_size, input_sequence_length)",
+            "input_weights = self._decoder_attention(decoder_hidden_state, encoder_outputs, encoder_outputs_mask)",
+            "# (batch_size, encoder_output_dim)"
+        ]
+    },
+    {
+        "number": 1635,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def Conv2D(x, out_channel, kernel_shape,",
+            "if b_init is None:",
+            "b_init = tf.constant_initializer()",
+            "",
+            "-    W = tf.get_variable('W', filter_shape, initializer=W_init) # TODO collections",
+            "+    W = tf.get_variable('W', filter_shape, initializer=W_init)",
+            "b = tf.get_variable('b', [out_channel], initializer=b_init)",
+            "",
+            "if split == 1:"
+        ]
+    },
+    {
+        "number": 1643,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class OptimizedStep(MetaOptimizer):",
+            "loss_before = fn_compare(reference=reference)",
+            "",
+            "with tf.control_dependencies(control_inputs=(loss_before,)):",
+            "-            applied, diffs = self.optimizer.step(time=time, variables=variables, fn_loss=fn_loss, **kwargs)",
+            "+            diffs = self.optimizer.step(time=time, variables=variables, fn_loss=fn_loss, **kwargs)",
+            "",
+            "-        with tf.control_dependencies(control_inputs=(applied,)):",
+            "+        with tf.control_dependencies(control_inputs=diffs):",
+            "if fn_reference is None:",
+            "loss_step = fn_loss()",
+            "else:"
+        ]
+    },
+    {
+        "number": 1648,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class MaskedLayerNorm(torch.nn.Module):",
+            "num_elements = broadcast_mask.sum() * self.size",
+            "mean = (tensor * broadcast_mask).sum() / num_elements",
+            "masked_centered = (tensor - mean) * broadcast_mask",
+            "-        std = torch.sqrt(",
+            "-                (masked_centered * masked_centered).sum() / num_elements + self.eps",
+            "-        )",
+            "+        std = torch.sqrt((masked_centered * masked_centered).sum() / num_elements + self.eps)",
+            "return self.gamma * (tensor - mean) / (std + self.eps) + self.beta"
+        ]
+    },
+    {
+        "number": 1652,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Model(object):",
+            "",
+            "elif action_spec['type'] == 'float':",
+            "for _ in range(util.rank(action) - 1):",
+            "-                exploration_value = tf.expand_dims(input=exploration_value, axis=1)",
+            "+                exploration_value = tf.expand_dims(input=exploration_value, axis=-1)",
+            "action += exploration_value",
+            "if 'min_value' in action_spec:",
+            "action = tf.clip_by_value("
+        ]
+    },
+    {
+        "number": 1653,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Result(Dict):",
+            "",
+            "# sync across workers when using distributed training",
+            "sync_fn = sync_fn or sync_ddp_if_available",
+            "+",
+            "if sync_dist and isinstance(value, (torch.Tensor, numbers.Number)):",
+            "is_dist_initialized = torch.distributed.is_available() and torch.distributed.is_initialized()",
+            "# TODO: Find a way to make the reduction only once, so we don't need to clone.",
+            "-            if is_dist_initialized and isinstance(value, torch.Tensor):",
+            "+            if (is_dist_initialized or tpu_distributed) and isinstance(value, torch.Tensor):",
+            "value = value.clone()",
+            "else:",
+            "value = torch.tensor(value, device=device, dtype=torch.float)"
+        ]
+    },
+    {
+        "number": 1657,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ModelTesterMixin:",
+            "if model_class in MODEL_FOR_MULTIPLE_CHOICE_MAPPING.values():",
+            "return {",
+            "k: v.unsqueeze(1).expand(-1, self.model_tester.num_choices, -1).contiguous()",
+            "-                if isinstance(v, torch.Tensor) and v.ndim != 0",
+            "+                if isinstance(v, torch.Tensor) and v.ndim > 1",
+            "else v",
+            "for k, v in inputs_dict.items()",
+            "}"
+        ]
+    },
+    {
+        "number": 1660,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_pred_input(params, enc = None):",
+            "bos = tf.constant(1, shape=[1, 1], dtype=tf.int64)",
+            "src_seq = tf.random.uniform(shape=[1, length], minval=4, maxval=(params['n_vocab'] - 1), dtype=tf.int64)",
+            "seq = tf.concat([bos, src_seq], axis=1)",
+            "-    seq = tf.pad(seq, [[0, 0], [0, remaining]])",
+            "+    seq = tf.pad(seq, [[0, 0], [0, remaining]], constant_values=params['padding_id'])",
+            "dataset = tf.data.Dataset.from_tensors(seq)",
+            "",
+            "dataset = dataset.map(_dummy_labels)"
+        ]
+    },
+    {
+        "number": 1667,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class DomainClient(Client):",
+            "",
+            "binary_dataset = serialize(assets, to_bytes=True)",
+            "",
+            "-        self.datasets.create_syft(dataset=binary_dataset, metadata=metadata, platform=\"syft\")",
+            "+        self.datasets.create_syft(",
+            "+            dataset=binary_dataset, metadata=metadata, platform=\"syft\"",
+            "+        )"
+        ]
+    },
+    {
+        "number": 1672,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ModelTesterMixin:",
+            "",
+            "torch._C._jit_clear_class_registry()",
+            "torch.jit._recursive.concrete_type_store = torch.jit._recursive.ConcreteTypeStore()",
+            "-        torch.jit._state._clear_class_state()",
+            "+        # torch 1.8 has no `_clear_class_state` in `torch.jit._state`",
+            "+        if hasattr(torch.jit._state, \"_clear_class_state\"):",
+            "+            torch.jit._state._clear_class_state()",
+            "",
+            "def _create_and_check_torchscript(self, config, inputs_dict):",
+            "if not self.test_torchscript:"
+        ]
+    },
+    {
+        "number": 1674,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def map_fun(args, ctx):",
+            "accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name=\"accuracy\")",
+            "",
+            "saver = tf.train.Saver()",
+            "-      summary_op = tf.merge_all_summaries()",
+            "-      init_op = tf.initialize_all_variables()",
+            "+      summary_op = tf.summary.merge_all()",
+            "+      init_op = tf.global_variables_initializer()",
+            "",
+            "# Create a \"supervisor\", which oversees the training process and stores model state into HDFS",
+            "-    logdir = args.model if hdfs.path.isabs(args.model) else \"hdfs://default/user/{0}/{1}\".format(getpass.getuser(), args.model)",
+            "+    logdir = args.model if args.model.startswith(\"hdfs://\") else \"hdfs://default/user/{0}/{1}\".format(getpass.getuser(), args.model)",
+            "print(\"tensorflow model path: {0}\".format(logdir))",
+            "-    summary_writer = tf.train.SummaryWriter(\"tensorboard_%d\" %(worker_num), graph=tf.get_default_graph())",
+            "+    summary_writer = tf.summary.FileWriter(\"tensorboard_%d\" %(worker_num), graph=tf.get_default_graph())",
+            "",
+            "if args.mode == \"train\":",
+            "sv = tf.train.Supervisor(is_chief=(task_index == 0),"
+        ]
+    },
+    {
+        "number": 1676,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def main(args):  # pylint: disable=redefined-outer-name",
+            "model = setup_model(c)",
+            "",
+            "# restore model",
+            "-    checkpoint = torch.load(args.checkpoint_path, map_location=\"cpu\")",
+            "+    checkpoint = load_fsspec(args.checkpoint_path, map_location=\"cpu\")",
+            "model.load_state_dict(checkpoint[\"model\"])",
+            "",
+            "if use_cuda:"
+        ]
+    },
+    {
+        "number": 1681,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_solve(real_vec):",
+            "if isinstance(vec2, ComplexTensor):",
+            "ret2 = FC.solve(vec2, mat, return_LU=False)",
+            "else:",
+            "-            ret2 = torch.solve(vec2, mat)[0]",
+            "+            return torch.linalg.solve(mat, vec2)",
+            "assert complex_module.allclose(ret, ret2)"
+        ]
+    },
+    {
+        "number": 1688,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class DeepSpeedDiffusersTransformerBlock(nn.Module):",
+            "self.attn_1.do_out_bias = False",
+            "self.attn_1_bias = self.attn_1.attn_ob",
+            "else:",
+            "-            self.attn_1_bias = nn.Paramaeter(torch.zeros_like(self.norm2_g),",
+            "-                                             requires_grad=False)",
+            "+            self.attn_1_bias = nn.Parameter(torch.zeros_like(self.norm2_g),",
+            "+                                            requires_grad=False)",
+            "",
+            "# Pull the bias in if we can",
+            "if isinstance(self.attn_2, DeepSpeedDiffusersAttention):"
+        ]
+    },
+    {
+        "number": 1694,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TestCall(unittest.TestCase):",
+            "x = np.random.randn(nb_samples, input_dim).astype(floatX)",
+            "y1 = F(x)",
+            "y2 = model.predict(x)",
+            "+        # results of __call__ should match model.predict",
+            "assert_allclose(y1, y2)"
+        ]
+    },
+    {
+        "number": 1704,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def gelu_new(x):",
+            "\"\"\" Implementation of the gelu activation function currently in Google Bert repo (identical to OpenAI GPT).",
+            "Also see https://arxiv.org/abs/1606.08415",
+            "\"\"\"",
+            "-    return 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))",
+            "+    return 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))",
+            "",
+            "",
+            "if torch.__version__ < \"1.4.0\":"
+        ]
+    },
+    {
+        "number": 1711,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class DistilBertModelTest(ModelTesterMixin, unittest.TestCase):",
+            "",
+            "with tempfile.TemporaryDirectory() as tmp:",
+            "torch.jit.save(traced_model, os.path.join(tmp, \"traced_model.pt\"))",
+            "-                loaded = torch.jit.load(os.path.join(tmp, \"bert.pt\"), map_location=torch_device)",
+            "+                loaded = torch.jit.load(os.path.join(tmp, \"traced_model.pt\"), map_location=torch_device)",
+            "loaded(inputs_dict[\"input_ids\"].to(torch_device), inputs_dict[\"attention_mask\"].to(torch_device))"
+        ]
+    },
+    {
+        "number": 1721,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class MADDPGTFPolicy(MADDPGPostprocessing, TFPolicy):",
+            "out = tf.layers.dense(out, units=hidden, activation=activation)",
+            "feature = tf.layers.dense(",
+            "out, units=act_space.shape[0], activation=None)",
+            "-            sampler = RelaxedOneHotCategorical(",
+            "+            sampler = tfp.distributions.RelaxedOneHotCategorical(",
+            "temperature=1.0, logits=feature).sample()",
+            "",
+            "return sampler, feature, model, tf.global_variables(scope.name)"
+        ]
+    },
+    {
+        "number": 1724,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Entropy(Metric):",
+            "mask: ``torch.Tensor``, optional (default = None).",
+            "A masking tensor of shape (batch_size, ...).",
+            "\"\"\"",
+            "-        # Get the data from the Variables.",
+            "logits, mask = self.unwrap_to_tensors(logits, mask)",
+            "",
+            "if mask is None:",
+            "mask = torch.ones(logits.size()[:-1])",
+            "",
+            "-        log_probs = torch.nn.functional.log_softmax(Variable(logits), dim=-1).data",
+            "+        log_probs = torch.nn.functional.log_softmax(logits, dim=-1)",
+            "probabilities = torch.exp(log_probs) * mask.unsqueeze(-1)",
+            "weighted_negative_likelihood = - log_probs * probabilities",
+            "entropy = weighted_negative_likelihood.sum(-1)"
+        ]
+    },
+    {
+        "number": 1730,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class NoisyLayer(tf.keras.layers.Layer if tf else object):",
+            "trainable=True,",
+            "tf_name=self.prefix + \"_sigma_w\",",
+            "shape=[in_size, self.out_size],",
+            "-            dtype=tf.float32",
+            "-        )",
+            "+            dtype=tf.float32)",
+            "",
+            "self.sigma_b = get_variable(",
+            "value=tf.keras.initializers.Constant("
+        ]
+    },
+    {
+        "number": 1740,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class BooleanAccuracyTest(AllenNlpTestCase):",
+            "accuracy = BooleanAccuracy()",
+            "predictions = torch.rand([5, 7], device=device)",
+            "labels = torch.rand([5, 7], device=device)",
+            "-        incorrect_shape_mask = torch.randint(0, 2, [5, 8], device=device)",
+            "+        incorrect_shape_mask = torch.randint(0, 2, [5, 8], device=device).bool()",
+            "with pytest.raises(ValueError):",
+            "accuracy(predictions, labels, incorrect_shape_mask)"
+        ]
+    },
+    {
+        "number": 1741,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def perform_analysis_torch(preds, indices, noise_eps=0.1, delta=1e-5, moments=8,",
+            "data_ind_eps_list = (data_ind_log_mgf - math.log(delta)) / l_list",
+            "",
+            "return min(eps_list_nm), min(data_ind_eps_list)",
+            "+",
+            "+",
+            "+",
+            "\\ No newline at end of file"
+        ]
+    },
+    {
+        "number": 1748,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class SuperGATConv(MessagePassing):",
+            "r\"\"\"Runs the forward pass of the module.",
+            "",
+            "Args:",
+            "-            neg_edge_index (Tensor, optional): The negative edges to train",
+            "-                against. If not given, uses negative sampling to calculate",
+            "-                negative edges. (default: :obj:`None`)",
+            "+            neg_edge_index (torch.Tensor, optional): The negative edges to",
+            "+                train against. If not given, uses negative sampling to",
+            "+                calculate negative edges. (default: :obj:`None`)",
+            "\"\"\"",
+            "N, H, C = x.size(0), self.heads, self.out_channels"
+        ]
+    },
+    {
+        "number": 1751,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Network(object):",
+            "\"\"\"",
+            "@layer",
+            "def softmax(self, target, axis, name=None):",
+            "-        max_axis = tf.reduce_max(target, axis, keep_dims=True)",
+            "+        max_axis = tf.reduce_max(target, axis, keepdims=True)",
+            "target_exp = tf.exp(target-max_axis)",
+            "-        normalize = tf.reduce_sum(target_exp, axis, keep_dims=True)",
+            "+        normalize = tf.reduce_sum(target_exp, axis, keepdims=True)",
+            "softmax = tf.div(target_exp, normalize, name)",
+            "return softmax"
+        ]
+    },
+    {
+        "number": 1758,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def diagflat(",
+            ")",
+            "",
+            "temp = x - torch.full(x.shape, padding_value).type(x.dtype)",
+            "-    diagonal_to_add = torch.diag(temp, diagonal=offset).type(x.dtype) # diag does not support float16",
+            "+    diagonal_to_add = torch.diag(temp, diagonal=offset).type(",
+            "+        x.dtype",
+            "+    )  # diag does not support float16",
+            "",
+            "diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]",
+            "diagonal_to_add = diagonal_to_add.to(x.dtype)"
+        ]
+    },
+    {
+        "number": 1761,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class VisionNetwork(Model):",
+            "",
+            "@override(Model)",
+            "def _build_layers_v2(self, input_dict, num_outputs, options):",
+            "+        import tensorflow.contrib.slim as slim",
+            "+",
+            "inputs = input_dict[\"obs\"]",
+            "filters = options.get(\"conv_filters\")",
+            "if not filters:"
+        ]
+    },
+    {
+        "number": 1762,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TestCheckpointUtils(unittest.TestCase):",
+            "def test_load_ema_from_checkpoint(self):",
+            "dummy_state = {\"a\": torch.tensor([1]), \"b\": torch.tensor([0.1])}",
+            "with patch(f\"{checkpoint_utils.__name__}.PathManager.open\") as mock_open, patch(",
+            "-                f\"{checkpoint_utils.__name__}.torch.load\") as mock_load:",
+            "+            f\"{checkpoint_utils.__name__}.torch.load\"",
+            "+        ) as mock_load:",
+            "",
+            "-            mock_load.return_value = {",
+            "-                \"extra_state\": {",
+            "-                    \"ema\": dummy_state",
+            "-                }",
+            "-            }",
+            "+            mock_load.return_value = {\"extra_state\": {\"ema\": dummy_state}}",
+            "filename = \"ema_checkpoint.pt\"",
+            "state = checkpoint_utils.load_ema_from_checkpoint(filename)"
+        ]
+    },
+    {
+        "number": 1763,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def transform_boxes(trans_mat: torch.Tensor, boxes: torch.Tensor, mode: str = \"x",
+            "",
+            "\"\"\"",
+            "",
+            "-    if not torch.is_tensor(boxes):",
+            "-        raise TypeError(f\"Boxes type is not a torch.Tensor. Got {type(boxes)}\")",
+            "-",
+            "-    if not torch.is_tensor(trans_mat):",
+            "-        raise TypeError(f\"Tranformation matrix type is not a torch.Tensor. Got {type(trans_mat)}\")",
+            "-",
+            "if not isinstance(mode, str):",
+            "raise TypeError(f\"Mode must be a string. Got {type(mode)}\")"
+        ]
+    },
+    {
+        "number": 1768,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "with tf.device(device_fn):",
+            "# the softmax is implemented internally in tl.cost.cross_entropy(y, y_) to",
+            "# speed up computation, so we use identity here.",
+            "# see tf.nn.sparse_softmax_cross_entropy_with_logits()",
+            "-    network = tl.layers.DenseLayer(network, n_units=10, act=tf.identity, name='output')",
+            "+    network = tl.layers.DenseLayer(network, n_units=10, act=None, name='output')",
+            "",
+            "# define cost function and metric.",
+            "y = network.outputs"
+        ]
+    },
+    {
+        "number": 1772,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Graph():",
+            "zero_pad=False,",
+            "scale=False,",
+            "scope=\"dec_pe\")",
+            "+                self.dec *= key_masks",
+            "",
+            "## Dropout",
+            "self.dec = tf.layers.dropout(self.dec,"
+        ]
+    },
+    {
+        "number": 1783,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class DenseGCNConv(torch.nn.Module):",
+            "idx = torch.arange(N, dtype=torch.long, device=adj.device)",
+            "adj[:, idx, idx] = 1 if not self.improved else 2",
+            "",
+            "-        out = torch.matmul(x, self.weight)",
+            "+        out = self.lin(x)",
+            "deg_inv_sqrt = adj.sum(dim=-1).clamp(min=1).pow(-0.5)",
+            "",
+            "adj = deg_inv_sqrt.unsqueeze(-1) * adj * deg_inv_sqrt.unsqueeze(-2)"
+        ]
+    },
+    {
+        "number": 1792,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class SequenceTagger(flair.nn.Model):",
+            "",
+            "tags = []",
+            "all_tags = []",
+            "-        feature_cpu = feature.detach().to(\"cpu\")",
+            "-        transitions_cpu = self.transitions.detach().to(\"cpu\")",
+            "+        feature_cpu = feature.detach().cpu()",
+            "+        if self.use_crf:",
+            "+            transitions_cpu = self.transitions.detach().cpu()",
+            "for feats, length in zip(feature_cpu, lengths):",
+            "if self.use_crf:",
+            "confidences, tag_seq, scores = self._viterbi_decode("
+        ]
+    },
+    {
+        "number": 1796,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def regression(incoming, placeholder=None, optimizer='adam',",
+            "if placeholder is None:",
+            "pscope = \"TargetsData\" if not name else name",
+            "with tf.name_scope(pscope):",
+            "-            placeholder = tf.placeholder(shape=input_shape, dtype=dtype, name=\"Y\")",
+            "+            p_shape = [None] if to_one_hot else input_shape",
+            "+            placeholder = tf.placeholder(shape=p_shape, dtype=dtype, name=\"Y\")",
+            "",
+            "tf.add_to_collection(tf.GraphKeys.TARGETS, placeholder)"
+        ]
+    },
+    {
+        "number": 1827,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def load_image(file_name):",
+            "",
+            "",
+            "def clip_and_convert_tensor(tensor):",
+            "-    \"\"\"convert the input torch.Tensor to OpenCV image,clip it to be between",
+            "+    \"\"\"Convert the input torch.Tensor to OpenCV image,clip it to be between.",
+            "+",
+            "[0, 255] and convert it to unit",
+            "\"\"\"",
+            "img = tgm.utils.tensor_to_image(255.0 * tensor)  # convert tensor to numpy"
+        ]
+    },
+    {
+        "number": 1831,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def sort(",
+            "*,",
+            "out: Optional[torch.Tensor] = None,",
+            ") -> torch.Tensor:",
+            "-    sorted_tensor, _ = torch.sort(x, dim=axis, descending=descending, out=out)",
+            "+    sorted_tensor, _ = torch.sort(",
+            "+        x, dim=axis, descending=descending, stable=stable, out=out",
+            "+    )",
+            "return sorted_tensor"
+        ]
+    },
+    {
+        "number": 1836,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def compute_loss(pred, true):",
+            "",
+            "if cfg.model.loss_fun == 'cross_entropy':",
+            "# multiclass",
+            "-        if pred.ndim > 1:",
+            "+        if pred.ndim > 1 and true.ndim == 1:",
+            "pred = F.log_softmax(pred, dim=-1)",
+            "return F.nll_loss(pred, true), pred",
+            "-        # binary",
+            "+        # binary or multilabel",
+            "else:",
+            "true = true.float()",
+            "return bce_loss(pred, true), torch.sigmoid(pred)"
+        ]
+    },
+    {
+        "number": 1838,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TFBartForConditionalGeneration(TFBartPretrainedModel, TFCausalLanguageMode",
+            "if inputs[\"labels\"] is not None:",
+            "inputs[\"labels\"] = tf.where(",
+            "inputs[\"labels\"] == self.config.pad_token_id,",
+            "-                tf.fill(shape_list(inputs[\"labels\"]), -100),",
+            "+                tf.cast(tf.fill(shape_list(inputs[\"labels\"]), -100), inputs[\"labels\"].dtype),",
+            "inputs[\"labels\"],",
+            ")",
+            "inputs[\"use_cache\"] = False"
+        ]
+    },
+    {
+        "number": 1846,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TFWav2Vec2ForCTC(TFWav2Vec2PreTrainedModel):",
+            "",
+            ">>> # wrap processor as target processor to encode labels",
+            ">>> with processor.as_target_processor():",
+            "-            >>>     labels = processor(transcription, return_tensors=\"tf\").input_values",
+            "+            >>>     labels = processor(transcription, return_tensors=\"tf\").input_ids",
+            "",
+            ">>> loss = model(input_values, labels=labels).loss",
+            "\"\"\""
+        ]
+    },
+    {
+        "number": 1852,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def _flatten_probas(probas, labels, ignore=None):",
+            "probas = probas.view(B, 1, H, W)",
+            "",
+            "C = probas.size(1)",
+            "-    probas = torch.movedim(probas, 0, -1)  # [B, C, Di, Dj, Dk...] -> [B, C, Di...Dk, C]",
+            "+    probas = torch.movedim(probas, 1, -1)  # [B, C, Di, Dj, ...] -> [B, Di, Dj, ..., C]",
+            "probas = probas.contiguous().view(-1, C)  # [P, C]",
+            "",
+            "labels = labels.view(-1)"
+        ]
+    },
+    {
+        "number": 1854,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class MADDPGTFPolicy(MADDPGPostprocessing, TFPolicy):",
+            "out = obs",
+            "",
+            "for hidden in hiddens:",
+            "-                out = tf.layers.dense(",
+            "-                    out, units=hidden, activation=activation",
+            "-                )",
+            "+                out = tf.layers.dense(out, units=hidden, activation=activation)",
+            "feature = tf.layers.dense(",
+            "out, units=act_space.shape[0], activation=None)",
+            "sampler = tfp.distributions.RelaxedOneHotCategorical("
+        ]
+    },
+    {
+        "number": 1855,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class CrossAttention(nn.Module):",
+            "# attention, what we cannot get enough of",
+            "attn = sim.softmax(dim=-1)",
+            "",
+            "-        out = einsum('b i j, b j d -> b i d', attn, v)",
+            "+        out = torch.einsum('b i j, b j d -> b i d', attn, v)",
+            "out = rearrange(out, '(b h) n d -> b n (h d)', h=h)",
+            "return self.to_out(out)"
+        ]
+    },
+    {
+        "number": 1862,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TrainerLoggingMixin(ABC):",
+            "",
+            "# when using DP, we get one output per gpu",
+            "# average outputs and return",
+            "-        if type(output) is torch.Tensor:",
+            "+        if isinstance(output, torch.Tensor):",
+            "return output.mean()",
+            "",
+            "for k, v in output.items():"
+        ]
+    },
+    {
+        "number": 1875,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class T5DenseGatedActDense(nn.Module):",
+            "",
+            "# To make 8bit quantization work for google/flan-t5-xxl, self.wo is kept in float32.",
+            "# See https://github.com/huggingface/transformers/issues/20287",
+            "-        if hidden_states.dtype != self.wo.weight.dtype:",
+            "+        # we also make sure the weights are not in `int8` in case users will force `_keep_in_fp32_modules` to be `None``",
+            "+        if hidden_states.dtype != self.wo.weight.dtype and self.wo.weight.dtype != torch.int8:",
+            "hidden_states = hidden_states.to(self.wo.weight.dtype)",
+            "",
+            "hidden_states = self.wo(hidden_states)"
+        ]
+    },
+    {
+        "number": 1877,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def mnist_test_tsne_ssvae(name=None, ssvae=None, test_loader=None):",
+            "\"\"\"",
+            "if name is None:",
+            "name = 'SS-VAE'",
+            "-    data = Variable(test_loader.dataset.test_data.float())",
+            "-    mnist_labels = Variable(test_loader.dataset.test_labels)",
+            "+    data = test_loader.dataset.test_data.float()",
+            "+    mnist_labels = test_loader.dataset.test_labels",
+            "z_mu, z_sigma = ssvae.encoder_z([data, mnist_labels])",
+            "plot_tsne(z_mu, mnist_labels, name)"
+        ]
+    },
+    {
+        "number": 1878,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class _ConvND(base.AbstractModule):",
+            "while self._mask.shape.ndims < w.shape.ndims:",
+            "self._mask = tf.expand_dims(self._mask, -1)",
+            "",
+            "-    # ResourceVariables currently don't support *=.",
+            "+    # tf.Variable & tf.ResourceVariable don't support *=.",
+            "w = w * self._mask  # pylint: disable=g-no-augmented-assignment",
+            "",
+            "return w"
+        ]
+    },
+    {
+        "number": 1885,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "with tf.device('/cpu:0'):",
+            "with tf.variable_scope(\"model\", reuse=reuse):",
+            "tl.layers.set_name_reuse(reuse)",
+            "network = tl.layers.InputLayer(x_crop, name='input_layer')",
+            "-",
+            "+",
+            "network = tl.layers.Conv2dLayer(network, act=tf.identity,",
+            "shape=[5, 5, 3, 64], strides=[1, 1, 1, 1], padding='SAME', # 64 features for each 5x5x3 patch",
+            "W_init=W_init, b_init=None, name='cnn_layer1')                            # output: (batch_size, 24, 24, 64)"
+        ]
+    },
+    {
+        "number": 1887,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ValidationCallback(PeriodicCallback):",
+            "batch_size = dp[0].shape[0]   # assume batched input",
+            "",
+            "cnt += batch_size",
+            "-                outputs = self.sess.run(output_vars, feed_dict=feed)",
+            "+                outputs = sess.run(output_vars, feed_dict=feed)",
+            "cost = outputs[-1]",
+            "# each batch might not have the same size in validation",
+            "cost_sum += cost * batch_size"
+        ]
+    },
+    {
+        "number": 1893,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def SubpixelConv2d(net, scale=2, n_out_channel=None, act=tf.identity, name='subp",
+            "bsize = tf.shape(X)[0] # Handling Dimension(None) type for undefined batch dim",
+            "Xs=tf.split(X,r,3) #b*h*w*r*r",
+            "Xr=tf.concat(Xs,2) #b*h*(r*w)*r",
+            "-            X=tf.reshape(Xr,(bsize,r*a,r*b,c)) # b*(r*h)*(r*w)*c",
+            "+            X=tf.reshape(Xr,(bsize,r*a,r*b,n_out_channel)) # b*(r*h)*(r*w)*c",
+            "else:",
+            "print(_err_log)",
+            "return X"
+        ]
+    },
+    {
+        "number": 1899,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class FullyConnectedNet(BaseModel):",
+            "nn.Linear(input_size, int(math.ceil(input_size/2))),",
+            "torch.nn.LeakyReLU(),",
+            "nn.Dropout(0.2),",
+            "-            nn.Linear(int(math.ceil(input_size/2)), output_size)",
+            "+            nn.Linear(int(math.ceil(input_size/2)), output_size),",
+            "+            torch.nn.LeakyReLU()",
+            ")"
+        ]
+    },
+    {
+        "number": 1925,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def train(args):",
+            "set_early_stop(trainer, args)",
+            "",
+            "if args.tensorboard_dir is not None and args.tensorboard_dir != \"\":",
+            "+        from torch.utils.tensorboard import SummaryWriter",
+            "+",
+            "trainer.extend(",
+            "TensorboardLogger(",
+            "SummaryWriter(args.tensorboard_dir),"
+        ]
+    },
+    {
+        "number": 1927,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_torch_layer():",
+            "",
+            "# tracing (freezing)",
+            "model3 = torch.jit.trace(model2, example_inputs=input)",
+            "-        torch.testing.assert_allclose(model1(input), model3(input), atol=1e-3, rtol=1e-3)",
+            "-        torch.testing.assert_allclose(model1(input + 1), model3(input + 1), atol=1e-3, rtol=1e-3)",
+            "+        torch.testing.assert_close(model1(input), model3(input), atol=1e-3, rtol=1e-3)",
+            "+        torch.testing.assert_close(model1(input + 1), model3(input + 1), atol=1e-3, rtol=1e-3)",
+            "",
+            "model4 = torch.jit.trace(model2, example_inputs=input)",
+            "-        torch.testing.assert_allclose(model1(input), model4(input), atol=1e-3, rtol=1e-3)",
+            "-        torch.testing.assert_allclose(model1(input + 1), model4(input + 1), atol=1e-3, rtol=1e-3)",
+            "+        torch.testing.assert_close(model1(input), model4(input), atol=1e-3, rtol=1e-3)",
+            "+        torch.testing.assert_close(model1(input + 1), model4(input + 1), atol=1e-3, rtol=1e-3)",
+            "",
+            "",
+            "def test_torch_layers_scripting():"
+        ]
+    },
+    {
+        "number": 1938,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "\"source\": [",
+            "\"xs = torch.linspace(X[:, 0].min() - 0.5, X[:, 0].max() + 0.5, steps=100)\\n\",",
+            "\"ys = torch.linspace(X[:, 1].min() - 0.5, X[:, 1].max() + 0.5, steps=100)\\n\",",
+            "-    \"try:\\n\",",
+            "-    \"    # torch 1.10 or greater defaults to using indexing\\n\",",
+            "-    \"    xx, yy = torch.meshgrid(xs, ys, indexing=\\\"xy\\\")\\n\",",
+            "-    \"except:\\n\",",
+            "-    \"    xx, yy = torch.meshgrid(xs, ys)\\n\",",
+            "-    \"    xx = xx.t()\\n\",",
+            "-    \"    yy = yy.t()\\n\",",
+            "-    \"\\n\",",
+            "+    \"xx, yy = torch.meshgrid(xs, ys, indexing=\\\"xy\\\")\\n\",",
+            "\"\\n\",",
+            "\"with torch.no_grad():\\n\",",
+            "\"    mean, var = model(torch.vstack((xx.ravel(), yy.ravel())).t())\\n\","
+        ]
+    },
+    {
+        "number": 1958,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Speech2TextStreaming:",
+            "has_enough_samples = False if speech.size(0) <= self.win_length else True",
+            "if not has_enough_samples:",
+            "if is_final:",
+            "-                pad = torch.zeros(self.win_length - speech.size(0))",
+            "+                pad = torch.zeros(self.win_length - speech.size(0), dtype=getattr(torch, self.dtype))",
+            "speech = torch.cat([speech, pad], dim=0)",
+            "else:",
+            "feats = None"
+        ]
+    },
+    {
+        "number": 1965,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def create_module(",
+            "name = type(module).__name__",
+            "if getattr(module_config, \"load_path\", None):",
+            "print(f\"Loading state of module {name} from {module_config.load_path} ...\")",
+            "-        module.load_state_dict(torch.load(module_config.load_path))",
+            "+        module.load_state_dict(torch.load(module_config.load_path, map_location=\"cpu\"))",
+            "if getattr(module_config, \"freeze\", False):",
+            "print(f\"Freezing the parameters of module {name} ...\")",
+            "module.freeze()"
+        ]
+    },
+    {
+        "number": 1969,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class AutoencoderKLIntegrationTests(unittest.TestCase):",
+            "",
+            "def get_generator(self, seed=0):",
+            "if torch_device == \"mps\":",
+            "-            return torch.Generator().manual_seed(seed)",
+            "+            return torch.manual_seed(seed)",
+            "return torch.Generator(device=torch_device).manual_seed(seed)",
+            "",
+            "@parameterized.expand("
+        ]
+    },
+    {
+        "number": 1977,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ESPnetEnhancementModel(AbsESPnetModel):",
+            "losses = torch.stack([pair_loss(p) for p in all_permutations], dim=1)",
+            "loss, perm = torch.min(losses, dim=1)",
+            "perm = torch.index_select(",
+            "-                torch.tensor(all_permutations, device=device, dtype=torch.long),",
+            "-                0,",
+            "-                perm,",
+            "+                torch.tensor(all_permutations, device=device, dtype=torch.long), 0, perm",
+            ")",
+            "else:",
+            "loss = torch.tensor("
+        ]
+    },
+    {
+        "number": 1987,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Config(object):",
+            "return defaults",
+            "",
+            "def __str__(self):",
+            "-        s = \"wandb_version: 1\\n\\n\"",
+            "-        s += yaml.dump(self.as_dict(), default_flow_style=False)",
+            "+        s = \"wandb_version: 1\"",
+            "+        as_dict = self.as_dict()",
+            "+        if as_dict:  # adding an empty dictionary here causes a parse error",
+            "+            s += '\\n\\n' + yaml.dump(as_dict, default_flow_style=False)",
+            "return s"
+        ]
+    },
+    {
+        "number": 1998,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_activation_resolver():",
+            "@pytest.mark.parametrize('aggr_tuple', [",
+            "(torch_geometric.nn.aggr.MeanAggregation, 'mean'),",
+            "(torch_geometric.nn.aggr.SumAggregation, 'sum'),",
+            "+    (torch_geometric.nn.aggr.SumAggregation, 'add'),",
+            "(torch_geometric.nn.aggr.MaxAggregation, 'max'),",
+            "(torch_geometric.nn.aggr.MinAggregation, 'min'),",
+            "(torch_geometric.nn.aggr.MulAggregation, 'mul'),"
+        ]
+    },
+    {
+        "number": 2008,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Reporter:",
+            "if LooseVersion(torch.__version__) >= LooseVersion(\"1.4.0\"):",
+            "if torch.cuda.is_initialized():",
+            "stats[\"gpu_max_cached_mem_GB\"] = (",
+            "-                    torch.cuda.max_memory_reserved() / 2 ** 30",
+            "+                    torch.cuda.max_memory_reserved() / 2**30",
+            ")",
+            "else:",
+            "if torch.cuda.is_available() and torch.cuda.max_memory_cached() > 0:",
+            "-                stats[\"gpu_cached_mem_GB\"] = torch.cuda.max_memory_cached() / 2 ** 30",
+            "+                stats[\"gpu_cached_mem_GB\"] = torch.cuda.max_memory_cached() / 2**30",
+            "",
+            "self.stats.setdefault(self.epoch, {})[sub_reporter.key] = stats",
+            "sub_reporter.finished()"
+        ]
+    },
+    {
+        "number": 2010,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def FullyConnected(x, out_dim,",
+            "prod = tf.nn.xw_plus_b(x, W, b) if use_bias else tf.matmul(x, W)",
+            "if nl is None:",
+            "logger.warn(",
+            "-            \"[DEPRECATED] Default ReLU nonlinearity for Conv2D and FullyConnected will be deprecated. Please use argscope instead.\")",
+            "+            \"[DEPRECATED] Default ReLU nonlinearity for Conv2D and FullyConnected will be deprecated.\"",
+            "+            \" Please use argscope instead.\")",
+            "nl = tf.nn.relu",
+            "return nl(prod, name='output')"
+        ]
+    },
+    {
+        "number": 2012,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ModelTesterMixin:",
+            "model_slow_init = base_class_copy.from_pretrained(tmpdirname, _fast_init=False)",
+            "",
+            "for key in model_fast_init.state_dict().keys():",
+            "-                    max_diff = (model_slow_init.state_dict()[key] - model_fast_init.state_dict()[key]).sum().item()",
+            "+                    max_diff = torch.max(",
+            "+                        torch.abs(model_slow_init.state_dict()[key] - model_fast_init.state_dict()[key])",
+            "+                    ).item()",
+            "self.assertLessEqual(max_diff, 1e-3, msg=f\"{key} not identical\")",
+            "",
+            "def test_initialization(self):"
+        ]
+    },
+    {
+        "number": 2023,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class Transformer2DModel(ModelMixin, ConfigMixin):",
+            "if self.is_input_continuous:",
+            "# TODO: should use out_channels for continous projections",
+            "if use_linear_projection:",
+            "-                self.proj_out = nn.Linear(in_channels, inner_dim)",
+            "+                self.proj_out = nn.Linear(inner_dim, in_channels)",
+            "else:",
+            "self.proj_out = nn.Conv2d(inner_dim, in_channels, kernel_size=1, stride=1, padding=0)",
+            "elif self.is_input_vectorized:"
+        ]
+    },
+    {
+        "number": 2028,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class UNetLDMModelTests(ModelTesterMixin, unittest.TestCase):",
+            "expected_output_slice = torch.tensor([-13.3258, -20.1100, -15.9873, -17.6617, -23.0596, -17.9419, -13.3675, -16.1889, -12.3800])",
+            "# fmt: on",
+            "",
+            "-        self.assertTrue(torch.allclose(output_slice, expected_output_slice, atol=1e-3))",
+            "+        self.assertTrue(torch.allclose(output_slice, expected_output_slice, rtol=1e-3))",
+            "",
+            "",
+            "#    TODO(Patrick) - Re-add this test after having cleaned up LDM"
+        ]
+    },
+    {
+        "number": 2042,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "for n_iter in range(100):",
+            "if n_iter % 10 == 0:",
+            "x = vutils.make_grid(x, normalize=True, scale_each=True)",
+            "writer.add_image('Image', x, n_iter)  # Tensor",
+            "-        writer.add_image_with_boxes('imagebox', x, torch.Tensor([[10, 10, 40, 40]]), n_iter)",
+            "+        writer.add_image_with_boxes('imagebox', x, torch.Tensor([[10, 10, 40, 40], [40, 40, 60, 60]]), n_iter)",
+            "x = torch.zeros(sample_rate * 2)",
+            "for i in range(x.size(0)):",
+            "# sound amplitude should in [-1, 1]"
+        ]
+    },
+    {
+        "number": 2060,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class ComputeLoss:",
+            "lcls *= self.hyp['cls']",
+            "bs = tobj.shape[0]  # batch size",
+            "",
+            "-        loss = lbox + lobj + lcls",
+            "-        return loss * bs, torch.cat((lbox, lobj, lcls, loss)).detach()",
+            "+        return (lbox + lobj + lcls) * bs, torch.cat((lbox, lobj, lcls)).detach()",
+            "",
+            "def build_targets(self, p, targets):",
+            "# Build targets for compute_loss(), input targets(image,class,x,y,w,h)"
+        ]
+    },
+    {
+        "number": 2072,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class LocalGradientAggregationHelperEager:",
+            "# is equal to 0.",
+            "self.counter = tf.Variable(initial_value=0)",
+            "",
+            "-    @tf.function",
+            "def compute_gradients(self, grads, vars):",
+            "# On steps where allreduce happens, resulting_grads returns the allreduced",
+            "# gradients, on other steps it returns the locally aggregated"
+        ]
+    },
+    {
+        "number": 2083,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class CellStem0(nn.Module):",
+            "self.comb_iter_0_left = TwoSeparables(42, 42, 5, 2, 2, bias=False)",
+            "self.comb_iter_0_right = TwoSeparables(96, 42, 7, 2, 3, bias=False)",
+            "",
+            "-        self.comb_iter_1_left = nn.AvgPool2d(3, stride=2, padding=1)",
+            "+        self.comb_iter_1_left = nn.MaxPool2d(3, stride=2, padding=1)",
+            "self.comb_iter_1_right = TwoSeparables(96, 42, 7, 2, 3, bias=False)",
+            "",
+            "-        self.comb_iter_2_left = nn.MaxPool2d(3, stride=2, padding=1)",
+            "+        self.comb_iter_2_left = nn.AvgPool2d(3, stride=2, padding=1)",
+            "self.comb_iter_2_right = TwoSeparables(96, 42, 5, 2, 2, bias=False)",
+            "",
+            "self.comb_iter_3_right = nn.AvgPool2d(3, stride=1, padding=1)"
+        ]
+    },
+    {
+        "number": 2087,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class TransducerDecoder(AbsDecoder):",
+            "dec_states = self.create_batch_states(dec_states, [d[1] for d in done])",
+            "",
+            "if use_lm:",
+            "-            lm_labels = torch.LongTensor([h.yseq[-1] for h in hyps], device=self.device)",
+            "+            lm_labels = torch.LongTensor(",
+            "+                [h.yseq[-1] for h in hyps], device=self.device",
+            "+            ).view(final_batch, 1)",
+            "",
+            "return dec_out, dec_states, lm_labels"
+        ]
+    },
+    {
+        "number": 2098,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def _train_batches(model: NNModel, iterator: DataLearningIterator, train_config:",
+            "tb_train_writer.add_summary(metric_sum, epochs)",
+            "",
+            "if losses:",
+            "-                        loss_sum = tf.Summary(value=[tf.Summary.Value(tag='every_n_batches/' + 'loss',",
+            "+                        loss_sum = tf.Summary(value=[tf.Summary.Value(tag='every_n_epochs/' + 'loss',",
+            "simple_value=report['loss']), ])",
+            "tb_train_writer.add_summary(loss_sum, i)"
+        ]
+    },
+    {
+        "number": 2112,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def test_statsmodels_save_load(metadata, holt_model):  # noqa # pylint: disable",
+            "",
+            "",
+            "@pytest.mark.parametrize(\"exc\", [BentoMLException])",
+            "-def test_get_model_info_exc(exc, holt_model):",
+            "+def test_load_model_exc(exc, holt_model):",
+            "tag = wrong_module(holt_model)",
+            "with pytest.raises(exc):",
+            "-        bentoml._internal.frameworks.statsmodels._get_model_info(tag)",
+            "+        bentoml._internal.frameworks.statsmodels.load(tag)",
+            "",
+            "",
+            "def test_statsmodels_runner_setup_run_batch(save_proc, holt_model):"
+        ]
+    },
+    {
+        "number": 2113,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def PositionalEmbedding(num_embeddings, embedding_dim, padding_idx, left_pad, le",
+            "if learned:",
+            "m = LearnedPositionalEmbedding(num_embeddings, embedding_dim, padding_idx, left_pad)",
+            "nn.init.normal(m.weight, mean=0, std=embedding_dim**-0.5)",
+            "+        nn.init.constant(m.weight[padding_idx], 0)",
+            "else:",
+            "m = SinusoidalPositionalEmbedding(embedding_dim, padding_idx, left_pad, init_size=num_embeddings)",
+            "return m"
+        ]
+    },
+    {
+        "number": 2114,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def argmin(",
+            "return ret",
+            "",
+            "",
+            "-def nonzero(",
+            "-    x: Union[tf.Tensor, tf.Variable],",
+            "-) -> Union[tf.Tensor, tf.Variable]:",
+            "-    return tf.experimental.numpy.nonzero(x)",
+            "+def nonzero(x: Union[tf.Tensor, tf.Variable]) -> Tuple[Union[tf.Tensor, tf.Variable]]:",
+            "+    return tuple(tf.experimental.numpy.nonzero(x))",
+            "",
+            "",
+            "def where("
+        ]
+    },
+    {
+        "number": 2115,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "def l2_loss(tensor, weight=1.0, scope=None):",
+            "Returns:",
+            "the L2 loss op.",
+            "\"\"\"",
+            "-    with tf.op_scope([tensor], scope, 'l2_loss'):",
+            "+    with tf.name_scope(scope):",
+            "weight = tf.convert_to_tensor(weight,",
+            "dtype=tensor.dtype.base_dtype,",
+            "name='loss_weight')"
+        ]
+    },
+    {
+        "number": 2119,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class BagOfWordCountsTokenEmbedder(TokenEmbedder):",
+            "# also mask out positions corresponding to oov",
+            "mask *= (inputs != self._oov_idx).long()",
+            "for document, doc_mask in zip(inputs, mask):",
+            "-            document = torch.masked_select(document, doc_mask.byte())",
+            "+            document = torch.masked_select(document, doc_mask.to(dtype=torch.bool))",
+            "vec = torch.bincount(document, minlength=self.vocab_size).float()",
+            "vec = vec.view(1, -1)",
+            "bag_of_words_vectors.append(vec)"
+        ]
+    },
+    {
+        "number": 2123,
+        "label": "no",
+        "predict": "yes",
+        "change": [
+            "class BartModelIntegrationTest(unittest.TestCase):",
+            "output = model.forward(**inputs_dict)[0]",
+            "expected_shape = torch.Size((1, 11, 1024))",
+            "self.assertEqual(output.shape, expected_shape)",
+            "-        expected_slice = torch.Tensor(",
+            "+        expected_slice = torch.tensor(",
+            "[[0.7144, 0.8143, -1.2813], [0.7144, 0.8143, -1.2813], [-0.0467, 2.5911, -2.1845]], device=torch_device",
+            ")",
+            "self.assertTrue(torch.allclose(output[:, :3, :3], expected_slice, atol=TOLERANCE))"
+        ]
+    }
+]

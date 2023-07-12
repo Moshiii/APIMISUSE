@@ -16,10 +16,20 @@ def completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
 
 
-input_path = "C:\@code\APIMISUSE\data\misuse_jsons\manual\merged_split_hunk_AST_filter_manual_deduplica_reduced_category_strict_general_case_Moshi.json"
-stage_2_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_2.json'
-stage_1_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v2_stage_1_code_explain.json'
-output_path = 'C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\misuse_v3_classification_stage_3.json'
+# calib
+# manual
+# test_1
+# test_2
+# extra
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\manual\\"
+base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\extra\\"
+# base_path = "C:\@code\APIMISUSE\data\misuse_jsons\\auto_langchain\\test_2\\"
+input_path = base_path + "manual_data_1k.json"
+input_path = base_path + "extra_data_223.json"
+# input_path = base_path + "test_2_data_1k.json"
+stage_2_path = base_path + "misuse_v3_classification_stage_2.json"
+stage_1_path = base_path + "misuse_v2_stage_1_code_explain.json"
+output_path = base_path + "misuse_v3_classification_stage_3.json"
 
 # read
 data_dict = {}
@@ -45,12 +55,6 @@ with open(stage_2_path, encoding="utf-8") as f:
     for line in data:
         data_stage_2_dict[line["number"]] = line
 
-
-print(data_dict[0].keys())
-print(data_stage_1_dict[0].keys())
-print(data_stage_2_dict[4].keys())
-
-# merge data_stage_1_dict into data_dict by key
 for key in data_dict.keys():
     if key in data_stage_1_dict.keys():
         if key in data_stage_2_dict.keys():
@@ -65,7 +69,7 @@ for key in data_dict.keys():
 # only keep these keys in data: number, change, commit_message, code_change_explaination
 
 
-for i in range(0, len(data)):
+for i in range(152, len(data)):
     data[i] = {
         "number": data[i]["number"],
         "change": data[i]["change"],
@@ -116,15 +120,25 @@ what is the code commit Motivation? please choose one of the options in the <>.
     <State Handling Error> : The code before change has incorrect state handling such as missing no_grad(), is_training, or eval() API calls
     <Algorithm Error>: The code before change has mathmatical or algorithmic errors such as missing epsilon or atol, incorrect loss function, or incorrect gradient calculation.
     <Null Reference Error> : The code before change missing null check before API call.
+what is the action of the fix?
+    <Add API> : The fix is adding a new API.
+    <Remove API> : The fix is removing an API.
+    <Update API> : The fix is updating an API class.
+    <change API> : The fix is replace an API with another API.
+what is the API-element of the fix?
+    <API call>: The fix is change/update/add/remove the API class or method.
+    <API parameter>: The fix is change/update/add/remove the API parameteror argument.
+    <API condition check>: The fix is change/update/add/remove the if condition check before API method.
 
-
-
+    
 <answer start>
 Symptom:  (Program Crash, Unexpected Output, Return Warning, Low Efficiency)
 Motivation: <Deprecation Management Error, Data Conversion Error, Device Management Error, State Handling Error, Algorithm Error, Null Reference Error, Argument error>
+Action: <removal, addition, change, or update>
+Element: <API call, API parameter, or API condition check>
 """
 
-for i in range(400, len(data)):
+for i in range(0, len(data)):
     # for i in range(110, 114):
     print("current_index:", i, "/", len(data))
 
