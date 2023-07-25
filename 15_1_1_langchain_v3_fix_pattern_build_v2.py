@@ -52,8 +52,13 @@ You are great at read and understand code changes.
 When you don't know the answer to a question you admit that you don't know.
 
 Task: 
-please summarize the fix pattern in two sentences by filling the <placeholder> below:
+please summarize the fix pattern by filling the <placeholder> below:
 in the condition of <condition>, if <pattern> is detected, then(remove/add/change) the <code_one> to <code_code_two> to fix the API misuse.
+
+
+for example:
+
+
 
 first, please look for <condition> in context section. If no clear condition can be identified, answer no pre condition is needed.
 context:
@@ -61,13 +66,11 @@ context:
 {context}
 '''
 
-
 then, look for <pattern> and <code_one> in code removed section.
 code removed:
 '''
 {removed_code}
 '''
-
 
 then, look for <code_two> in code added section.
 code added:
@@ -76,7 +79,7 @@ code added:
 '''
 
 
-then, sumeries the fix pattern in two sentences by filling the <placeholder>.
+then, sumeries the fix pattern by filling the <placeholder>.
 
 <condition>:
 <pattern>:

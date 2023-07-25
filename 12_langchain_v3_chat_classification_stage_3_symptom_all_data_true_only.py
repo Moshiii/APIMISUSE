@@ -96,10 +96,10 @@ Then, Please answer the following question and return the answer in given format
 
 Questions:    
 first, what is the code commit Symptom? please choose one of the options in the ().
-    (Program Crash) : The program would crash. 
-    (Unexpected Output) : The program output is different from context expectation.
-    (Return Warning) : The program returns a warning .
-    (Low Efficiency) : The code before change is causing slow execution speed or low performance.
+    (Program Crash) : The program would crash due to violation of API constraint such as type mismatch, shape mismatch and device mismatch.  Thsi is the most common type.
+    (Incorrect Result) : The program will execute but return incorrect result.
+    (Return Warning) : The program returns a warning. mostly due to using deprecated APIs.
+    (Low Efficiency) : The code before change is causing slow execution speed. mostly due to device problem.
 then, what is the code commit Motivation? please choose one of the options in the <>.
     <Deprecation Management Error> : The code before change is using deprecated API.
     <Data Conversion Error> : The code before change has shape or type missmatch, missing type or dtype specification, or missing type or shape conversion.
@@ -119,13 +119,13 @@ then, what is the API-element of the fix?
 
     
 <answer start>
-Symptom:  (Program Crash, Unexpected Output, Return Warning, Low Efficiency)
+Symptom:  (Program Crash, Incorrect Result, Return Warning, Low Efficiency)
 Motivation: <Deprecation Management Error, Data Conversion Error, Device Management Error, State Handling Error, Algorithm Error, Null Reference Error, Argument error>
 Action: <removal, addition, change, or update>
 Element: <API call, API parameter, or API condition check>
 """
 
-for i in range(274, len(data)):
+for i in range(0, len(data)):
     # for i in range(110, 114):
     print("current_index:", i, "/", len(data))
 
